@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>라로제 퀴즈 | LA ROSÉE</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0E94CD;
+      --blue-dark: #0a78a8;
+      --blue-light: #e8f4fb;
+      --white: #ffffff;
+      --gray: #f7fafd;
+      --text: #1a2233;
+      --text-muted: #6b7c93;
+      --border: #d4eaf5;
+      --success: #22c55e;
+      --success-bg: #f0fdf4;
+      --success-text: #166534;
+      --error: #ef4444;
+      --error-bg: #fef2f2;
+      --error-text: #991b1b;
+    }
+    body {
+      font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--white);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: white;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 12px rgba(14,148,205,0.12);
+    }
+    .home-btn {
+      background: none;
+      border: none;
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 7px 14px;
+      border-radius: 8px;
+      letter-spacing: 0.5px;
+      transition: background 0.15s;
+      font-family: inherit;
+    }
+    .home-btn:hover { background: var(--blue-light); }
+
+    /* ── Screen System ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .page { max-width: 560px; margin: 0 auto; padding: 24px 16px 48px; }
+
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(14,148,205,0.07);
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 13px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.16s;
+      font-family: inherit;
+    }
+    .btn-primary { background: var(--blue); color: white; }
+    .btn-primary:hover { background: var(--blue-dark); box-shadow: 0 4px 16px rgba(14,148,205,0.38); transform: translateY(-1px); }
+    .btn-outline { background: white; color: var(--blue); border: 2px solid var(--blue); }
+    .btn-outline:hover { background: var(--blue-light); }
+    .btn-danger { background: var(--error); color: white; }
+    .btn-danger:hover { opacity: 0.88; }
+    .btn-block { width: 100%; }
+    .btn-sm { padding: 7px 14px; font-size: 13px; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+    /* ── Forms ── */
+    .form-group { margin-bottom: 18px; }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    input[type="text"], input[type="password"], input[type="number"], textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      background: white;
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(14,148,205,0.12);
+    }
+
+    /* ── Alerts ── */
+    .alert {
+      padding: 12px 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 14px;
+      border: 1px solid transparent;
+    }
+    .alert-error { background: var(--error-bg); color: var(--error-text); border-color: #fca5a5; }
+    .alert-success { background: var(--success-bg); color: var(--success-text); border-color: #86efac; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .badge-blue { background: var(--blue-light); color: var(--blue); }
+    .badge-green { background: #dcfce7; color: var(--success-text); }
+    .badge-red { background: #fee2e2; color: var(--error-text); }
+    .badge-gray { background: #f1f5f9; color: #64748b; }
+
+    /* ── Animations ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeInUp 0.24s ease; }
+
+    /* ══ NAME SCREEN ══ */
+    .name-screen-wrap {
+      min-height: calc(100vh - 57px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .name-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 4px 24px rgba(14,148,205,0.1);
+      text-align: center;
+    }
+    .name-date {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+    .name-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 28px;
+      line-height: 1.4;
+    }
+    .name-logo { margin-bottom: 20px; }
+
+    /* ══ QUIZ SCREEN ══ */
+    .progress-bar-wrap {
+      height: 6px;
+      background: var(--blue-light);
+      border-radius: 999px;
+      margin: 16px 20px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .q-image-wrap { display: none; }
+    .q-text {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .q-options { display: flex; flex-direction: column; gap: 10px; }
+    .q-option {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      background: white;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      font-family: inherit;
+      line-height: 1.4;
+    }
+    .q-option:hover:not(:disabled) { border-color: var(--blue); background: var(--blue-light); }
+    .q-option.correct { border-color: var(--success); background: var(--success-bg); color: var(--success-text); }
+    .q-option.wrong { border-color: var(--error); background: var(--error-bg); color: var(--error-text); }
+    .q-option:disabled { cursor: default; }
+    .q-feedback {
+      margin-top: 16px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      text-align: center;
+      display: none;
+    }
+    .q-feedback.correct { background: var(--success-bg); color: var(--success-text); display: block; }
+    .q-feedback.wrong { background: var(--error-bg); color: var(--error-text); display: block; }
+    .q-next-wrap {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 12px 20px 24px;
+      background: white;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -4px 16px rgba(14,148,205,0.1);
+      display: none;
+      z-index: 30;
+    }
+    .timer-wrap {
+      text-align: center;
+      padding: 10px 0 4px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .timer-wrap.warning { color: var(--error); font-weight: 700; }
+    #s-quiz .page { padding-bottom: 100px; }
+
+    /* ══ RESULTS SCREEN ══ */
+    .results-wrap {
+      min-height: calc(100vh - 57px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .results-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 40px 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 4px 24px rgba(14,148,205,0.1);
+      text-align: center;
+    }
+    .results-msg {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 20px 0 28px;
+      line-height: 1.5;
+    }
+    .results-btns { display: flex; flex-direction: column; gap: 12px; }
+
+    /* ══ REVIEW SCREEN ══ */
+    .review-item {
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 18px 20px;
+      margin-bottom: 12px;
+    }
+    .review-item-q {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.5;
+    }
+    .review-item-answer-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+    .review-item-answer {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--success-text);
+      background: var(--success-bg);
+      padding: 8px 12px;
+      border-radius: 8px;
+    }
+
+    /* ══ ADMIN LOGIN ══ */
+    .admin-login-wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .admin-login-card {
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(14,148,205,0.1);
+      text-align: center;
+    }
+
+    /* ══ ADMIN PANEL ══ */
+    .admin-header {
+      background: white;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .admin-title { font-size: 16px; font-weight: 800; color: var(--text); }
+    .admin-header-btns { display: flex; gap: 8px; }
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid var(--border);
+      padding: 0 16px;
+      position: sticky;
+      top: 57px;
+      z-index: 40;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: none;
+      background: none;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      white-space: nowrap;
+      font-family: inherit;
+      transition: color 0.15s;
+    }
+    .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    .stat-card {
+      background: var(--blue-light);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+    }
+    .stat-num { font-size: 24px; font-weight: 800; color: var(--blue); }
+    .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .score-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .score-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--gray);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .score-table td {
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .score-table tr:hover td { background: var(--gray); }
+    .score-detail-cell { background: var(--gray) !important; }
+    .score-detail-inner { padding: 12px 0; }
+    .score-detail-item {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .error-bar-item { margin-bottom: 12px; }
+    .error-bar-label { font-size: 12px; color: var(--text); margin-bottom: 4px; font-weight: 600; }
+    .error-bar-track {
+      height: 8px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .error-bar-fill {
+      height: 100%;
+      background: var(--error);
+      border-radius: 999px;
+    }
+    .error-bar-pct { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .q-list-item {
+      background: white;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      margin-bottom: 10px;
+    }
+    .q-list-item-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .q-list-item-text { font-size: 14px; font-weight: 600; line-height: 1.5; flex: 1; }
+    .q-list-item-btns { display: flex; gap: 6px; flex-shrink: 0; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title { font-size: 17px; font-weight: 800; margin-bottom: 20px; }
+    .radio-group { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .radio-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: border-color 0.15s;
+    }
+    .radio-opt:has(input:checked) { border-color: var(--blue); background: var(--blue-light); }
+    .radio-opt input { accent-color: var(--blue); }
+    .empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 14px; }
+
+    /* ══ LECTURE ══ */
+    #s-lecture { background: #0a1628; min-height: 100vh; }
+    .lecture-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .lecture-counter { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 600; }
+    .lecture-label { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+    .lecture-q {
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      line-height: 1.5;
+      padding: 28px 24px 20px;
+    }
+    .lecture-options { padding: 0 24px; display: flex; flex-direction: column; gap: 12px; }
+    .lecture-opt {
+      padding: 16px 20px;
+      border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.4;
+      transition: all 0.2s;
+    }
+    .lecture-opt.revealed-correct { border-color: var(--success); background: rgba(34,197,94,0.15); color: #86efac; }
+    .lecture-explanation {
+      margin: 20px 24px;
+      padding: 16px 20px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .lecture-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 24px;
+    }
+    .lec-nav-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: none;
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .lec-nav-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+    .lec-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .lec-reveal-btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      background: var(--blue);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .lec-reveal-btn.revealed { background: var(--success); }
+
+    /* ══ LOADING ══ */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px; height: 20px;
+      border: 3px solid var(--border);
+      border-top-color: var(--blue);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .stat-num { font-size: 20px; }
+      .lecture-q { font-size: 18px; padding: 20px 16px 16px; }
+      .lecture-options { padding: 0 16px; }
+      .lecture-footer { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header" id="main-header">
+  <svg width="90" height="32" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
+    <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
+  </svg>
+  <button class="home-btn" onclick="goHome()">HOME</button>
+</header>
+
+<!-- ══ SCREEN: Name Input ══ -->
+<div id="s-name" class="screen">
+  <div class="name-screen-wrap">
+    <div class="name-card fade-in">
+      <div class="name-logo">
+        <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
+          <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
+        </svg>
+      </div>
+      <p class="name-date" id="name-date"></p>
+      <p class="name-title">오늘 함께하실 분의<br>이름을 알려주세요</p>
+      <div class="form-group" style="text-align:left;">
+        <label>이름</label>
+        <input type="text" id="name-input" placeholder="이름을 입력해주세요." maxlength="20"
+          onkeydown="if(event.key==='Enter') startQuiz()">
+      </div>
+      <button class="btn btn-primary btn-block" onclick="startQuiz()">퀴즈 시작하기 &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Quiz ══ -->
+<div id="s-quiz" class="screen">
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="q-progress" style="width:0%"></div>
+  </div>
+  <div class="page">
+    <div id="q-image-wrap" class="q-image-wrap" style="display:none;">
+      <img id="q-image" src="" alt="">
+    </div>
+    <p class="q-text" id="q-text"></p>
+    <div class="q-options" id="q-options"></div>
+    <div class="q-feedback" id="q-feedback"></div>
+    <div class="q-next-wrap" id="q-next-wrap">
+      <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
+    </div>
+    <div class="timer-wrap" id="timer-wrap"></div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Results ══ -->
+<div id="s-results" class="screen">
+  <div class="results-wrap">
+    <div class="results-card fade-in">
+      <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
+        <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
+      </svg>
+      <p class="results-msg">수고하셨어요!</p>
+      <div class="results-btns">
+        <button class="btn btn-primary btn-block" id="btn-review" onclick="showReview()" style="display:none;">다시 한번 둘러볼까요?</button>
+        <button class="btn btn-outline btn-block" onclick="goHome()">HOME</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Review ══ -->
+<div id="s-review" class="screen">
+  <div class="page">
+    <div style="margin-bottom:24px;">
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">문제별 리뷰</h2>
+      <p style="font-size:14px;color:var(--text-muted);">틀린 문제를 다시 확인해보세요</p>
+    </div>
+    <div id="review-list"></div>
+    <div style="margin-top:8px;display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-primary btn-block" onclick="retake()">다시 도전</button>
+      <button class="btn btn-outline btn-block" onclick="goHome()">HOME</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Admin Login ══ -->
+<div id="s-admin-login" class="screen">
+  <div class="admin-login-wrap">
+    <div class="admin-login-card fade-in">
+      <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:24px;">
+        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
+        <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
+      </svg>
+      <h2 style="font-size:18px;font-weight:800;margin-bottom:6px;">관리자 로그인</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">초기 비밀번호: larosee1234</p>
+      <div class="form-group" style="text-align:left;">
+        <label>비밀번호</label>
+        <input type="password" id="admin-pw" placeholder="비밀번호"
+          onkeydown="if(event.key==='Enter') adminLogin()">
+      </div>
+      <div class="alert alert-error" id="admin-pw-err" style="display:none;">비밀번호가 올바르지 않습니다.</div>
+      <button class="btn btn-primary btn-block" onclick="adminLogin()">로그인</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Admin Panel ══ -->
+<div id="s-admin" class="screen">
+  <div class="admin-header">
+    <span class="admin-title">관리자</span>
+    <div class="admin-header-btns">
+      <button class="btn btn-sm btn-outline" onclick="startLecture()">강의 모드</button>
+      <button class="btn btn-sm btn-danger" onclick="adminLogout()">로그아웃</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-btn-dash" onclick="switchTab('dash')">대시보드</button>
+    <button class="tab-btn" id="tab-btn-scores" onclick="switchTab('scores')">점수</button>
+    <button class="tab-btn" id="tab-btn-questions" onclick="switchTab('questions')">문제</button>
+    <button class="tab-btn" id="tab-btn-qr" onclick="switchTab('qr')">QR</button>
+    <button class="tab-btn" id="tab-btn-settings" onclick="switchTab('settings')">설정</button>
+  </div>
+
+  <!-- Tab: Dashboard -->
+  <div id="tab-dash" class="tab-content active">
+    <div class="page">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num" id="s-count-num">-</div><div class="stat-lbl">총 응시</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-avg-score">-</div><div class="stat-lbl">평균 점수</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-avg-time">-</div><div class="stat-lbl">평균 시간</div></div>
+      </div>
+      <div style="text-align:right;margin-bottom:12px;">
+        <button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button>
+      </div>
+      <div id="dash-status" class="empty" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Tab: Scores -->
+  <div id="tab-scores" class="tab-content">
+    <div class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">총 0명</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">삭제</button>
+          <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV 내보내기</button>
+        </div>
+      </div>
+      <div id="score-table-wrap"></div>
+      <div style="margin-top:28px;">
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:14px;">문제별 오답률</h3>
+        <div id="error-rate-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Questions -->
+  <div id="tab-questions" class="tab-content">
+    <div class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span id="q-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">문제 0개</span>
+        <button class="btn btn-sm btn-primary" onclick="openModal()">+ 문제 추가</button>
+      </div>
+      <div id="q-list"></div>
+    </div>
+  </div>
+
+  <!-- Tab: QR -->
+  <div id="tab-qr" class="tab-content">
+    <div class="page">
+      <div class="card" style="text-align:center;margin-bottom:16px;font-size:13px;color:var(--text-muted);line-height:1.7;">
+        <div style="font-size:11px;font-weight:700;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">앱 URL 안내</div>
+        <div style="margin-bottom:6px;">
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">학생용 (퀴즈)</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);word-break:break-all;">https://taeyun-larosee.github.io/larosee-quiz/?mode=quiz</div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">관리자용</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text);word-break:break-all;">https://taeyun-larosee.github.io/larosee-quiz/?mode=admin</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--blue);">학생용 QR</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">?mode=quiz</div>
+          <div id="qr-output-quiz" style="display:flex;justify-content:center;margin-bottom:10px;"></div>
+          <button class="btn btn-primary btn-block" onclick="genQR('quiz')">QR 생성</button>
+          <div id="qr-dl-quiz" style="display:none;margin-top:10px;">
+            <button class="btn btn-outline btn-block btn-sm" onclick="downloadQR('quiz')">PNG 다운로드</button>
+          </div>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px;color:var(--blue);">관리자용 QR</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">?mode=admin</div>
+          <div id="qr-output-admin" style="display:flex;justify-content:center;margin-bottom:10px;"></div>
+          <button class="btn btn-primary btn-block" onclick="genQR('admin')">QR 생성</button>
+          <div id="qr-dl-admin" style="display:none;margin-top:10px;">
+            <button class="btn btn-outline btn-block btn-sm" onclick="downloadQR('admin')">PNG 다운로드</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Settings -->
+  <div id="tab-settings" class="tab-content">
+    <div class="page">
+      <div class="card" style="margin-bottom:16px;">
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;">비밀번호 변경</h3>
+        <div class="form-group">
+          <label>현재 비밀번호</label>
+          <input type="password" id="pw-cur" placeholder="현재 비밀번호">
+        </div>
+        <div class="form-group">
+          <label>새 비밀번호</label>
+          <input type="password" id="pw-new" placeholder="새 비밀번호">
+        </div>
+        <div class="form-group">
+          <label>새 비밀번호 확인</label>
+          <input type="password" id="pw-new2" placeholder="새 비밀번호 확인">
+        </div>
+        <div class="alert alert-error" id="pw-err" style="display:none;"></div>
+        <div class="alert alert-success" id="pw-ok" style="display:none;">비밀번호가 변경되었습니다.</div>
+        <button class="btn btn-primary" onclick="changePw()">변경 저장</button>
+      </div>
+      <div class="card">
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:8px;">퀴즈 설정</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px;">전체 문제 중 랜덤으로 출제할 문제 수 (0이면 전체)</p>
+        <div class="form-group">
+          <label>출제 문제 수</label>
+          <input type="number" id="quiz-cnt-input" min="0" max="20" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>타이머 (분, 0이면 미사용)</label>
+          <input type="number" id="timer-input" min="0" max="60" placeholder="0">
+        </div>
+        <button class="btn btn-primary" onclick="saveSettings()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Lecture ══ -->
+<div id="s-lecture" class="screen">
+  <div class="lecture-header">
+    <span class="lecture-counter" id="lec-q-num">1 / 20</span>
+    <span class="lecture-label" id="lec-label">QUESTION 1</span>
+    <button class="lec-nav-btn" onclick="exitLecture()">← 나가기</button>
+  </div>
+  <div class="lecture-q" id="lec-q"></div>
+  <div class="lecture-options" id="lec-options"></div>
+  <div id="lec-explanation" style="display:none;"></div>
+  <div class="lecture-footer">
+    <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
+    <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
+    <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
+  </div>
+</div>
+
+<!-- ══ Modal: Add/Edit Question ══ -->
+<div class="modal-overlay" id="q-modal">
+  <div class="modal-box">
+    <div class="modal-title" id="modal-title">문제 추가</div>
+    <div class="form-group">
+      <label>질문</label>
+      <textarea id="m-question" rows="3" placeholder="질문을 입력하세요"></textarea>
+    </div>
+    <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;">
+      선택지 &amp; 정답 — 라디오로 정답 선택 / ③④는 비워도 됩니다
+    </div>
+    <div class="radio-group">
+      <label class="radio-opt"><input type="radio" name="correct" value="0"> <span id="lbl0">① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="radio" name="correct" value="1"> <span id="lbl1">② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="radio" name="correct" value="2"> <span id="lbl2">③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="radio" name="correct" value="3"> <span id="lbl3">④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
+    </div>
+    <div class="form-group" style="margin-top:16px;">
+      <label>해설 (선택)</label>
+      <textarea id="m-explanation" rows="2" placeholder="해설 (선택)"></textarea>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-primary" onclick="saveQuestion()">저장</button>
+      <button class="btn btn-outline" onclick="closeModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── Constants ─────────────────────────────────────────────── */
+const URL_MODE = new URLSearchParams(window.location.search).get('mode');
+const DATA_VERSION = '4';
+
+/* ─── Firebase 동적 로딩 ─────────────────────────────────────── */
+let db = null;
+const firebaseConfig = {
+  apiKey: 'AIzaSyCT3COLehsX7eHbrrKTem4ZZvPWSKAgjh8',
+  authDomain: 'ra-rosee.firebaseapp.com',
+  projectId: 'ra-rosee',
+  storageBucket: 'ra-rosee.firebasestorage.app',
+  messagingSenderId: '121644280571',
+  appId: '1:121644280571:web:0535234c31d382c35c5e5e'
+};
+(function loadFirebase() {
+  const s1 = document.createElement('script');
+  s1.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';
+  s1.onload = function() {
+    const s2 = document.createElement('script');
+    s2.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js';
+    s2.onload = function() {
+      try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); }
+      catch(e) { console.warn('Firebase 초기화 실패:', e); }
+    };
+    document.head.appendChild(s2);
+  };
+  document.head.appendChild(s1);
+})();
+
+async function fsPost(col, data) {
+  if (!db) return false;
+  try { await db.collection(col).add(data); return true; }
+  catch(e) { console.warn('fsPost error:', e); return false; }
+}
+
+async function fsGet(col) {
+  if (!db) return [];
+  try {
+    const snap = await db.collection(col).orderBy('timestamp', 'desc').get();
+    return snap.docs.map(d => ({ _id: d.id, ...d.data() }));
+  } catch(e) {
+    try {
+      const snap2 = await db.collection(col).get();
+      return snap2.docs.map(d => ({ _id: d.id, ...d.data() })).reverse();
+    } catch(e2) { console.warn('fsGet error:', e2); return []; }
+  }
+}
+
+async function fsDelete(col, docId) {
+  if (!db) return false;
+  try { await db.collection(col).doc(docId).delete(); return true; }
+  catch(e) { return false; }
+}
+
+/* ─── Storage ───────────────────────────────────────────────── */
+const DEFAULT_QUESTIONS = [
+  { id:1, question:'라로제의 브랜드 포지셔닝을 가장 올바르게 설명한 것은?', options:['100% 유기농만을 고집하는 럭셔리 브랜드','피부과 수준의 안전성과 화장품 특유의 즐거운 사용감을 동시에 제공','10대를 타깃으로 한 저가 코스메틱 브랜드','피부과 처방 제품만을 판매하는 더마 전문 브랜드'], correct:1, explanation:'라로제는 피부과 수준의 안전성과 화장품의 즐거운 사용감을 동시에 추구하는 브랜드입니다.' },
+  { id:2, question:'라로제의 핵심 가치는?', options:['안티에이징','친환경/자연유래성분','화학적인 성분','과포장'], correct:1, explanation:'라로제는 친환경 및 자연유래성분을 핵심 가치로 삼고 있습니다.' },
+  { id:3, question:'라로제(La Rosée)의 뜻으로 올바른 것은?', options:['장미 정원','아침 이슬','맑은 샘물','순수한 빛'], correct:1, explanation:'La Rosée는 프랑스어로 "아침 이슬"을 뜻합니다.' },
+  { id:4, question:'라로제의 제품은 어떤 성분을 주로 사용하나요?', options:['파라벤','인공색소','자연유래 성분','합성향료'], correct:2, explanation:'라로제는 파라벤, 인공색소, 합성향료 등 유해 성분을 배제하고 자연유래 성분을 주로 사용합니다.' },
+  { id:5, question:'라로제의 제품 포장 방식은 어떤 특징이 있나요?', options:['과도한 포장','비닐 포장','재활용 가능한 포장','일회용 포장'], correct:2, explanation:'라로제는 환경을 생각하여 재활용 가능한 포장재를 사용합니다.' },
+  { id:6, question:'라로제가 현재 운영 중인 제품 라인의 수와 총 SKU 수는?', options:['5가지 라인, 30개 제품','7가지 라인, 61개 제품','10가지 라인, 100개 제품','6가지 라인, 50개 제품'], correct:1, explanation:'라로제는 현재 7가지 제품 라인, 총 61개 SKU를 운영하고 있습니다.' },
+  { id:7, question:'안티퍼티그 아이컨투어 스틱은 화장 위에 사용할 수 있다?', options:['진실','거짓'], correct:0, explanation:'안티퍼티그 아이컨투어 스틱은 화장 위에도 사용 가능합니다.' },
+  { id:8, question:'안티퍼티그 아이컨투어 스틱의 효능이 아닌 것은?', options:['눈가 주름·붓기 완화','진정·보습','미백','피부 자극 완화'], correct:2, explanation:'미백은 해당 제품의 효능이 아닙니다.' },
+  { id:9, question:'바디크림의 금액은?', options:['49,000원','55,000원','59,000원','45,000원'], correct:2, explanation:'라로제 바디크림의 정가는 59,000원입니다.' },
+  { id:10, question:'안티퍼티그 아이컨투어 스틱의 금액은?', options:['39,000원','49,000원','45,000원','52,000원'], correct:1, explanation:'안티퍼티그 아이컨투어 스틱의 정가는 49,000원입니다.' },
+  { id:11, question:'히알루론산 세럼의 금액은?', options:['55,000원','52,000원','59,000원','45,000원'], correct:0, explanation:'라로제 히알루론산 세럼의 정가는 55,000원입니다.' },
+  { id:12, question:'화이트 머드스틱의 금액은?', options:['36,000원','42,000원','35,000원','39,000원'], correct:3, explanation:'라로제 화이트 머드스틱의 정가는 39,000원입니다.' },
+  { id:13, question:'샤워오일의 금액은?', options:['45,000원','42,000원','39,000원','49,000원'], correct:0, explanation:'라로제 샤워오일의 정가는 45,000원입니다.' },
+  { id:14, question:'다음 중 라로제에서 추천하는 제품 조합이 아닌 것은?', options:['히알루론산 세럼 + 아이컨투어 스틱','샤워오일 + 바디스크럽','머드스틱 + 샤워오일','머드스틱 + 토닉로션'], correct:2, explanation:'머드스틱+샤워오일은 라로제 추천 제품 조합이 아닙니다.' },
+  { id:15, question:'핸드빌(외부 고객 유치) 시 기본 응대 자세로 올바르지 않은 것은?', options:['고객의 동선을 막지 않는다','3발걸음 전 눈을 마주치며 인사한다','고객이 멈출 때까지 기다렸다가 말을 건다','고개 약 15도 인사 각도를 유지한다'], correct:2, explanation:'핸드빌 시에는 고객이 멈출 때까지 기다리는 것이 아니라 먼저 적극적으로 다가가야 합니다.' },
+  { id:16, question:'고객이 "수분스틱이 안 발린 것 같아요"라고 말할 때 올바른 응대는?', options:['"죄송합니다, 다른 제품을 추천해 드릴게요"','"다시 한 번 더 발라보세요"','"그게 핵심이에요! 끈적임이 없어서 일상생활에서 사용할 수 있고 실제 피부 수분량을 132% 증가시킵니다"','"제형이 원래 그래요"'], correct:2, explanation:'수분스틱의 핵심 특징인 무끈적 제형과 피부 수분량 132% 증가를 강조하는 것이 올바른 응대입니다.' },
+  { id:17, question:'고객이 "좀 비싼 것 같아요"라고 할 때 수분스틱에 대한 올바른 가격 이의 응대는?', options:['"저희 프로모션 기간이라서 할인해드릴 수 있어요"','"3~4개월 사용 가능하고 한 달 기준 약 1만 원으로 일반 아이크림보다 훨씬 경제적입니다"','"가격은 비싸지만 성분이 워낙 좋아요"','"비교 제품을 가져오시면 가격 비교를 도와드릴게요"'], correct:1, explanation:'월 사용 비용(약 1만 원)으로 환산해 경제성을 구체적으로 설명하는 것이 효과적입니다.' },
+  { id:18, question:'샤워오일에 대한 고객의 "잔여감이 남지 않나요?" 질문에 올바른 응대는?', options:['"잔여감이 남으셨다면 한 번 더 헹궈주세요"','"오일이라 잔여감이 남을 수 있어요"','"처음에는 오일 제형이지만 물이 닿으면 거품으로 변하며 미끈거림 없이 마무리됩니다"','"유막 형성을 해주기 때문에 보습에 좋아요"'], correct:2, explanation:'물과 만나면 거품으로 변하는 제형과 미끈거림 없이 마무리된다는 점을 강조해야 합니다.' },
+  { id:19, question:'고객이 "민감한 피부인데 사용해도 되나요?"라고 물을 때 가장 올바른 응대는?', options:['"일단 사용해보시고 이상이 있으면 환불해드릴게요"','"민감하신 분들은 베이비 라인만 사용하세요"','"화장품 성분 수를 최소화하고 피부 자극 테스트를 마쳐서 오히려 민감한 피부 고객님들이 많이 찾아주세요"','"민감한 피부더라도 1~2주 사용하시면 괜찮아지실거에요"'], correct:2, explanation:'성분 최소화와 피부 자극 테스트 완료 사실을 근거로 민감한 피부에도 안전하다는 확신을 주세요.' },
+  { id:20, question:'다음 중 핸드빌(외부 고객 유치)의 목적으로 올바르지 않은 것은?', options:['브랜드 인지도를 높인다','매장 유입 및 잠재 구매 고객을 확보한다','고객님께 예의를 차리기 위해서 한다','능동적인 판매활동을 한다'], correct:2, explanation:'핸드빌의 목적은 브랜드 인지도 제고, 매장 유입, 능동적 판매활동입니다. 단순히 예의를 차리기 위한 것이 아닙니다.' }
+];
+
+function loadStore() {
+  return {
+    questions: JSON.parse(localStorage.getItem('lr_q') || 'null') || DEFAULT_QUESTIONS,
+    password:  localStorage.getItem('lr_pw') || 'larosee1234',
+    quizCount: parseInt(localStorage.getItem('lr_cnt') || '0'),
+    timerMin:  parseInt(localStorage.getItem('lr_timer') || '0')
+  };
+}
+function saveQ(d)   { localStorage.setItem('lr_q', JSON.stringify(d)); }
+function savePw(p)  { localStorage.setItem('lr_pw', p); }
+function saveCnt(c) { localStorage.setItem('lr_cnt', c); }
+function saveTimer(t){ localStorage.setItem('lr_timer', t); }
+
+if (localStorage.getItem('lr_q_ver') !== DATA_VERSION) {
+  localStorage.setItem('lr_q', JSON.stringify(DEFAULT_QUESTIONS));
+  localStorage.setItem('lr_q_ver', DATA_VERSION);
+}
+
+/* ─── Quiz state ─────────────────────────────────────────────── */
+let student = '';
+let qs = [], qi = 0, answers = [];
+let timerInterval = null, timerSeconds = 0, timerLimit = 0;
+let startTime = 0;
+
+/* ─── Screen ─────────────────────────────────────────────────── */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('main-header').style.display = id === 's-lecture' ? 'none' : 'flex';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() {
+  stopTimer();
+  if (URL_MODE === 'admin') showScreen('s-admin-login');
+  else showScreen('s-name');
+}
+
+/* ─── Date ───────────────────────────────────────────────────── */
+function formatDate() {
+  const d = new Date();
+  const days = ['일','월','화','수','목','금','토'];
+  return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ')';
+}
+function formatDur(sec) {
+  if (!sec || sec <= 0) return '-';
+  const m = Math.floor(sec/60), s = sec%60;
+  return m > 0 ? m + '분 ' + s + '초' : s + '초';
+}
+
+/* ─── Timer ──────────────────────────────────────────────────── */
+function startTimer() {
+  const store = loadStore();
+  timerLimit = store.timerMin * 60;
+  timerSeconds = 0;
+  const el = document.getElementById('timer-wrap');
+  if (timerLimit === 0) { el.textContent = ''; return; }
+  el.textContent = '';
+  timerInterval = setInterval(() => {
+    timerSeconds++;
+    const remaining = timerLimit - timerSeconds;
+    if (remaining <= 0) {
+      el.className = 'timer-wrap warning';
+      el.textContent = '시간 초과';
+      clearInterval(timerInterval);
+      finishQuiz();
+      return;
+    }
+    const m = Math.floor(remaining/60), s = remaining%60;
+    el.textContent = '남은 시간  ' + m + ':' + String(s).padStart(2,'0');
+    el.className = remaining <= 60 ? 'timer-wrap warning' : 'timer-wrap';
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
+
+/* ─── Quiz flow ──────────────────────────────────────────────── */
+function startQuiz() {
+  const name = document.getElementById('name-input').value.trim();
+  if (!name) { alert('이름을 입력해주세요.'); return; }
+  student = name;
+
+  const store = loadStore();
+  let pool = [...store.questions];
+  const cnt = store.quizCount;
+  if (cnt > 0 && cnt < pool.length) {
+    pool = pool.sort(() => Math.random() - 0.5).slice(0, cnt);
+  }
+  qs = pool;
+  qi = 0;
+  answers = [];
+  startTime = Date.now();
+  showScreen('s-quiz');
+  startTimer();
+  renderQuestion();
+}
+
+function getQuestionImage(q) {
+  if (q.id >= 1 && q.id <= 6) return 'quiz_brand.jpg';
+  return '후보_N.jpg';
+}
+
+function renderQuestion() {
+  const q = qs[qi];
+  const total = qs.length;
+
+  document.getElementById('q-progress').style.width = (qi / total * 100) + '%';
+
+  // 이미지 숨김 처리
+  document.getElementById('q-image-wrap').style.display = 'none';
+
+  document.getElementById('q-text').textContent = 'Q' + (qi+1) + '. ' + q.question;
+
+  const optsEl = document.getElementById('q-options');
+  optsEl.innerHTML = q.options.map((opt, i) =>
+    '<button class="q-option" onclick="selectAnswer(' + i + ')">' + opt + '</button>'
+  ).join('');
+
+  document.getElementById('q-feedback').className = 'q-feedback';
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('q-next-wrap').style.display = 'none';
+}
+
+function selectAnswer(idx) {
+  const q = qs[qi];
+  const ok = idx === q.correct;
+  answers.push({ q, ok, chosen: idx, correct: q.correct });
+
+  const opts = document.querySelectorAll('.q-option');
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && !ok) btn.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('q-feedback');
+  if (ok) {
+    fb.textContent = '잘 기억하고 있네요!';
+    fb.className = 'q-feedback correct';
+  } else {
+    fb.textContent = '이 부분은 함께 다시 살펴볼까요?';
+    fb.className = 'q-feedback wrong';
+  }
+
+  document.getElementById('q-next-wrap').style.display = 'block';
+}
+
+function nextQuestion() {
+  qi++;
+  if (qi >= qs.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+async function finishQuiz() {
+  stopTimer();
+  const duration = Math.floor((Date.now() - startTime) / 1000);
+  const correctCount = answers.filter(a => a.ok).length;
+  const total = qs.length;
+  const pct = Math.round(correctCount / total * 100);
+  const wrongAnswers = answers.filter(a => !a.ok);
+
+  document.getElementById('q-progress').style.width = '100%';
+
+  const wrongQuestions = wrongAnswers.map(a => ({
+    q: a.q.question,
+    correct: a.q.options[a.correct],
+    chosen: a.q.options[a.chosen]
+  }));
+  const answersData = answers.map(a => ({
+    id: a.q.id,
+    q: a.q.question,
+    ok: a.ok,
+    chosen: a.chosen,
+    correct: a.correct
+  }));
+
+  fsPost('scores', {
+    name: student,
+    score: correctCount,
+    total,
+    pct,
+    duration,
+    date: new Date().toLocaleString('ko-KR'),
+    timestamp: db ? firebase.firestore.FieldValue.serverTimestamp() : new Date(),
+    wrongQuestions,
+    answers: answersData
+  });
+
+  window._reviewWrongAnswers = wrongAnswers;
+  const reviewBtn = document.getElementById('btn-review');
+  reviewBtn.style.display = wrongAnswers.length > 0 ? 'block' : 'none';
+
+  showScreen('s-results');
+}
+
+function showReview() {
+  const wrongAnswers = window._reviewWrongAnswers || [];
+  document.getElementById('review-list').innerHTML = wrongAnswers.map((a, i) =>
+    '<div class="review-item">' +
+    '<div class="review-item-q">Q. ' + a.q.question + '</div>' +
+    '<div class="review-item-answer-label">정답</div>' +
+    '<div class="review-item-answer">' + a.q.options[a.correct] + '</div>' +
+    '</div>'
+  ).join('');
+  showScreen('s-review');
+}
+
+function retake() {
+  document.getElementById('name-input').value = student;
+  showScreen('s-name');
+}
+
+/* ─── Admin ──────────────────────────────────────────────────── */
+function adminLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  if (pw === loadStore().password) {
+    document.getElementById('admin-pw').value = '';
+    document.getElementById('admin-pw-err').style.display = 'none';
+    showScreen('s-admin');
+    switchTab('dash');
+    loadDashboard();
+    renderQList();
+    loadSettings();
+  } else {
+    document.getElementById('admin-pw-err').style.display = 'block';
+  }
+}
+
+function adminLogout() {
+  if (URL_MODE === 'admin') showScreen('s-admin-login');
+  else goHome();
+}
+
+/* ─── Tabs ───────────────────────────────────────────────────── */
+function switchTab(t) {
+  ['dash','scores','questions','qr','settings'].forEach(id => {
+    document.getElementById('tab-' + id).classList.toggle('active', id === t);
+    document.getElementById('tab-btn-' + id).classList.toggle('active', id === t);
+  });
+  if (t === 'scores') loadScoreList();
+}
+
+/* ─── Dashboard ──────────────────────────────────────────────── */
+async function loadDashboard() {
+  document.getElementById('s-count-num').textContent = '...';
+  document.getElementById('s-avg-score').textContent = '...';
+  document.getElementById('s-avg-time').textContent = '...';
+
+  const scores = await fsGet('scores');
+  if (scores.length === 0) {
+    document.getElementById('s-count-num').textContent = '0';
+    document.getElementById('s-avg-score').textContent = '-';
+    document.getElementById('s-avg-time').textContent = '-';
+    return;
+  }
+  const count = scores.length;
+  const avgPct = Math.round(scores.reduce((s,r) => s + (r.pct||0), 0) / count);
+  const avgDur = Math.round(scores.reduce((s,r) => s + (r.duration||0), 0) / count);
+  document.getElementById('s-count-num').textContent = count + '명';
+  document.getElementById('s-avg-score').textContent = avgPct + '%';
+  document.getElementById('s-avg-time').textContent = formatDur(avgDur);
+}
+
+/* ─── Score List ─────────────────────────────────────────────── */
+let _scores = [];
+
+async function loadScoreList() {
+  document.getElementById('score-table-wrap').innerHTML = '<div class="empty"><div class="loading-spinner"></div></div>';
+  _scores = await fsGet('scores');
+
+  if (_scores.length === 0) {
+    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">아직 응시 기록이 없습니다.</div>';
+    document.getElementById('s-count-lbl').textContent = '총 0명';
+    document.getElementById('error-rate-list').innerHTML = '';
+    return;
+  }
+
+  document.getElementById('s-count-lbl').textContent = '총 ' + _scores.length + '명';
+
+  let html = '<table class="score-table"><thead><tr>' +
+    '<th>이름</th><th>점수</th><th>소요시간</th><th>날짜</th><th></th>' +
+    '</tr></thead><tbody>';
+
+  _scores.forEach((s, i) => {
+    const pct = s.pct !== undefined ? s.pct + '%' : '-';
+    const dur = formatDur(s.duration);
+    html += '<tr>' +
+      '<td style="font-weight:700;">' + (s.name||'-') + '</td>' +
+      '<td><span class="badge ' + (s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red') + '">' + pct + '</span></td>' +
+      '<td style="color:var(--text-muted);font-size:13px;">' + dur + '</td>' +
+      '<td style="color:var(--text-muted);font-size:11px;">' + (s.date||'') + '</td>' +
+      '<td><button class="btn btn-sm btn-outline" onclick="toggleDetail(' + i + ')">상세</button></td>' +
+      '</tr>' +
+      '<tr id="score-detail-' + i + '" style="display:none;">' +
+      '<td colspan="5" class="score-detail-cell">' + buildDetail(s) + '</td>' +
+      '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('score-table-wrap').innerHTML = html;
+  renderErrorRate(_scores);
+}
+
+function buildDetail(s) {
+  const wq = s.wrongQuestions || [];
+  if (wq.length === 0) return '<div class="score-detail-inner"><p style="font-size:13px;color:var(--success-text);padding:8px 0;">모두 정답!</p></div>';
+  return '<div class="score-detail-inner">' +
+    wq.map(w =>
+      '<div class="score-detail-item">' +
+      '<div style="font-weight:700;margin-bottom:4px;">Q. ' + w.q + '</div>' +
+      '<div style="font-size:12px;color:var(--success-text);">정답: ' + w.correct + '</div>' +
+      (w.chosen ? '<div style="font-size:12px;color:var(--error-text);">선택: ' + w.chosen + '</div>' : '') +
+      '</div>'
+    ).join('') +
+    '</div>';
+}
+
+function toggleDetail(i) {
+  const row = document.getElementById('score-detail-' + i);
+  if (row) row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+}
+
+function renderErrorRate(scores) {
+  if (scores.length === 0) { document.getElementById('error-rate-list').innerHTML = ''; return; }
+  const qMap = {};
+  scores.forEach(s => {
+    (s.answers || []).forEach(a => {
+      if (!qMap[a.id]) qMap[a.id] = { q: a.q, total: 0, wrong: 0 };
+      qMap[a.id].total++;
+      if (!a.ok) qMap[a.id].wrong++;
+    });
+  });
+  const items = Object.values(qMap).map(v => ({ q: v.q, pct: Math.round(v.wrong/v.total*100) }))
+    .sort((a,b) => b.pct - a.pct).slice(0, 10);
+
+  document.getElementById('error-rate-list').innerHTML = items.map(item =>
+    '<div class="error-bar-item">' +
+    '<div class="error-bar-label">' + item.q.slice(0, 40) + (item.q.length > 40 ? '...' : '') + '</div>' +
+    '<div class="error-bar-track"><div class="error-bar-fill" style="width:' + item.pct + '%"></div></div>' +
+    '<div class="error-bar-pct">' + item.pct + '%</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function confirmDeleteAll() {
+  if (!confirm('모든 점수 기록을 삭제할까요?')) return;
+  for (const s of _scores) {
+    if (s._id) await fsDelete('scores', s._id);
+  }
+  loadScoreList();
+  loadDashboard();
+}
+
+function exportCSV() {
+  if (_scores.length === 0) { alert('데이터가 없습니다.'); return; }
+  const rows = [['이름','점수(%)','소요시간(초)','날짜','틀린문제수']];
+  _scores.forEach(s => rows.push([
+    s.name||'', s.pct||0, s.duration||0, s.date||'', (s.wrongQuestions||[]).length
+  ]));
+  const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = '라로제_퀴즈점수_' + new Date().toLocaleDateString('ko-KR').replace(/[.\s]/g,'') + '.csv';
+  a.click();
+}
+
+/* ─── Question List ──────────────────────────────────────────── */
+function renderQList() {
+  const qArr = loadStore().questions;
+  document.getElementById('q-count-lbl').textContent = '문제 ' + qArr.length + '개';
+  if (qArr.length === 0) {
+    document.getElementById('q-list').innerHTML = '<div class="empty">등록된 문제가 없습니다.</div>';
+    return;
+  }
+  document.getElementById('q-list').innerHTML = qArr.map((q, i) =>
+    '<div class="q-list-item">' +
+    '<div class="q-list-item-head">' +
+    '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
+    '<div class="q-list-item-btns">' +
+    '<button class="btn btn-sm btn-outline" onclick="openModal(' + i + ')">수정</button>' +
+    '<button class="btn btn-sm btn-danger" onclick="deleteQ(' + i + ')">삭제</button>' +
+    '</div></div>' +
+    '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' + q.options[q.correct] + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+/* ─── Modal ──────────────────────────────────────────────────── */
+let editIdx = -1;
+
+function openModal(idx) {
+  editIdx = (idx !== undefined) ? idx : -1;
+  document.getElementById('modal-title').textContent = editIdx >= 0 ? '문제 수정' : '문제 추가';
+  const qArr = loadStore().questions;
+
+  if (editIdx >= 0) {
+    const q = qArr[editIdx];
+    document.getElementById('m-question').value = q.question;
+    [0,1,2,3].forEach(i => {
+      document.getElementById('m-opt' + i).value = q.options[i] || '';
+    });
+    const radio = document.querySelector('input[name="correct"][value="' + q.correct + '"]');
+    if (radio) radio.checked = true;
+    document.getElementById('m-explanation').value = q.explanation || '';
+  } else {
+    document.getElementById('m-question').value = '';
+    [0,1,2,3].forEach(i => document.getElementById('m-opt' + i).value = '');
+    document.querySelectorAll('input[name="correct"]').forEach(r => r.checked = false);
+    document.getElementById('m-explanation').value = '';
+  }
+  document.getElementById('q-modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('q-modal').classList.remove('active');
+}
+
+function saveQuestion() {
+  const question = document.getElementById('m-question').value.trim();
+  if (!question) { alert('질문을 입력해주세요.'); return; }
+  const options = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim()).filter(o => o);
+  if (options.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
+  const correctRadio = document.querySelector('input[name="correct"]:checked');
+  if (!correctRadio) { alert('정답을 선택해주세요.'); return; }
+  const correctVal = parseInt(correctRadio.value);
+  const allOptions = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim());
+  if (!allOptions[correctVal]) { alert('정답으로 선택한 선택지를 입력해주세요.'); return; }
+
+  const qArr = loadStore().questions;
+  const newQ = {
+    id: editIdx >= 0 ? qArr[editIdx].id : Date.now(),
+    question,
+    options: allOptions.filter(o => o),
+    correct: options.indexOf(allOptions[correctVal]),
+    explanation: document.getElementById('m-explanation').value.trim()
+  };
+
+  if (editIdx >= 0) qArr[editIdx] = newQ;
+  else qArr.push(newQ);
+
+  saveQ(qArr);
+  renderQList();
+  closeModal();
+}
+
+function deleteQ(idx) {
+  if (!confirm('이 문제를 삭제할까요?')) return;
+  const qArr = loadStore().questions;
+  qArr.splice(idx, 1);
+  saveQ(qArr);
+  renderQList();
+}
+
+/* ─── Settings ───────────────────────────────────────────────── */
+function loadSettings() {
+  const store = loadStore();
+  document.getElementById('quiz-cnt-input').value = store.quizCount || 0;
+  document.getElementById('timer-input').value = store.timerMin || 0;
+}
+
+function saveSettings() {
+  const cnt = parseInt(document.getElementById('quiz-cnt-input').value) || 0;
+  const timer = parseInt(document.getElementById('timer-input').value) || 0;
+  saveCnt(cnt);
+  saveTimer(timer);
+  alert('저장 완료! 출제 문제 수: ' + (cnt === 0 ? '전체' : cnt + '개'));
+}
+
+function changePw() {
+  const cur = document.getElementById('pw-cur').value;
+  const nw = document.getElementById('pw-new').value;
+  const nw2 = document.getElementById('pw-new2').value;
+  const err = document.getElementById('pw-err');
+  const ok = document.getElementById('pw-ok');
+  err.style.display = 'none'; ok.style.display = 'none';
+  if (cur !== loadStore().password) { err.textContent = '현재 비밀번호가 올바르지 않습니다.'; err.style.display = 'block'; return; }
+  if (!nw) { err.textContent = '새 비밀번호를 입력해주세요.'; err.style.display = 'block'; return; }
+  if (nw !== nw2) { err.textContent = '비밀번호가 일치하지 않습니다.'; err.style.display = 'block'; return; }
+  savePw(nw);
+  ok.style.display = 'block';
+  ['pw-cur','pw-new','pw-new2'].forEach(id => document.getElementById(id).value = '');
+}
+
+/* ─── QR ─────────────────────────────────────────────────────── */
+const BASE_URL = 'https://taeyun-larosee.github.io/larosee-quiz/';
+
+function genQR(type) {
+  const id = 'qr-output-' + type;
+  const url = BASE_URL + '?mode=' + type;
+  document.getElementById(id).innerHTML = '';
+  new QRCode(document.getElementById(id), { text: url, width: 160, height: 160, colorDark: '#0E94CD', colorLight: '#ffffff' });
+  document.getElementById('qr-dl-' + type).style.display = 'block';
+}
+
+function downloadQR(type) {
+  const canvas = document.querySelector('#qr-output-' + type + ' canvas');
+  if (!canvas) { alert('QR을 먼저 생성해주세요.'); return; }
+  const a = document.createElement('a');
+  a.download = '라로제_QR_' + type + '.png';
+  a.href = canvas.toDataURL();
+  a.click();
+}
+
+/* ─── Lecture Mode ───────────────────────────────────────────── */
+let lecIdx = 0, lecQs = [], lecRevealed = false;
+
+function startLecture() {
+  lecQs = loadStore().questions;
+  lecIdx = 0;
+  showScreen('s-lecture');
+  renderLec();
+}
+
+function exitLecture() {
+  showScreen('s-admin');
+}
+
+function renderLec() {
+  if (lecQs.length === 0) return;
+  lecRevealed = false;
+  const q = lecQs[lecIdx];
+  const total = lecQs.length;
+
+  document.getElementById('lec-q-num').textContent = (lecIdx+1) + ' / ' + total;
+  document.getElementById('lec-label').textContent = 'QUESTION ' + (lecIdx+1);
+  document.getElementById('lec-q').textContent = q.question;
+  document.getElementById('lec-options').innerHTML = q.options.map((opt, i) =>
+    '<div class="lecture-opt" id="lec-opt-' + i + '">' + opt + '</div>'
+  ).join('');
+
+  const expl = document.getElementById('lec-explanation');
+  expl.style.display = 'none';
+  expl.innerHTML = '';
+
+  const revBtn = document.getElementById('lec-reveal-btn');
+  revBtn.textContent = '정답 공개';
+  revBtn.classList.remove('revealed');
+
+  document.getElementById('lec-prev').disabled = lecIdx === 0;
+  document.getElementById('lec-next').disabled = lecIdx === total - 1;
+}
+
+function lecReveal() {
+  if (lecRevealed) return;
+  lecRevealed = true;
+  const q = lecQs[lecIdx];
+  document.getElementById('lec-opt-' + q.correct).classList.add('revealed-correct');
+  const expl = document.getElementById('lec-explanation');
+  if (q.explanation) {
+    expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
+    expl.style.display = 'block';
+  }
+  const revBtn = document.getElementById('lec-reveal-btn');
+  revBtn.textContent = '공개됨';
+  revBtn.classList.add('revealed');
+}
+
+function lecPrev() { if (lecIdx > 0) { lecIdx--; renderLec(); } }
+function lecNext() { if (lecIdx < lecQs.length - 1) { lecIdx++; renderLec(); } }
+
+/* ─── Init ───────────────────────────────────────────────────── */
+document.getElementById('name-date').textContent = formatDate();
+
+if (URL_MODE === 'admin') {
+  showScreen('s-admin-login');
+} else {
+  showScreen('s-name');
+}
+</script>
+</body>
+</html>
