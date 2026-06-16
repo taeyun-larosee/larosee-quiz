@@ -904,7 +904,17 @@ async function fsPost(col, data) {
   catch(e) { console.warn('fsPost error:', e); return false; }
 }
 
+async function waitForDb(timeout = 5000) {
+  if (db) return true;
+  const start = Date.now();
+  while (!db && Date.now() - start < timeout) {
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return !!db;
+}
+
 async function fsGet(col) {
+  await waitForDb();
   if (!db) return [];
   try {
     const snap = await db.collection(col).orderBy('timestamp', 'desc').get();
