@@ -584,6 +584,10 @@
     .cohort-tag button { background: none; border: none; color: var(--blue); cursor: pointer; font-size: 14px; line-height: 1; padding: 0; margin-left: 2px; }
     .cohort-filter-btn { padding: 6px 14px; border-radius: 999px; border: 2px solid var(--border); background: white; color: var(--text-muted); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .cohort-filter-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+    .cohort-card { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+    .cohort-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(14,148,205,0.15); }
+    .employee-card { cursor: pointer; transition: background 0.15s; }
+    .employee-card:hover { background: var(--gray) !important; }
 
     @media (max-width: 480px) {
       .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -752,8 +756,6 @@
         </div>
         <div id="cohort-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
-      <!-- 필터 -->
-      <div id="cohort-filter-wrap" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
       <!-- 상단 툴바 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">총 0명</span>
@@ -889,13 +891,13 @@
       <textarea id="m-question" rows="3" placeholder="질문을 입력하세요"></textarea>
     </div>
     <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;">
-      선택지 &amp; 정답 — 라디오로 정답 선택 / ③④는 비워도 됩니다
+      선택지 &amp; 정답 — 체크박스로 정답 선택 (복수 가능) / ③④는 비워도 됩니다
     </div>
     <div class="radio-group">
-      <label class="radio-opt"><input type="radio" name="correct" value="0"> <span id="lbl0">① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="radio" name="correct" value="1"> <span id="lbl1">② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="radio" name="correct" value="2"> <span id="lbl2">③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="radio" name="correct" value="3"> <span id="lbl3">④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="0"> <span id="lbl0">① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="1"> <span id="lbl1">② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="2"> <span id="lbl2">③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="3"> <span id="lbl3">④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
     </div>
     <div class="form-group" style="margin-top:16px;">
       <label>해설 (선택)</label>
@@ -1126,13 +1128,14 @@ function renderQuestion() {
 
 function selectAnswer(idx) {
   const q = qs[qi];
-  const ok = idx === q.correct;
+  const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
+  const ok = correctArr.includes(idx);
   answers.push({ q, ok, chosen: idx, correct: q.correct });
 
   const opts = document.querySelectorAll('.q-option');
   opts.forEach((btn, i) => {
     btn.disabled = true;
-    if (i === q.correct) btn.classList.add('correct');
+    if (correctArr.includes(i)) btn.classList.add('correct');
     else if (i === idx && !ok) btn.classList.add('wrong');
   });
 
@@ -1168,11 +1171,14 @@ async function finishQuiz() {
 
   document.getElementById('q-progress').style.width = '100%';
 
-  const wrongQuestions = wrongAnswers.map(a => ({
-    q: a.q.question,
-    correct: a.q.options[a.correct],
-    chosen: a.q.options[a.chosen]
-  }));
+  const wrongQuestions = wrongAnswers.map(a => {
+    const ca = Array.isArray(a.correct) ? a.correct : [a.correct];
+    return {
+      q: a.q.question,
+      correct: ca.map(i => a.q.options[i]).join(', '),
+      chosen: a.q.options[a.chosen]
+    };
+  });
   const answersData = answers.map(a => ({
     id: a.q.id,
     q: a.q.question,
@@ -1203,13 +1209,15 @@ async function finishQuiz() {
 
 function showReview() {
   const wrongAnswers = window._reviewWrongAnswers || [];
-  document.getElementById('review-list').innerHTML = wrongAnswers.map((a, i) =>
-    '<div class="review-item">' +
-    '<div class="review-item-q">Q. ' + a.q.question + '</div>' +
-    '<div class="review-item-answer-label">정답</div>' +
-    '<div class="review-item-answer">' + a.q.options[a.correct] + '</div>' +
-    '</div>'
-  ).join('');
+  document.getElementById('review-list').innerHTML = wrongAnswers.map((a) => {
+    const ca = Array.isArray(a.correct) ? a.correct : [a.correct];
+    const correctText = ca.map(i => a.q.options[i]).join(', ');
+    return '<div class="review-item">' +
+      '<div class="review-item-q">Q. ' + a.q.question + '</div>' +
+      '<div class="review-item-answer-label">정답</div>' +
+      '<div class="review-item-answer">' + correctText + '</div>' +
+      '</div>';
+  }).join('');
   showScreen('s-review');
 }
 
@@ -1314,11 +1322,6 @@ function renderCohortTags() {
         '<span class="cohort-tag">' + c + '기 ' +
         '<button onclick="deleteCohort(\'' + c + '\')">✕</button></span>'
       ).join('');
-  document.getElementById('cohort-filter-wrap').innerHTML =
-    '<button class="cohort-filter-btn ' + (currentCohortFilter === 'all' ? 'active' : '') + '" onclick="filterByCohort(\'all\')">전체</button>' +
-    cohorts.map(c =>
-      '<button class="cohort-filter-btn ' + (currentCohortFilter === c ? 'active' : '') + '" onclick="filterByCohort(\'' + c + '\')">' + c + '기</button>'
-    ).join('');
 }
 
 function addCohort() {
@@ -1333,9 +1336,12 @@ function addCohort() {
 function deleteCohort(c) {
   const cohorts = loadCohorts().filter(x => x !== c);
   saveCohorts(cohorts);
-  if (currentCohortFilter === c) currentCohortFilter = 'all';
   renderCohortTags();
-  renderFilteredScores();
+  if (_scoreViewLevel !== 'cohorts') {
+    _scoreViewLevel = 'cohorts';
+    _selectedCohort = null;
+  }
+  renderScoreView();
 }
 
 function filterByCohort(c) {
@@ -1346,12 +1352,148 @@ function filterByCohort(c) {
 
 /* ─── Score List ─────────────────────────────────────────────── */
 let _scores = [];
+let _scoreViewLevel = 'cohorts'; // 'cohorts' | 'employees' | 'detail'
+let _selectedCohort = null;
+let _selectedScoreId = null;
+
+function renderScoreView() {
+  if (_scoreViewLevel === 'cohorts') renderCohortsLevel();
+  else if (_scoreViewLevel === 'employees') renderEmployeesLevel();
+  else renderDetailLevel();
+}
+
+function renderCohortsLevel() {
+  const cohortMap = {};
+  _scores.forEach(s => {
+    const c = s.cohort || '미분류';
+    if (!cohortMap[c]) cohortMap[c] = [];
+    cohortMap[c].push(s);
+  });
+  const cohorts = Object.entries(cohortMap).sort(([a],[b]) => {
+    if (a === '미분류') return 1;
+    if (b === '미분류') return -1;
+    const na = parseFloat(a), nb = parseFloat(b);
+    return isNaN(na) || isNaN(nb) ? a.localeCompare(b) : na - nb;
+  });
+  document.getElementById('s-count-lbl').textContent = '총 ' + _scores.length + '명';
+  if (cohorts.length === 0) {
+    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">응시 기록이 없습니다.</div>';
+    return;
+  }
+  let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+  cohorts.forEach(([c, scores]) => {
+    const avg = Math.round(scores.reduce((sum,r) => sum + (r.pct||0), 0) / scores.length);
+    const bc = avg >= 80 ? 'badge-green' : avg >= 60 ? 'badge-blue' : 'badge-red';
+    const label = c === '미분류' ? '미분류' : c + '기';
+    html += '<div class="cohort-card card" style="padding:18px 20px;" onclick="drillToCohort(\'' + c.replace(/'/g,"\\'") + '\')">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;">' +
+      '<div><div style="font-size:16px;font-weight:800;">' + label + '</div>' +
+      '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + scores.length + '명 응시</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+      '<span class="badge ' + bc + '">평균 ' + avg + '%</span>' +
+      '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
+      '</div></div></div>';
+  });
+  html += '</div>';
+  document.getElementById('score-table-wrap').innerHTML = html;
+}
+
+function drillToCohort(c) {
+  _selectedCohort = c;
+  _scoreViewLevel = 'employees';
+  renderScoreView();
+}
+
+function renderEmployeesLevel() {
+  const cohortScores = _scores.filter(s => (s.cohort || '미분류') === _selectedCohort);
+  const label = _selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기';
+  document.getElementById('s-count-lbl').textContent = label + ' · ' + cohortScores.length + '명';
+  let html = '<div style="margin-bottom:14px;">' +
+    '<button class="btn btn-sm btn-outline" onclick="backToCohorts()">← 기수 목록</button></div>';
+  if (cohortScores.length === 0) {
+    html += '<div class="empty">응시 기록이 없습니다.</div>';
+  } else {
+    html += '<div style="display:flex;flex-direction:column;gap:8px;">';
+    cohortScores.forEach(s => {
+      const gi = _scores.indexOf(s);
+      const pct = s.pct !== undefined ? s.pct + '%' : '-';
+      const bc = s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red';
+      html += '<div class="employee-card" style="background:white;border-radius:12px;border:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;" onclick="drillToDetail(' + gi + ')">' +
+        '<div><div style="font-size:15px;font-weight:700;">' + (s.name||'-') + '</div>' +
+        '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;">' + (s.date||'') + '</div></div>' +
+        '<div style="display:flex;align-items:center;gap:8px;">' +
+        '<span class="badge ' + bc + '">' + pct + '</span>' +
+        '<span style="font-size:12px;color:var(--text-muted);">' + formatDur(s.duration) + '</span>' +
+        '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
+        '</div></div>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('score-table-wrap').innerHTML = html;
+}
+
+function drillToDetail(idx) {
+  _selectedScoreId = idx;
+  _scoreViewLevel = 'detail';
+  renderScoreView();
+}
+
+function renderDetailLevel() {
+  const s = _scores[_selectedScoreId];
+  if (!s) { backToEmployees(); return; }
+  const label = _selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기';
+  const pct = s.pct !== undefined ? s.pct + '%' : '-';
+  const bc = s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red';
+  const wq = s.wrongQuestions || [];
+  document.getElementById('s-count-lbl').textContent = (s.name||'-') + ' 응시 상세';
+  let html = '<div style="margin-bottom:14px;">' +
+    '<button class="btn btn-sm btn-outline" onclick="backToEmployees()">← ' + label + ' 목록</button></div>' +
+    '<div class="card" style="margin-bottom:16px;">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+    '<div><div style="font-size:18px;font-weight:800;">' + (s.name||'-') + '</div>' +
+    '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">' + label + ' · ' + (s.date||'') + '</div></div>' +
+    '<span class="badge ' + bc + '" style="font-size:15px;padding:6px 14px;">' + pct + '</span></div>' +
+    '<div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted);">' +
+    '<span>소요시간 ' + formatDur(s.duration) + '</span>' +
+    '<span>틀린 문제 ' + wq.length + '개</span></div></div>';
+  if (wq.length === 0) {
+    html += '<div class="card" style="text-align:center;padding:24px;color:var(--success-text);font-weight:700;font-size:15px;">모든 문제 정답!</div>';
+  } else {
+    html += '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;">틀린 문제 ' + wq.length + '개</div>' +
+      '<div style="display:flex;flex-direction:column;gap:10px;">';
+    wq.forEach(w => {
+      html += '<div class="card" style="padding:16px 18px;">' +
+        '<div style="font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5;">Q. ' + w.q + '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;">' +
+        '<div style="font-size:13px;padding:8px 12px;background:var(--success-bg);border-radius:8px;color:var(--success-text);">✓ 정답: ' + w.correct + '</div>' +
+        (w.chosen ? '<div style="font-size:13px;padding:8px 12px;background:var(--error-bg);border-radius:8px;color:var(--error-text);">✗ 선택: ' + w.chosen + '</div>' : '') +
+        '</div></div>';
+    });
+    html += '</div>';
+  }
+  document.getElementById('score-table-wrap').innerHTML = html;
+}
+
+function backToCohorts() {
+  _scoreViewLevel = 'cohorts';
+  _selectedCohort = null;
+  renderScoreView();
+}
+
+function backToEmployees() {
+  _scoreViewLevel = 'employees';
+  _selectedScoreId = null;
+  renderScoreView();
+}
 
 async function loadScoreList() {
   document.getElementById('score-table-wrap').innerHTML = '<div class="empty"><div class="loading-spinner"></div></div>';
   renderCohortTags();
   _scores = await fsGet('scores');
-  renderFilteredScores();
+  _scoreViewLevel = 'cohorts';
+  _selectedCohort = null;
+  _selectedScoreId = null;
+  renderScoreView();
 }
 
 function renderFilteredScores() {
@@ -1410,16 +1552,37 @@ function toggleDetail(i) {
 }
 
 async function confirmDeleteAll() {
-  if (!confirm('모든 점수 기록을 삭제할까요?')) return;
-  for (const s of _scores) {
+  let targets, msg;
+  if (_scoreViewLevel === 'detail' && _selectedScoreId !== null) {
+    targets = [_scores[_selectedScoreId]];
+    msg = (_scores[_selectedScoreId].name||'') + '님의 응시 기록을 삭제할까요?';
+  } else if (_scoreViewLevel === 'employees' && _selectedCohort) {
+    targets = _scores.filter(s => (s.cohort || '미분류') === _selectedCohort);
+    msg = (_selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기') + ' 전체 기록을 삭제할까요?';
+  } else {
+    targets = _scores;
+    msg = '모든 점수 기록을 삭제할까요?';
+  }
+  if (!confirm(msg)) return;
+  for (const s of targets) {
     if (s._id) await fsDelete('scores', s._id);
   }
+  _scoreViewLevel = 'cohorts';
+  _selectedCohort = null;
+  _selectedScoreId = null;
   loadScoreList();
   loadDashboard();
 }
 
 function exportCSV() {
-  const filtered = currentCohortFilter === 'all' ? _scores : _scores.filter(s => s.cohort === currentCohortFilter);
+  let filtered;
+  if (_scoreViewLevel === 'detail' && _selectedScoreId !== null) {
+    filtered = [_scores[_selectedScoreId]];
+  } else if (_scoreViewLevel === 'employees' && _selectedCohort) {
+    filtered = _scores.filter(s => (s.cohort || '미분류') === _selectedCohort);
+  } else {
+    filtered = _scores;
+  }
   if (filtered.length === 0) { alert('데이터가 없습니다.'); return; }
   const rows = [['이름','기수','점수(%)','소요시간(초)','날짜','틀린문제수']];
   filtered.forEach(s => rows.push([
@@ -1448,7 +1611,7 @@ function renderQList() {
     '<button class="btn btn-sm btn-outline" onclick="openModal(' + i + ')">수정</button>' +
     '<button class="btn btn-sm btn-danger" onclick="deleteQ(' + i + ')">삭제</button>' +
     '</div></div>' +
-    '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' + q.options[q.correct] + '</div>' +
+    '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' + (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) + '</div>' +
     '</div>'
   ).join('');
 }
@@ -1467,13 +1630,17 @@ function openModal(idx) {
     [0,1,2,3].forEach(i => {
       document.getElementById('m-opt' + i).value = q.options[i] || '';
     });
-    const radio = document.querySelector('input[name="correct"][value="' + q.correct + '"]');
-    if (radio) radio.checked = true;
+    document.querySelectorAll('input[name="correct"]').forEach(cb => cb.checked = false);
+    const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
+    correctArr.forEach(ci => {
+      const cb = document.querySelector('input[name="correct"][value="' + ci + '"]');
+      if (cb) cb.checked = true;
+    });
     document.getElementById('m-explanation').value = q.explanation || '';
   } else {
     document.getElementById('m-question').value = '';
     [0,1,2,3].forEach(i => document.getElementById('m-opt' + i).value = '');
-    document.querySelectorAll('input[name="correct"]').forEach(r => r.checked = false);
+    document.querySelectorAll('input[name="correct"]').forEach(cb => cb.checked = false);
     document.getElementById('m-explanation').value = '';
   }
   document.getElementById('q-modal').classList.add('active');
@@ -1486,20 +1653,23 @@ function closeModal() {
 function saveQuestion() {
   const question = document.getElementById('m-question').value.trim();
   if (!question) { alert('질문을 입력해주세요.'); return; }
-  const options = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim()).filter(o => o);
-  if (options.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
-  const correctRadio = document.querySelector('input[name="correct"]:checked');
-  if (!correctRadio) { alert('정답을 선택해주세요.'); return; }
-  const correctVal = parseInt(correctRadio.value);
   const allOptions = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim());
-  if (!allOptions[correctVal]) { alert('정답으로 선택한 선택지를 입력해주세요.'); return; }
+  const filteredOptions = allOptions.filter(o => o);
+  if (filteredOptions.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
+  const checkedBoxes = Array.from(document.querySelectorAll('input[name="correct"]:checked'));
+  if (checkedBoxes.length === 0) { alert('정답을 1개 이상 선택해주세요.'); return; }
+  const correctVals = checkedBoxes.map(cb => parseInt(cb.value));
+  for (const cv of correctVals) {
+    if (!allOptions[cv]) { alert('정답으로 선택한 선택지가 비어있습니다.'); return; }
+  }
+  const correctIndices = correctVals.map(cv => filteredOptions.indexOf(allOptions[cv]));
 
   const qArr = loadStore().questions;
   const newQ = {
     id: editIdx >= 0 ? qArr[editIdx].id : Date.now(),
     question,
-    options: allOptions.filter(o => o),
-    correct: options.indexOf(allOptions[correctVal]),
+    options: filteredOptions,
+    correct: correctIndices.length === 1 ? correctIndices[0] : correctIndices,
     explanation: document.getElementById('m-explanation').value.trim()
   };
 
@@ -1612,7 +1782,11 @@ function lecReveal() {
   if (lecRevealed) return;
   lecRevealed = true;
   const q = lecQs[lecIdx];
-  document.getElementById('lec-opt-' + q.correct).classList.add('revealed-correct');
+  const ca = Array.isArray(q.correct) ? q.correct : [q.correct];
+  ca.forEach(i => {
+    const el = document.getElementById('lec-opt-' + i);
+    if (el) el.classList.add('revealed-correct');
+  });
   const expl = document.getElementById('lec-explanation');
   if (q.explanation) {
     expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
