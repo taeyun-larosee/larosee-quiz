@@ -233,12 +233,28 @@
     .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
-    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
-    .stat-card { background: var(--blue-light); border-radius: 14px; padding: 16px 12px; text-align: center; }
+    /* ── Dashboard ── */
+    .dash-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
+    .dash-select { flex:1; min-width:180px; padding:9px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-weight:700; color:var(--text); background:white; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230E94CD' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
+    .dash-select:focus { outline:none; border-color:var(--blue); }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: var(--blue-light); border-radius: 14px; padding: 18px 12px; text-align: center; }
     .stat-num { font-size: 24px; font-weight: 800; color: var(--blue); }
     .stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
     .stat-card.clickable { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
     .stat-card.clickable:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(14,148,205,0.2); }
+    .dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .dash-panel { background:white; border:1.5px solid var(--border); border-radius:16px; padding:18px; }
+    .dash-panel-title { font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:14px; letter-spacing:0.03em; text-transform:uppercase; }
+    .bar-item { margin-bottom:10px; }
+    .bar-label { font-size:12px; color:var(--text); margin-bottom:4px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+    .bar-row { display:flex; align-items:center; gap:8px; }
+    .bar-track { flex:1; height:10px; background:var(--border); border-radius:999px; overflow:hidden; }
+    .bar-fill-blue  { height:100%; background:var(--blue); border-radius:999px; transition:width .4s ease; }
+    .bar-fill-red   { height:100%; background:#ef4444; border-radius:999px; transition:width .4s ease; }
+    .bar-fill-green { height:100%; background:#22c55e; border-radius:999px; transition:width .4s ease; }
+    .bar-val { font-size:11px; font-weight:700; color:var(--text-muted); width:36px; text-align:right; flex-shrink:0; }
+    .dash-empty { font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0; }
     .error-bar-item { margin-bottom: 12px; }
     .error-bar-label { font-size: 12px; color: var(--text); margin-bottom: 4px; font-weight: 600; }
     .error-bar-track { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
@@ -302,6 +318,7 @@
     @media (max-width: 480px) {
       .stat-grid { gap: 8px; }
       .stat-num { font-size: 20px; }
+      .dash-grid { grid-template-columns: 1fr; }
       .lecture-q { font-size: 18px; padding: 20px 16px 16px; }
       .lecture-options { padding: 0 16px; }
       .lecture-footer { padding: 16px; }
@@ -452,7 +469,36 @@
   <!-- Tab: Dashboard -->
   <div id="tab-dash" class="tab-content active">
     <div class="page">
-      <div id="dash-content"><div class="empty"><div class="loading-spinner"></div></div></div>
+      <div class="dash-header">
+        <select class="dash-select" id="dash-set-select" onchange="onDashSetChange()">
+          <option value="">퀴즈 선택...</option>
+        </select>
+        <button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button>
+      </div>
+      <div id="dash-stats" class="stat-grid" style="display:none;">
+        <div class="stat-card"><div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자</div></div>
+        <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
+        <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
+      </div>
+      <div class="dash-grid" id="dash-charts" style="display:none;">
+        <div class="dash-panel">
+          <div class="dash-panel-title">기수별 정답률</div>
+          <div id="dash-cohort-chart"></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
+          <div id="dash-top-wrong"></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-title">질문별 오답률</div>
+          <div id="dash-q-error"></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-title">질문별 정답률</div>
+          <div id="dash-q-correct"></div>
+        </div>
+      </div>
+      <div id="dash-placeholder" class="dash-empty" style="display:none;">퀴즈를 선택하면 대시보드가 표시됩니다.</div>
     </div>
   </div>
 
@@ -942,66 +988,115 @@ let _dashScores = [];
 let _dashSetId = null;
 
 async function loadDashboard() {
-  document.getElementById('dash-content').innerHTML = '<div class="empty"><div class="loading-spinner"></div></div>';
   _dashScores = await fsGet('scores');
-  _dashSetId = null;
+  // populate dropdown
+  const sets = loadSets();
+  const sel = document.getElementById('dash-set-select');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">퀴즈 선택...</option>' +
+    sets.map(s => '<option value="' + s.id + '">' + s.name + '</option>').join('');
+  // restore or auto-select first if only one set
+  if (prev && sets.find(s => s.id === prev)) { sel.value = prev; _dashSetId = prev; }
+  else if (sets.length === 1) { sel.value = sets[0].id; _dashSetId = sets[0].id; }
+  else { _dashSetId = sel.value || null; }
+  renderDashboard();
+}
+
+function onDashSetChange() {
+  _dashSetId = document.getElementById('dash-set-select').value || null;
   renderDashboard();
 }
 
 function renderDashboard() {
-  const sets = loadSets();
-  let html = '';
-  if (_dashSetId) {
-    const set = getSetById(_dashSetId);
-    const setScores = _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId);
-    html = '<div style="margin-bottom:14px;display:flex;align-items:center;gap:10px;">' +
-      '<button class="btn btn-sm btn-outline" onclick="backToDashSets()">← 퀴즈 목록</button>' +
-      '<span style="font-size:14px;font-weight:700;">' + (set ? set.name : '') + '</span>' +
-      '</div>';
-    if (setScores.length === 0) {
-      html += '<div class="empty">응시 기록이 없습니다.</div>';
-    } else {
-      const avg = Math.round(setScores.reduce((s,r) => s+(r.pct||0), 0) / setScores.length);
-      const avgDur = Math.round(setScores.reduce((s,r) => s+(r.duration||0), 0) / setScores.length);
-      html += '<div class="stat-grid">' +
-        '<div class="stat-card"><div class="stat-num">' + setScores.length + '명</div><div class="stat-lbl">총 응시</div></div>' +
-        '<div class="stat-card clickable" onclick="showErrorRateModal()" title="클릭하면 문제별 오답률">' +
-        '<div class="stat-num">' + avg + '%</div><div class="stat-lbl">평균 점수 ↗</div></div>' +
-        '<div class="stat-card"><div class="stat-num">' + formatDur(avgDur) + '</div><div class="stat-lbl">평균 시간</div></div>' +
-        '</div>' +
-        '<div style="text-align:right;margin-bottom:12px;">' +
-        '<button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button></div>';
-    }
-  } else {
-    html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
-      '<span style="font-size:14px;font-weight:700;color:var(--text-muted);">퀴즈 ' + sets.length + '개 · 전체 ' + _dashScores.length + '명 응시</span>' +
-      '<button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button></div>';
-    if (sets.length === 0) {
-      html += '<div class="empty">등록된 퀴즈가 없습니다.</div>';
-    } else {
-      html += '<div style="display:flex;flex-direction:column;gap:12px;">';
-      sets.forEach(set => {
-        const setScores = _dashScores.filter(s => (s.quizId || 'set_default') === set.id);
-        const avg = setScores.length > 0 ? Math.round(setScores.reduce((s,r) => s+(r.pct||0), 0) / setScores.length) : 0;
-        const bc = setScores.length > 0 ? (avg >= 80 ? 'badge-green' : avg >= 60 ? 'badge-blue' : 'badge-red') : 'badge-gray';
-        const avgLabel = setScores.length > 0 ? '평균 ' + avg + '%' : '미응시';
-        html += '<div class="drill-card card" style="padding:18px 20px;" onclick="drillToDashSet(\'' + set.id + '\')">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;">' +
-          '<div><div style="font-size:15px;font-weight:800;">' + set.name + '</div>' +
-          '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + setScores.length + '명 응시</div></div>' +
-          '<div style="display:flex;align-items:center;gap:10px;">' +
-          '<span class="badge ' + bc + '">' + avgLabel + '</span>' +
-          '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
-          '</div></div></div>';
-      });
-      html += '</div>';
-    }
-  }
-  document.getElementById('dash-content').innerHTML = html;
-}
+  const statsEl   = document.getElementById('dash-stats');
+  const chartsEl  = document.getElementById('dash-charts');
+  const phEl      = document.getElementById('dash-placeholder');
 
-function drillToDashSet(setId) { _dashSetId = setId; renderDashboard(); }
-function backToDashSets() { _dashSetId = null; renderDashboard(); }
+  if (!_dashSetId) {
+    statsEl.style.display = 'none';
+    chartsEl.style.display = 'none';
+    phEl.style.display = 'block';
+    return;
+  }
+  phEl.style.display = 'none';
+
+  const scores = _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId);
+
+  if (scores.length === 0) {
+    statsEl.style.display = 'none';
+    chartsEl.style.display = 'none';
+    phEl.textContent = '아직 응시 기록이 없습니다.';
+    phEl.style.display = 'block';
+    return;
+  }
+
+  // ── 상단 통계 ──
+  const avg    = Math.round(scores.reduce((s,r) => s+(r.pct||0), 0) / scores.length);
+  const avgDur = Math.round(scores.reduce((s,r) => s+(r.duration||0), 0) / scores.length);
+  document.getElementById('ds-total').textContent = scores.length + '명';
+  document.getElementById('ds-avg').textContent   = avg + '%';
+  document.getElementById('ds-time').textContent  = formatDur(avgDur);
+  statsEl.style.display = 'grid';
+
+  // ── 공통 헬퍼: 가로 막대 렌더 ──
+  function barHtml(label, pct, colorCls) {
+    const p = Math.min(100, Math.max(0, pct));
+    const short = label.length > 30 ? label.slice(0,30) + '…' : label;
+    return '<div class="bar-item">' +
+      '<div class="bar-label" title="' + label + '">' + short + '</div>' +
+      '<div class="bar-row">' +
+        '<div class="bar-track"><div class="' + colorCls + '" style="width:' + p + '%"></div></div>' +
+        '<div class="bar-val">' + p + '%</div>' +
+      '</div></div>';
+  }
+  function emptyBar() { return '<div class="dash-empty">데이터가 없습니다.</div>'; }
+
+  // ── 1. 기수별 정답률 ──
+  const cohortMap = {};
+  scores.forEach(s => {
+    const c = (s.cohort || '미분류') + '기';
+    if (!cohortMap[c]) cohortMap[c] = { sum:0, cnt:0 };
+    cohortMap[c].sum += (s.pct || 0);
+    cohortMap[c].cnt++;
+  });
+  const cohortItems = Object.entries(cohortMap)
+    .map(([c, v]) => ({ label: c, pct: Math.round(v.sum / v.cnt) }))
+    .sort((a,b) => {
+      const na = parseInt(a.label), nb = parseInt(b.label);
+      return isNaN(na) || isNaN(nb) ? a.label.localeCompare(b.label) : na - nb;
+    });
+  document.getElementById('dash-cohort-chart').innerHTML =
+    cohortItems.length ? cohortItems.map(i => barHtml(i.label, i.pct, 'bar-fill-blue')).join('') : emptyBar();
+
+  // ── 2. 최다 오답 질문 & 전체 질문별 오답률/정답률 ──
+  const qMap = {};
+  scores.forEach(s => {
+    (s.answers || []).forEach(a => {
+      if (!qMap[a.id]) qMap[a.id] = { q: a.q || ('Q' + a.id), total:0, wrong:0 };
+      qMap[a.id].total++;
+      if (!a.ok) qMap[a.id].wrong++;
+    });
+  });
+  const qItems = Object.values(qMap)
+    .map(v => ({ q: v.q, errPct: Math.round(v.wrong / v.total * 100), okPct: Math.round((v.total - v.wrong) / v.total * 100) }))
+    .sort((a,b) => b.errPct - a.errPct);
+
+  // TOP 5 오답
+  const top5 = qItems.slice(0, 5);
+  document.getElementById('dash-top-wrong').innerHTML =
+    top5.length ? top5.map(i => barHtml(i.q, i.errPct, 'bar-fill-red')).join('') : emptyBar();
+
+  // 전체 질문별 오답률
+  document.getElementById('dash-q-error').innerHTML =
+    qItems.length ? qItems.map(i => barHtml(i.q, i.errPct, 'bar-fill-red')).join('') : emptyBar();
+
+  // 전체 질문별 정답률 (오답률 내림차순 유지 → 정답률은 오름차순으로 볼 수 있게 역순)
+  const qItemsByOk = [...qItems].sort((a,b) => b.okPct - a.okPct);
+  document.getElementById('dash-q-correct').innerHTML =
+    qItemsByOk.length ? qItemsByOk.map(i => barHtml(i.q, i.okPct, 'bar-fill-green')).join('') : emptyBar();
+
+  chartsEl.style.display = 'grid';
+}
 
 function showErrorRateModal() {
   const scores = _dashSetId
