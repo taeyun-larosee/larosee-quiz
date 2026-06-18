@@ -573,6 +573,18 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .stat-card.clickable { cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; }
+    .stat-card.clickable:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(14,148,205,0.2); }
+    .cohort-tag {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--blue-light); color: var(--blue);
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 13px; font-weight: 700;
+    }
+    .cohort-tag button { background: none; border: none; color: var(--blue); cursor: pointer; font-size: 14px; line-height: 1; padding: 0; margin-left: 2px; }
+    .cohort-filter-btn { padding: 6px 14px; border-radius: 999px; border: 2px solid var(--border); background: white; color: var(--text-muted); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .cohort-filter-btn.active { background: var(--blue); color: white; border-color: var(--blue); }
+
     @media (max-width: 480px) {
       .stat-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
       .stat-num { font-size: 20px; }
@@ -608,6 +620,11 @@
       <div class="form-group" style="text-align:left;">
         <label>이름</label>
         <input type="text" id="name-input" placeholder="이름을 입력해주세요." maxlength="20"
+          onkeydown="if(event.key==='Enter') document.getElementById('cohort-input').focus()">
+      </div>
+      <div class="form-group" style="text-align:left;">
+        <label>기수</label>
+        <input type="text" inputmode="numeric" id="cohort-input" placeholder="기수를 입력해주세요. (예: 1)" maxlength="5"
           onkeydown="if(event.key==='Enter') startQuiz()">
       </div>
       <button class="btn btn-primary btn-block" onclick="startQuiz()">퀴즈 시작하기 &rarr;</button>
@@ -709,7 +726,10 @@
     <div class="page">
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-num" id="s-count-num">-</div><div class="stat-lbl">총 응시</div></div>
-        <div class="stat-card"><div class="stat-num" id="s-avg-score">-</div><div class="stat-lbl">평균 점수</div></div>
+        <div class="stat-card clickable" onclick="showErrorRateModal()" title="클릭하면 문제별 오답률 확인">
+          <div class="stat-num" id="s-avg-score">-</div>
+          <div class="stat-lbl">평균 점수 ↗</div>
+        </div>
         <div class="stat-card"><div class="stat-num" id="s-avg-time">-</div><div class="stat-lbl">평균 시간</div></div>
       </div>
       <div style="text-align:right;margin-bottom:12px;">
@@ -722,18 +742,27 @@
   <!-- Tab: Scores -->
   <div id="tab-scores" class="tab-content">
     <div class="page">
+      <!-- 기수 관리 -->
+      <div class="card" style="margin-bottom:16px;">
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">기수 관리</div>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <input type="text" inputmode="numeric" id="cohort-add-input" placeholder="기수 입력 (예: 1)" maxlength="5" style="flex:1;"
+            onkeydown="if(event.key==='Enter') addCohort()">
+          <button class="btn btn-sm btn-primary" onclick="addCohort()">+ 추가</button>
+        </div>
+        <div id="cohort-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+      </div>
+      <!-- 필터 -->
+      <div id="cohort-filter-wrap" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+      <!-- 상단 툴바 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">총 0명</span>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">삭제</button>
-          <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV 내보내기</button>
+          <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV</button>
         </div>
       </div>
       <div id="score-table-wrap"></div>
-      <div style="margin-top:28px;">
-        <h3 style="font-size:15px;font-weight:800;margin-bottom:14px;">문제별 오답률</h3>
-        <div id="error-rate-list"></div>
-      </div>
     </div>
   </div>
 
@@ -837,6 +866,17 @@
     <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
     <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
     <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
+  </div>
+</div>
+
+<!-- ══ Modal: Error Rate ══ -->
+<div class="modal-overlay" id="error-rate-modal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" style="margin-bottom:0;">문제별 오답률</div>
+      <button class="btn btn-sm btn-outline" onclick="closeErrorRateModal()">닫기</button>
+    </div>
+    <div id="error-rate-modal-list"></div>
   </div>
 </div>
 
@@ -977,6 +1017,7 @@ if (localStorage.getItem('lr_q_ver') !== DATA_VERSION) {
 
 /* ─── Quiz state ─────────────────────────────────────────────── */
 let student = '';
+let studentCohort = '';
 let qs = [], qi = 0, answers = [];
 let timerInterval = null, timerSeconds = 0, timerLimit = 0;
 let startTime = 0;
@@ -1036,8 +1077,11 @@ function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
 /* ─── Quiz flow ──────────────────────────────────────────────── */
 function startQuiz() {
   const name = document.getElementById('name-input').value.trim();
+  const cohort = document.getElementById('cohort-input').value.trim();
   if (!name) { alert('이름을 입력해주세요.'); return; }
+  if (!cohort) { alert('기수를 입력해주세요.'); return; }
   student = name;
+  studentCohort = cohort;
 
   const store = loadStore();
   let pool = [...store.questions];
@@ -1139,6 +1183,7 @@ async function finishQuiz() {
 
   fsPost('scores', {
     name: student,
+    cohort: studentCohort,
     score: correctCount,
     total,
     pct,
@@ -1204,24 +1249,99 @@ function switchTab(t) {
 }
 
 /* ─── Dashboard ──────────────────────────────────────────────── */
+let _dashScores = [];
+
 async function loadDashboard() {
   document.getElementById('s-count-num').textContent = '...';
   document.getElementById('s-avg-score').textContent = '...';
   document.getElementById('s-avg-time').textContent = '...';
 
-  const scores = await fsGet('scores');
-  if (scores.length === 0) {
+  _dashScores = await fsGet('scores');
+  if (_dashScores.length === 0) {
     document.getElementById('s-count-num').textContent = '0';
     document.getElementById('s-avg-score').textContent = '-';
     document.getElementById('s-avg-time').textContent = '-';
     return;
   }
-  const count = scores.length;
-  const avgPct = Math.round(scores.reduce((s,r) => s + (r.pct||0), 0) / count);
-  const avgDur = Math.round(scores.reduce((s,r) => s + (r.duration||0), 0) / count);
+  const count = _dashScores.length;
+  const avgPct = Math.round(_dashScores.reduce((s,r) => s + (r.pct||0), 0) / count);
+  const avgDur = Math.round(_dashScores.reduce((s,r) => s + (r.duration||0), 0) / count);
   document.getElementById('s-count-num').textContent = count + '명';
   document.getElementById('s-avg-score').textContent = avgPct + '%';
   document.getElementById('s-avg-time').textContent = formatDur(avgDur);
+}
+
+function showErrorRateModal() {
+  if (_dashScores.length === 0) { alert('아직 응시 기록이 없습니다.'); return; }
+  const qMap = {};
+  _dashScores.forEach(s => {
+    (s.answers || []).forEach(a => {
+      if (!qMap[a.id]) qMap[a.id] = { q: a.q, total: 0, wrong: 0 };
+      qMap[a.id].total++;
+      if (!a.ok) qMap[a.id].wrong++;
+    });
+  });
+  const items = Object.values(qMap)
+    .map(v => ({ q: v.q, pct: Math.round(v.wrong / v.total * 100) }))
+    .sort((a, b) => b.pct - a.pct);
+  document.getElementById('error-rate-modal-list').innerHTML = items.length === 0
+    ? '<div class="empty">데이터가 없습니다.</div>'
+    : items.map(item =>
+        '<div class="error-bar-item">' +
+        '<div class="error-bar-label">' + item.q.slice(0, 50) + (item.q.length > 50 ? '...' : '') + '</div>' +
+        '<div class="error-bar-track"><div class="error-bar-fill" style="width:' + item.pct + '%"></div></div>' +
+        '<div class="error-bar-pct">오답률 ' + item.pct + '%</div>' +
+        '</div>'
+      ).join('');
+  document.getElementById('error-rate-modal').classList.add('active');
+}
+
+function closeErrorRateModal() {
+  document.getElementById('error-rate-modal').classList.remove('active');
+}
+
+/* ─── 기수 관리 ───────────────────────────────────────────────── */
+function loadCohorts() { return JSON.parse(localStorage.getItem('lr_cohorts') || '[]'); }
+function saveCohorts(arr) { localStorage.setItem('lr_cohorts', JSON.stringify(arr)); }
+
+let currentCohortFilter = 'all';
+
+function renderCohortTags() {
+  const cohorts = loadCohorts();
+  document.getElementById('cohort-tags').innerHTML = cohorts.length === 0
+    ? '<span style="color:var(--text-muted);font-size:13px;">등록된 기수가 없습니다</span>'
+    : cohorts.map(c =>
+        '<span class="cohort-tag">' + c + '기 ' +
+        '<button onclick="deleteCohort(\'' + c + '\')">✕</button></span>'
+      ).join('');
+  document.getElementById('cohort-filter-wrap').innerHTML =
+    '<button class="cohort-filter-btn ' + (currentCohortFilter === 'all' ? 'active' : '') + '" onclick="filterByCohort(\'all\')">전체</button>' +
+    cohorts.map(c =>
+      '<button class="cohort-filter-btn ' + (currentCohortFilter === c ? 'active' : '') + '" onclick="filterByCohort(\'' + c + '\')">' + c + '기</button>'
+    ).join('');
+}
+
+function addCohort() {
+  const val = document.getElementById('cohort-add-input').value.trim();
+  if (!val) return;
+  const cohorts = loadCohorts();
+  if (!cohorts.includes(val)) { cohorts.push(val); saveCohorts(cohorts); }
+  document.getElementById('cohort-add-input').value = '';
+  renderCohortTags();
+}
+
+function deleteCohort(c) {
+  const cohorts = loadCohorts().filter(x => x !== c);
+  saveCohorts(cohorts);
+  if (currentCohortFilter === c) currentCohortFilter = 'all';
+  renderCohortTags();
+  renderFilteredScores();
+}
+
+function filterByCohort(c) {
+  currentCohortFilter = c;
+  renderCohortTags();
+  renderFilteredScores();
 }
 
 /* ─── Score List ─────────────────────────────────────────────── */
@@ -1229,39 +1349,46 @@ let _scores = [];
 
 async function loadScoreList() {
   document.getElementById('score-table-wrap').innerHTML = '<div class="empty"><div class="loading-spinner"></div></div>';
+  renderCohortTags();
   _scores = await fsGet('scores');
+  renderFilteredScores();
+}
 
-  if (_scores.length === 0) {
-    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">아직 응시 기록이 없습니다.</div>';
-    document.getElementById('s-count-lbl').textContent = '총 0명';
-    document.getElementById('error-rate-list').innerHTML = '';
+function renderFilteredScores() {
+  const filtered = currentCohortFilter === 'all'
+    ? _scores
+    : _scores.filter(s => s.cohort === currentCohortFilter);
+
+  document.getElementById('s-count-lbl').textContent = '총 ' + filtered.length + '명';
+
+  if (filtered.length === 0) {
+    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">응시 기록이 없습니다.</div>';
     return;
   }
 
-  document.getElementById('s-count-lbl').textContent = '총 ' + _scores.length + '명';
-
   let html = '<table class="score-table"><thead><tr>' +
-    '<th>이름</th><th>점수</th><th>소요시간</th><th>날짜</th><th></th>' +
+    '<th>이름</th><th>기수</th><th>점수</th><th>소요시간</th><th>날짜</th><th></th>' +
     '</tr></thead><tbody>';
 
-  _scores.forEach((s, i) => {
+  filtered.forEach((s) => {
+    const globalIdx = _scores.indexOf(s);
     const pct = s.pct !== undefined ? s.pct + '%' : '-';
     const dur = formatDur(s.duration);
     html += '<tr>' +
       '<td style="font-weight:700;">' + (s.name||'-') + '</td>' +
+      '<td style="color:var(--text-muted);">' + (s.cohort ? s.cohort + '기' : '-') + '</td>' +
       '<td><span class="badge ' + (s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red') + '">' + pct + '</span></td>' +
       '<td style="color:var(--text-muted);font-size:13px;">' + dur + '</td>' +
       '<td style="color:var(--text-muted);font-size:11px;">' + (s.date||'') + '</td>' +
-      '<td><button class="btn btn-sm btn-outline" onclick="toggleDetail(' + i + ')">상세</button></td>' +
+      '<td><button class="btn btn-sm btn-outline" onclick="toggleDetail(' + globalIdx + ')">상세</button></td>' +
       '</tr>' +
-      '<tr id="score-detail-' + i + '" style="display:none;">' +
-      '<td colspan="5" class="score-detail-cell">' + buildDetail(s) + '</td>' +
+      '<tr id="score-detail-' + globalIdx + '" style="display:none;">' +
+      '<td colspan="6" class="score-detail-cell">' + buildDetail(s) + '</td>' +
       '</tr>';
   });
 
   html += '</tbody></table>';
   document.getElementById('score-table-wrap').innerHTML = html;
-  renderErrorRate(_scores);
 }
 
 function buildDetail(s) {
@@ -1274,35 +1401,12 @@ function buildDetail(s) {
       '<div style="font-size:12px;color:var(--success-text);">정답: ' + w.correct + '</div>' +
       (w.chosen ? '<div style="font-size:12px;color:var(--error-text);">선택: ' + w.chosen + '</div>' : '') +
       '</div>'
-    ).join('') +
-    '</div>';
+    ).join('') + '</div>';
 }
 
 function toggleDetail(i) {
   const row = document.getElementById('score-detail-' + i);
   if (row) row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
-}
-
-function renderErrorRate(scores) {
-  if (scores.length === 0) { document.getElementById('error-rate-list').innerHTML = ''; return; }
-  const qMap = {};
-  scores.forEach(s => {
-    (s.answers || []).forEach(a => {
-      if (!qMap[a.id]) qMap[a.id] = { q: a.q, total: 0, wrong: 0 };
-      qMap[a.id].total++;
-      if (!a.ok) qMap[a.id].wrong++;
-    });
-  });
-  const items = Object.values(qMap).map(v => ({ q: v.q, pct: Math.round(v.wrong/v.total*100) }))
-    .sort((a,b) => b.pct - a.pct).slice(0, 10);
-
-  document.getElementById('error-rate-list').innerHTML = items.map(item =>
-    '<div class="error-bar-item">' +
-    '<div class="error-bar-label">' + item.q.slice(0, 40) + (item.q.length > 40 ? '...' : '') + '</div>' +
-    '<div class="error-bar-track"><div class="error-bar-fill" style="width:' + item.pct + '%"></div></div>' +
-    '<div class="error-bar-pct">' + item.pct + '%</div>' +
-    '</div>'
-  ).join('');
 }
 
 async function confirmDeleteAll() {
@@ -1315,10 +1419,11 @@ async function confirmDeleteAll() {
 }
 
 function exportCSV() {
-  if (_scores.length === 0) { alert('데이터가 없습니다.'); return; }
-  const rows = [['이름','점수(%)','소요시간(초)','날짜','틀린문제수']];
-  _scores.forEach(s => rows.push([
-    s.name||'', s.pct||0, s.duration||0, s.date||'', (s.wrongQuestions||[]).length
+  const filtered = currentCohortFilter === 'all' ? _scores : _scores.filter(s => s.cohort === currentCohortFilter);
+  if (filtered.length === 0) { alert('데이터가 없습니다.'); return; }
+  const rows = [['이름','기수','점수(%)','소요시간(초)','날짜','틀린문제수']];
+  filtered.forEach(s => rows.push([
+    s.name||'', s.cohort||'', s.pct||0, s.duration||0, s.date||'', (s.wrongQuestions||[]).length
   ]));
   const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
