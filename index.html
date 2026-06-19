@@ -232,7 +232,7 @@
     }
     .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
     .tab-content { display: none; }
-    #tab-dash .page { max-width: 1200px; }
+    #tab-dash .page { max-width: none; }
     .tab-content.active { display: block; }
     /* ── Dashboard ── */
     .dash-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
@@ -320,8 +320,8 @@
     .lec-reveal-btn.revealed { background: var(--success); }
 
     /* ══ DASH SIDEBAR LAYOUT ══ */
-    .dash-with-sidebar { display:flex; align-items:flex-start; min-height:300px; }
-    .dash-sidebar { width:260px; flex-shrink:0; padding:16px 14px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
+    .dash-with-sidebar { display:flex; align-items:stretch; min-height:calc(100vh - 100px); }
+    .dash-sidebar { width:300px; flex-shrink:0; padding:16px 14px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
     .dash-sidebar-label { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
     .dash-content { flex:1; min-width:0; overflow-x:auto; }
     .dash-select-wrap { position:relative; }
@@ -331,7 +331,7 @@
     @media (max-width:700px) { .dash-with-sidebar{flex-direction:column;} .dash-sidebar{width:100%;border-right:none;border-bottom:1.5px solid var(--border);flex-direction:row;flex-wrap:wrap;align-items:center;} }
 
     /* ══ MAIN DASHBOARD ══ */
-    .main-dash-outer { max-width:1400px; margin:0 auto; padding:20px 16px 48px; }
+    .main-dash-outer { max-width:none; margin:0; padding:20px 24px 48px; }
     .main-dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
     .main-dash-col { background:white; border:1.5px solid var(--border); border-radius:16px; padding:20px; min-width:0; }
     .main-dash-col-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--border); }
