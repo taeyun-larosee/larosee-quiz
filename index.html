@@ -1007,48 +1007,6 @@ function switchTab(t) {
   else if (t === 'qr') renderQRTab();
 }
 
-/* ─── QR Tab ─────────────────────────────────────────────────── */
-function renderQRTab() {
-  const sets = loadSets();
-  const wrap = document.getElementById('qr-sets-wrap');
-  if (sets.length === 0) {
-    wrap.innerHTML = '<div class="empty">등록된 퀴즈가 없습니다.</div>';
-    return;
-  }
-  wrap.innerHTML = sets.map(set =>
-    '<div class="card" style="margin-bottom:16px;">' +
-      '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">' + set.name + '</div>' +
-      '<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">?quiz=' + set.id + '</div>' +
-      '<div id="qr-out-' + set.id + '" style="display:flex;justify-content:center;margin-bottom:12px;min-height:0;"></div>' +
-      '<button class="btn btn-primary btn-block" onclick="toggleQR(\'' + set.id + '\')">QR 생성 / 닫기</button>' +
-      '<div id="qr-dl-' + set.id + '" style="display:none;margin-top:10px;">' +
-        '<button class="btn btn-outline btn-block btn-sm" onclick="downloadQRSet(\'' + set.id + '\')">PNG 다운로드</button>' +
-      '</div>' +
-    '</div>'
-  ).join('');
-}
-
-let _qrOpen = {}; // setId → true/false
-
-function toggleQR(setId) {
-  const outEl = document.getElementById('qr-out-' + setId);
-  const dlEl  = document.getElementById('qr-dl-' + setId);
-  if (_qrOpen[setId]) {
-    // 닫기
-    outEl.innerHTML = '';
-    outEl.style.minHeight = '0';
-    dlEl.style.display = 'none';
-    _qrOpen[setId] = false;
-  } else {
-    // 열기
-    outEl.innerHTML = '';
-    const url = BASE_URL + '?quiz=' + setId;
-    new QRCode(outEl, { text: url, width: 180, height: 180, colorDark: '#0E94CD', colorLight: '#ffffff' });
-    dlEl.style.display = 'block';
-    _qrOpen[setId] = true;
-  }
-}
-
 function downloadQRSet(setId) {
   const canvas = document.querySelector('#qr-out-' + setId + ' canvas');
   if (!canvas) { alert('QR을 먼저 생성해주세요.'); return; }
@@ -1754,7 +1712,10 @@ function deleteQ(idx) {
 
 
 /* ─── QR Tab ─────────────────────────────────────────────────── */
+let _qrOpen = {};
+
 function renderQRTab() {
+  _qrOpen = {};
   const sets = loadSets();
   const wrap = document.getElementById('qr-sets-wrap');
   if (sets.length === 0) {
@@ -1767,9 +1728,9 @@ function renderQRTab() {
     html += '<div class="card" style="padding:20px;">' +
       '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">' + set.name + '</div>' +
       '<div style="font-size:11px;color:var(--text-muted);word-break:break-all;margin-bottom:14px;">' + url + '</div>' +
-      '<div id="qr-out-' + set.id + '" style="display:flex;justify-content:center;margin-bottom:12px;min-height:40px;"></div>' +
+      '<div id="qr-out-' + set.id + '" style="display:flex;justify-content:center;margin-bottom:12px;min-height:0;"></div>' +
       '<div style="display:flex;gap:8px;">' +
-      '<button class="btn btn-sm btn-primary" style="flex:1;" onclick="genSetQR(\'' + set.id + '\')">QR 생성</button>' +
+      '<button class="btn btn-sm btn-primary" id="qr-btn-' + set.id + '" style="flex:1;" onclick="toggleQR(\'' + set.id + '\')">QR 생성</button>' +
       '<button class="btn btn-sm btn-outline" id="qr-dl-' + set.id + '" style="flex:1;display:none;" onclick="downloadSetQR(\'' + set.id + '\')">PNG 저장</button>' +
       '</div></div>';
   });
@@ -1777,16 +1738,24 @@ function renderQRTab() {
   wrap.innerHTML = html;
 }
 
-function genSetQR(setId) {
-  const set = getSetById(setId);
-  if (!set) return;
-  const url = BASE_URL + '?quiz=' + setId;
-  const el = document.getElementById('qr-out-' + setId);
-  if (!el) return;
-  el.innerHTML = '';
-  new QRCode(el, { text: url, width: 160, height: 160, colorDark: '#0E94CD', colorLight: '#ffffff' });
-  const dlBtn = document.getElementById('qr-dl-' + setId);
-  if (dlBtn) dlBtn.style.display = 'block';
+function toggleQR(setId) {
+  const outEl = document.getElementById('qr-out-' + setId);
+  const dlEl  = document.getElementById('qr-dl-' + setId);
+  const btnEl = document.getElementById('qr-btn-' + setId);
+  if (_qrOpen[setId]) {
+    outEl.innerHTML = '';
+    outEl.style.minHeight = '0';
+    dlEl.style.display = 'none';
+    if (btnEl) btnEl.textContent = 'QR 생성';
+    _qrOpen[setId] = false;
+  } else {
+    outEl.innerHTML = '';
+    const url = BASE_URL + '?quiz=' + setId;
+    new QRCode(outEl, { text: url, width: 160, height: 160, colorDark: '#0E94CD', colorLight: '#ffffff' });
+    dlEl.style.display = 'block';
+    if (btnEl) btnEl.textContent = 'QR 닫기';
+    _qrOpen[setId] = true;
+  }
 }
 
 function downloadSetQR(setId) {
