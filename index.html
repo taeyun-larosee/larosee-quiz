@@ -1007,6 +1007,57 @@ function switchTab(t) {
   else if (t === 'qr') renderQRTab();
 }
 
+/* ─── QR Tab ─────────────────────────────────────────────────── */
+function renderQRTab() {
+  const sets = loadSets();
+  const wrap = document.getElementById('qr-sets-wrap');
+  if (sets.length === 0) {
+    wrap.innerHTML = '<div class="empty">등록된 퀴즈가 없습니다.</div>';
+    return;
+  }
+  wrap.innerHTML = sets.map(set =>
+    '<div class="card" style="margin-bottom:16px;">' +
+      '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">' + set.name + '</div>' +
+      '<div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">?quiz=' + set.id + '</div>' +
+      '<div id="qr-out-' + set.id + '" style="display:flex;justify-content:center;margin-bottom:12px;min-height:0;"></div>' +
+      '<button class="btn btn-primary btn-block" onclick="toggleQR(\'' + set.id + '\')">QR 생성 / 닫기</button>' +
+      '<div id="qr-dl-' + set.id + '" style="display:none;margin-top:10px;">' +
+        '<button class="btn btn-outline btn-block btn-sm" onclick="downloadQRSet(\'' + set.id + '\')">PNG 다운로드</button>' +
+      '</div>' +
+    '</div>'
+  ).join('');
+}
+
+let _qrOpen = {}; // setId → true/false
+
+function toggleQR(setId) {
+  const outEl = document.getElementById('qr-out-' + setId);
+  const dlEl  = document.getElementById('qr-dl-' + setId);
+  if (_qrOpen[setId]) {
+    // 닫기
+    outEl.innerHTML = '';
+    outEl.style.minHeight = '0';
+    dlEl.style.display = 'none';
+    _qrOpen[setId] = false;
+  } else {
+    // 열기
+    outEl.innerHTML = '';
+    const url = BASE_URL + '?quiz=' + setId;
+    new QRCode(outEl, { text: url, width: 180, height: 180, colorDark: '#0E94CD', colorLight: '#ffffff' });
+    dlEl.style.display = 'block';
+    _qrOpen[setId] = true;
+  }
+}
+
+function downloadQRSet(setId) {
+  const canvas = document.querySelector('#qr-out-' + setId + ' canvas');
+  if (!canvas) { alert('QR을 먼저 생성해주세요.'); return; }
+  const a = document.createElement('a');
+  a.download = '라로제_QR_' + setId + '.png';
+  a.href = canvas.toDataURL();
+  a.click();
+}
+
 /* ─── Dashboard ──────────────────────────────────────────────── */
 let _dashScores = [];
 let _dashSetId = null;
