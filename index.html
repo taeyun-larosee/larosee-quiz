@@ -321,12 +321,12 @@
 
     /* ══ DASH SIDEBAR LAYOUT ══ */
     .dash-with-sidebar { display:flex; align-items:flex-start; min-height:300px; }
-    .dash-sidebar { width:172px; flex-shrink:0; padding:16px 12px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
+    .dash-sidebar { width:260px; flex-shrink:0; padding:16px 14px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
     .dash-sidebar-label { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
     .dash-content { flex:1; min-width:0; overflow-x:auto; }
     .dash-select-wrap { position:relative; }
-    .dash-select-wrap::after { content:'▾'; position:absolute; right:9px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:12px; pointer-events:none; font-weight:700; }
-    .dash-quiz-select { width:100%; padding:8px 24px 8px 10px; font-size:12px; font-weight:600; color:var(--text); border:1.5px solid var(--border); border-radius:8px; background:white; appearance:none; -webkit-appearance:none; cursor:pointer; font-family:inherit; outline:none; transition:border-color 0.15s; }
+    .dash-select-wrap::after { content:'▾'; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:13px; pointer-events:none; font-weight:700; }
+    .dash-quiz-select { width:100%; padding:10px 28px 10px 12px; font-size:13px; font-weight:600; color:var(--text); border:1.5px solid var(--border); border-radius:8px; background:white; appearance:none; -webkit-appearance:none; cursor:pointer; font-family:inherit; outline:none; transition:border-color 0.15s; }
     .dash-quiz-select:focus { border-color:var(--blue); }
     @media (max-width:700px) { .dash-with-sidebar{flex-direction:column;} .dash-sidebar{width:100%;border-right:none;border-bottom:1.5px solid var(--border);flex-direction:row;flex-wrap:wrap;align-items:center;} }
 
@@ -1209,9 +1209,9 @@ function renderEmpTypeColumn(type, el) {
   const cntLow = scores.filter(s => (s.pct||0) < 80).length;
 
   // 통계 카드
-  const safeType2 = JSON.stringify(type);
+  const safeTypeQ = "'" + type + "'";
   let html = '<div class="mini-stat-grid">' +
-    '<div class="mini-stat-card" style="cursor:pointer;" onclick="showAttendeeModalMain(' + safeType2 + ')">' +
+    '<div class="mini-stat-card" style="cursor:pointer;" onclick="showAttendeeModalMain(' + safeTypeQ + ')">' +
       '<div class="mini-stat-num">' + total + '명</div><div class="mini-stat-lbl">총 응시자 ↗</div>' +
     '</div>' +
     '<div class="mini-stat-card"><div class="mini-stat-num">' + avgScore + '점</div><div class="mini-stat-lbl">평균 점수</div></div>' +
@@ -1271,12 +1271,12 @@ function renderEmpTypeColumn(type, el) {
         var cy2=pad.top+iH-(cv/safeMaxCnt)*iH;
         sv+='<text x="'+(W-pad.right+4)+'" y="'+(cy2+4)+'" text-anchor="start" font-size="9.5" fill="#f59e0b">'+cv+'명</text>';
       }
-      var empTypeStr=JSON.stringify(type);
+      var empTypeStr="'"+type+"'";
       items.forEach(function(item,i){
         var cx=pad.left+step*i+step/2;
         var bh=(item.avg/yMax)*iH;
         var by=pad.top+iH-bh;
-        var lbl=JSON.stringify(item.label);
+        var lbl="'"+item.label.replace(/'/g,"\\'")+"'";
         sv+='<rect x="'+(cx-barW/2)+'" y="'+by+'" width="'+barW+'" height="'+(bh||1)+'" fill="#0E94CD" rx="3" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal('+lbl+',\'main\','+empTypeStr+')"/>';
         if(bh>20) sv+='<text x="'+cx+'" y="'+(by+bh/2+4)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="white" style="pointer-events:none;">'+item.avg+'점</text>';
         sv+='<text x="'+cx+'" y="'+(H-3)+'" text-anchor="middle" font-size="9.5" fill="#6b7c93">'+item.label+'</text>';
@@ -1317,8 +1317,8 @@ function renderEmpTypeColumn(type, el) {
     html += '<div class="mini-section-title">최다 오답 TOP 5 <span style="font-size:10px;color:var(--blue);font-weight:400;">(클릭하면 오답 분포 확인)</span></div>';
     top5.forEach(item => {
       const q = item.q.length > 28 ? item.q.slice(0,28) + '...' : item.q;
-      const safeId = JSON.stringify(item.id);
-      const safeType = JSON.stringify(type);
+      const safeId = typeof item.id === 'number' ? item.id : "'" + String(item.id).replace(/'/g,"\'") + "'";
+      const safeType = "'" + type + "'";
       html += '<div class="bar-item" style="cursor:pointer;" onclick="showMainDashQModal(' + safeType + ',' + safeId + ')">' +
         '<div class="bar-label" style="color:var(--text);">' + q + '</div>' +
         '<div class="bar-row"><div class="bar-track"><div class="bar-fill-red" style="width:' + item.pct + '%"></div></div>' +
@@ -1503,7 +1503,7 @@ function renderDashboard() {
       const cx = pad.left + step*i + step/2;
       const bh = (item.avgScore/yMax)*iH;
       const by = pad.top + iH - bh;
-      const lbl = JSON.stringify(item.label);
+      const lbl = "'" + item.label.replace(/'/g, "\\'") + "'";
       s += '<rect x="' + (cx-barW/2) + '" y="' + by + '" width="' + barW + '" height="' + (bh||1) + '" fill="#0E94CD" rx="4" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal(' + lbl + ',\'detail\',null)"/>';
       if (bh > 20) s += '<text x="' + cx + '" y="' + (by + bh/2 + 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="white" style="pointer-events:none;">' + item.avgScore + '점</text>';
       s += '<text x="' + cx + '" y="' + (H-4) + '" text-anchor="middle" font-size="10" fill="#6b7c93">' + item.label + '</text>';
@@ -1543,7 +1543,8 @@ function renderDashboard() {
   // 클릭 가능한 오답률 바 (선지 분포 모달용)
   function clickableBarHtml(item) {
     const p = Math.min(100, Math.max(0, item.errPct));
-    return '<div class="bar-item" style="cursor:pointer;" onclick="showAnsDistModal(' + JSON.stringify(item.id) + ')">' +
+    const _sid = typeof item.id === 'number' ? item.id : "'" + String(item.id).replace(/'/g,"\\'") + "'";
+    return '<div class="bar-item" style="cursor:pointer;" onclick="showAnsDistModal(' + _sid + ')">' +
       '<div class="bar-label">' + item.q + ' <span style="font-size:10px;color:var(--blue);">↗</span></div>' +
       '<div class="bar-row">' +
         '<div class="bar-track"><div class="bar-fill-red" style="width:' + p + '%"></div></div>' +
