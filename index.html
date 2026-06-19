@@ -1199,8 +1199,8 @@ function renderEmpTypeColumn(type, el) {
   if (cohortItems.length) {
     html += '<div class="mini-section-title">기수별 평균 점수</div>';
     html += (function(items) {
-      const W=320, H=170;
-      const pad={top:26,right:38,bottom:28,left:38};
+      const W=320, H=185;
+      const pad={top:42,right:38,bottom:28,left:38};
       const iW=W-pad.left-pad.right, iH=H-pad.top-pad.bottom;
       const n=items.length;
       const step=iW/Math.max(n,1);
@@ -1299,17 +1299,15 @@ function showRankModal(grade, empType) {
     document.getElementById('rank-modal-list').innerHTML = '<div class="dash-empty">해당하는 응시자가 없습니다.</div>';
   } else {
     document.getElementById('rank-modal-list').innerHTML = ranked.map((s, i) => {
-      const scoreText = grade === 'below'
-        ? (s.wrongQuestions||[]).length + '개 오답'
-        : (s.pct||0) + '점';
+      const scoreText = (s.pct||0) + '점';
       const scoreColor = grade === 'excellent' ? '#22c55e' : grade === 'basic' ? '#0E94CD' : '#ef4444';
       return '<div class="rank-item">' +
         '<div class="rank-num">' + (i+1) + '</div>' +
-        '<div>' +
+        '<div style="flex:1;min-width:0;">' +
           '<div class="rank-name">' + (s.name||'-') + '</div>' +
           '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + (s.quizName ? ' · ' + s.quizName : '') + '</div>' +
         '</div>' +
-        '<div class="rank-score" style="color:' + scoreColor + ';">' + scoreText + '</div>' +
+        '<div class="rank-score" style="color:' + scoreColor + ';flex-shrink:0;">' + scoreText + '</div>' +
         '</div>';
     }).join('');
   }
