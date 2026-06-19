@@ -258,7 +258,7 @@
     .dash-empty { font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0; }
     .score-dist-bar { display:flex; height:28px; border-radius:10px; overflow:hidden; gap:2px; }
     .score-dist-seg { display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:white; transition:flex .4s ease; min-width:0; overflow:hidden; white-space:nowrap; }
-    .score-dist-labels { display:flex; margin-top:10px; gap:2px; }
+    .score-dist-labels { display:flex; margin-top:10px; gap:8px; }
     .score-dist-lbl { flex:1; text-align:center; }
     .score-dist-lbl-title { font-size:11px; font-weight:700; }
     .score-dist-lbl-val { font-size:18px; font-weight:800; margin:2px 0; }
@@ -319,11 +319,16 @@
     .lec-reveal-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--blue); color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .lec-reveal-btn.revealed { background: var(--success); }
 
-    /* ══ DASH SELECT ROW ══ */
-    .dash-select-row { display:flex; align-items:center; gap:10px; padding:12px 16px; background:white; border-bottom:1.5px solid var(--border); }
-    .dash-select-wrap { position:relative; flex:1; max-width:300px; }
-    .dash-select-wrap::after { content:'▾'; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:14px; pointer-events:none; font-weight:700; }
-    .dash-quiz-select { width:100%; padding:9px 32px 9px 13px; font-size:13px; font-weight:600; color:var(--text); border:1.5px solid var(--border); border-radius:10px; background:white; appearance:none; -webkit-appearance:none; cursor:pointer; font-family:inherit; outline:none; transition:border-color 0.15s; }
+    /* ══ DASH SIDEBAR LAYOUT ══ */
+    .dash-with-sidebar { display:flex; align-items:flex-start; min-height:300px; }
+    .dash-sidebar { width:172px; flex-shrink:0; padding:16px 12px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
+    .dash-sidebar-label { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
+    .dash-content { flex:1; min-width:0; overflow-x:auto; }
+    .dash-select-wrap { position:relative; }
+    .dash-select-wrap::after { content:'▾'; position:absolute; right:9px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:12px; pointer-events:none; font-weight:700; }
+    .dash-quiz-select { width:100%; padding:8px 24px 8px 10px; font-size:12px; font-weight:600; color:var(--text); border:1.5px solid var(--border); border-radius:8px; background:white; appearance:none; -webkit-appearance:none; cursor:pointer; font-family:inherit; outline:none; transition:border-color 0.15s; }
+    .dash-quiz-select:focus { border-color:var(--blue); }
+    @media (max-width:700px) { .dash-with-sidebar{flex-direction:column;} .dash-sidebar{width:100%;border-right:none;border-bottom:1.5px solid var(--border);flex-direction:row;flex-wrap:wrap;align-items:center;} }
 
     /* ══ MAIN DASHBOARD ══ */
     .main-dash-outer { max-width:1400px; margin:0 auto; padding:20px 16px 48px; }
@@ -505,65 +510,67 @@
 
   <!-- Tab: Dashboard -->
   <div id="tab-dash" class="tab-content active">
-    <!-- 퀴즈 선택 드롭다운 -->
-    <div class="dash-select-row">
-      <div class="dash-select-wrap">
-        <select class="dash-quiz-select" id="dash-quiz-select" onchange="switchDashSubTab(this.value)">
-          <option value="__all__">전체 대시보드</option>
-        </select>
+    <div class="dash-with-sidebar">
+      <!-- 좌측 사이드바: 퀴즈 선택 -->
+      <div class="dash-sidebar">
+        <div class="dash-sidebar-label">퀴즈 선택</div>
+        <div class="dash-select-wrap">
+          <select class="dash-quiz-select" id="dash-quiz-select" onchange="switchDashSubTab(this.value)">
+            <option value="__all__">전체 대시보드</option>
+          </select>
+        </div>
+        <button class="btn btn-sm btn-outline" style="width:100%;font-size:12px;" onclick="loadDashboard()">새로고침</button>
       </div>
-      <button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button>
-    </div>
 
-    <!-- 전체 메인 대시보드 (신규/기존 2칼럼) -->
-    <div id="dash-main-view">
-      <div class="main-dash-outer">
-        <div class="main-dash-grid">
-          <div class="main-dash-col">
-            <div class="main-dash-col-title">🟢 신규입사자</div>
-            <div id="dash-col-new-content"><div class="dash-empty">로딩 중...</div></div>
-          </div>
-          <div class="main-dash-col">
-            <div class="main-dash-col-title">🔵 기존직원</div>
-            <div id="dash-col-existing-content"><div class="dash-empty">로딩 중...</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- 우측 콘텐츠 영역 -->
+      <div class="dash-content">
 
-    <!-- 퀴즈별 상세 대시보드 -->
-    <div id="dash-detail-view" style="display:none;">
-      <div class="page">
-        <div id="dash-stats" class="stat-grid" style="display:none;">
-          <div class="stat-card"><div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자</div></div>
-          <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
-          <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
-        </div>
-        <div id="dash-dist" style="display:none;margin-bottom:20px;">
-          <div class="score-dist-bar" id="dash-dist-bar"></div>
-          <div class="score-dist-labels" id="dash-dist-labels"></div>
-        </div>
-        <div class="dash-grid" id="dash-charts" style="display:none;">
-          <div class="dash-panel">
-            <div class="dash-panel-title">기수별 평균 점수</div>
-            <div id="dash-cohort-chart"></div>
-          </div>
-          <div class="dash-panel">
-            <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
-            <div id="dash-top-wrong"></div>
-          </div>
-          <div class="dash-panel">
-            <div class="dash-panel-title">질문별 오답률</div>
-            <div id="dash-q-error"></div>
-          </div>
-          <div class="dash-panel">
-            <div class="dash-panel-title">질문별 정답률</div>
-            <div id="dash-q-correct"></div>
+        <!-- 전체 메인 대시보드 (신규/기존 2칼럼) -->
+        <div id="dash-main-view">
+          <div class="main-dash-outer">
+            <div class="main-dash-grid">
+              <div class="main-dash-col">
+                <div class="main-dash-col-title">🟢 신규입사자</div>
+                <div id="dash-col-new-content"><div class="dash-empty">로딩 중...</div></div>
+              </div>
+              <div class="main-dash-col">
+                <div class="main-dash-col-title">🔵 기존직원</div>
+                <div id="dash-col-existing-content"><div class="dash-empty">로딩 중...</div></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div id="dash-placeholder" class="dash-empty" style="display:none;"></div>
-      </div>
-    </div>
+
+        <!-- 퀴즈별 상세 대시보드 -->
+        <div id="dash-detail-view" style="display:none;">
+          <div class="page">
+            <div id="dash-stats" class="stat-grid" style="display:none;">
+              <div class="stat-card" id="ds-total-card" style="cursor:pointer;" onclick="showAttendeeModalDetail()">
+                <div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자 ↗</div>
+              </div>
+              <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
+              <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
+            </div>
+            <div id="dash-dist" style="display:none;margin-bottom:20px;">
+              <div class="score-dist-bar" id="dash-dist-bar"></div>
+              <div class="score-dist-labels" id="dash-dist-labels"></div>
+            </div>
+            <div class="dash-grid" id="dash-charts" style="display:none;">
+              <div class="dash-panel">
+                <div class="dash-panel-title">기수별 평균 점수</div>
+                <div id="dash-cohort-chart"></div>
+              </div>
+              <div class="dash-panel">
+                <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
+                <div id="dash-top-wrong"></div>
+              </div>
+            </div>
+            <div id="dash-placeholder" class="dash-empty" style="display:none;"></div>
+          </div>
+        </div>
+
+      </div><!-- /.dash-content -->
+    </div><!-- /.dash-with-sidebar -->
   </div>
 
   <!-- Tab: Scores -->
@@ -666,6 +673,40 @@
       <button class="btn btn-sm btn-outline" onclick="closeRankModal()">닫기</button>
     </div>
     <div id="rank-modal-list"></div>
+  </div>
+</div>
+
+<!-- ══ Modal: 응시자 목록 ══ -->
+<div class="modal-overlay" id="attendee-modal">
+  <div class="modal-box" style="max-width:500px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" id="attendee-modal-title" style="margin-bottom:0;">응시자 목록</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('attendee-modal').classList.remove('active')">닫기</button>
+    </div>
+    <div id="attendee-modal-list"></div>
+  </div>
+</div>
+
+<!-- ══ Modal: 직원 틀린 질문 ══ -->
+<div class="modal-overlay" id="wrong-q-modal">
+  <div class="modal-box" style="max-width:540px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <div class="modal-title" id="wrong-q-modal-title" style="margin-bottom:0;">틀린 질문 목록</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('wrong-q-modal').classList.remove('active')">닫기</button>
+    </div>
+    <div id="wrong-q-modal-sub" style="font-size:12px;color:var(--text-muted);margin-bottom:14px;"></div>
+    <div id="wrong-q-modal-list"></div>
+  </div>
+</div>
+
+<!-- ══ Modal: 기수별 응시자 ══ -->
+<div class="modal-overlay" id="cohort-modal">
+  <div class="modal-box" style="max-width:520px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" id="cohort-modal-title" style="margin-bottom:0;">기수 응시자</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('cohort-modal').classList.remove('active')">닫기</button>
+    </div>
+    <div id="cohort-modal-list"></div>
   </div>
 </div>
 
@@ -1110,6 +1151,8 @@ let _dashSetId = null;
 let _dashQItems = [];
 let _currentDashSubTab = '__all__';
 let _mainDashQMap = {};  // 메인 대시보드 TOP5 오답 데이터 (type → qMap)
+let _rankScoresList = [];  // showRankModal에서 클릭용 저장
+let _attendeeScoresList = [];  // showAttendeeModal 클릭용 저장
 
 async function loadDashboard() {
   _dashScores = await fsGet('scores');
@@ -1166,8 +1209,11 @@ function renderEmpTypeColumn(type, el) {
   const cntLow = scores.filter(s => (s.pct||0) < 80).length;
 
   // 통계 카드
+  const safeType2 = JSON.stringify(type);
   let html = '<div class="mini-stat-grid">' +
-    '<div class="mini-stat-card"><div class="mini-stat-num">' + total + '명</div><div class="mini-stat-lbl">총 응시자</div></div>' +
+    '<div class="mini-stat-card" style="cursor:pointer;" onclick="showAttendeeModalMain(' + safeType2 + ')">' +
+      '<div class="mini-stat-num">' + total + '명</div><div class="mini-stat-lbl">총 응시자 ↗</div>' +
+    '</div>' +
     '<div class="mini-stat-card"><div class="mini-stat-num">' + avgScore + '점</div><div class="mini-stat-lbl">평균 점수</div></div>' +
     '</div>';
 
@@ -1225,12 +1271,14 @@ function renderEmpTypeColumn(type, el) {
         var cy2=pad.top+iH-(cv/safeMaxCnt)*iH;
         sv+='<text x="'+(W-pad.right+4)+'" y="'+(cy2+4)+'" text-anchor="start" font-size="9.5" fill="#f59e0b">'+cv+'명</text>';
       }
+      var empTypeStr=JSON.stringify(type);
       items.forEach(function(item,i){
         var cx=pad.left+step*i+step/2;
         var bh=(item.avg/yMax)*iH;
         var by=pad.top+iH-bh;
-        sv+='<rect x="'+(cx-barW/2)+'" y="'+by+'" width="'+barW+'" height="'+bh+'" fill="#0E94CD" rx="3" opacity="0.85"/>';
-        if(bh>20) sv+='<text x="'+cx+'" y="'+(by+bh/2+4)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="white">'+item.avg+'점</text>';
+        var lbl=JSON.stringify(item.label);
+        sv+='<rect x="'+(cx-barW/2)+'" y="'+by+'" width="'+barW+'" height="'+(bh||1)+'" fill="#0E94CD" rx="3" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal('+lbl+',\'main\','+empTypeStr+')"/>';
+        if(bh>20) sv+='<text x="'+cx+'" y="'+(by+bh/2+4)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="white" style="pointer-events:none;">'+item.avg+'점</text>';
         sv+='<text x="'+cx+'" y="'+(H-3)+'" text-anchor="middle" font-size="9.5" fill="#6b7c93">'+item.label+'</text>';
       });
       if(items.length>1){
@@ -1304,19 +1352,25 @@ function showRankModal(grade, empType) {
   const empLabel = empType === 'new' ? '신규입사자' : '기존직원';
   document.getElementById('rank-modal-title').textContent = '[' + empLabel + '] ' + title;
 
+  _rankScoresList = ranked;
+
   if (ranked.length === 0) {
     document.getElementById('rank-modal-list').innerHTML = '<div class="dash-empty">해당하는 응시자가 없습니다.</div>';
   } else {
     document.getElementById('rank-modal-list').innerHTML = ranked.map((s, i) => {
       const scoreText = (s.pct||0) + '점';
       const scoreColor = grade === 'excellent' ? '#22c55e' : grade === 'basic' ? '#0E94CD' : '#ef4444';
-      return '<div class="rank-item">' +
+      const hasWrong = (s.wrongQuestions||[]).length > 0 || (s.answers||[]).some(a => !a.ok);
+      return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + i + ')">' +
         '<div class="rank-num">' + (i+1) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
           '<div class="rank-name">' + (s.name||'-') + '</div>' +
           '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + (s.quizName ? ' · ' + s.quizName : '') + '</div>' +
         '</div>' +
-        '<div class="rank-score" style="color:' + scoreColor + ';flex-shrink:0;">' + scoreText + '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+          '<div class="rank-score" style="color:' + scoreColor + ';">' + scoreText + '</div>' +
+          (hasWrong ? '<div style="font-size:10px;color:var(--text-muted);">틀린문제↗</div>' : '') +
+        '</div>' +
         '</div>';
     }).join('');
   }
@@ -1374,18 +1428,18 @@ function renderDashboard() {
   const set = getSetById(_dashSetId);
   const setEmpType = (set && set.type) ? set.type : 'new';
   document.getElementById('dash-dist-labels').innerHTML =
-    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'excellent\',\'' + setEmpType + '\')">' +
-      '<div class="score-dist-lbl-title" style="color:#22c55e;">우수 (90점↑)</div>' +
-      '<div class="score-dist-lbl-val" style="color:#22c55e;">' + cnt90 + '명</div>' +
-      '<div class="score-dist-lbl-sub">' + pct90 + '%</div></div>' +
-    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'basic\',\'' + setEmpType + '\')">' +
-      '<div class="score-dist-lbl-title" style="color:#0E94CD;">기본 (80~89점)</div>' +
-      '<div class="score-dist-lbl-val" style="color:#0E94CD;">' + cnt80 + '명</div>' +
-      '<div class="score-dist-lbl-sub">' + pct80 + '%</div></div>' +
-    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'below\',\'' + setEmpType + '\')">' +
-      '<div class="score-dist-lbl-title" style="color:#ef4444;">미달 (80점 미만)</div>' +
-      '<div class="score-dist-lbl-val" style="color:#ef4444;">' + cntLow + '명</div>' +
-      '<div class="score-dist-lbl-sub">' + pctLow + '%</div></div>';
+    '<div class="rank-seg" style="background:#22c55e;cursor:pointer;flex:1;" onclick="showRankModal(\'excellent\',\'' + setEmpType + '\')">' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt90 + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">우수 · 90점↑</div>' +
+    '</div>' +
+    '<div class="rank-seg" style="background:#0E94CD;cursor:pointer;flex:1;" onclick="showRankModal(\'basic\',\'' + setEmpType + '\')">' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt80 + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">기본 · 80~89점</div>' +
+    '</div>' +
+    '<div class="rank-seg" style="background:#ef4444;cursor:pointer;flex:1;" onclick="showRankModal(\'below\',\'' + setEmpType + '\')">' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cntLow + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">미달 · 80점 미만</div>' +
+    '</div>';
   document.getElementById('dash-dist').style.display = 'block';
   statsEl.style.display = 'grid';
 
@@ -1449,8 +1503,9 @@ function renderDashboard() {
       const cx = pad.left + step*i + step/2;
       const bh = (item.avgScore/yMax)*iH;
       const by = pad.top + iH - bh;
-      s += '<rect x="' + (cx-barW/2) + '" y="' + by + '" width="' + barW + '" height="' + bh + '" fill="#0E94CD" rx="4" opacity="0.85"/>';
-      if (bh > 20) s += '<text x="' + cx + '" y="' + (by + bh/2 + 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="white">' + item.avgScore + '점</text>';
+      const lbl = JSON.stringify(item.label);
+      s += '<rect x="' + (cx-barW/2) + '" y="' + by + '" width="' + barW + '" height="' + (bh||1) + '" fill="#0E94CD" rx="4" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal(' + lbl + ',\'detail\',null)"/>';
+      if (bh > 20) s += '<text x="' + cx + '" y="' + (by + bh/2 + 4) + '" text-anchor="middle" font-size="10" font-weight="700" fill="white" style="pointer-events:none;">' + item.avgScore + '점</text>';
       s += '<text x="' + cx + '" y="' + (H-4) + '" text-anchor="middle" font-size="10" fill="#6b7c93">' + item.label + '</text>';
     });
     // 라인 (응시인원)
@@ -1496,19 +1551,10 @@ function renderDashboard() {
       '</div></div>';
   }
 
-  // TOP 5 오답
+  // TOP 5 오답 (클릭 가능)
   const top5 = qItems.slice(0, 5);
   document.getElementById('dash-top-wrong').innerHTML =
-    top5.length ? top5.map(i => barHtml(i.q, i.errPct, 'bar-fill-red')).join('') : emptyBar();
-
-  // 전체 질문별 오답률 (클릭 가능)
-  document.getElementById('dash-q-error').innerHTML =
-    qItems.length ? qItems.map(i => clickableBarHtml(i)).join('') : emptyBar();
-
-  // 전체 질문별 정답률 (오답률 내림차순 유지 → 정답률은 오름차순으로 볼 수 있게 역순)
-  const qItemsByOk = [...qItems].sort((a,b) => b.okPct - a.okPct);
-  document.getElementById('dash-q-correct').innerHTML =
-    qItemsByOk.length ? qItemsByOk.map(i => barHtml(i.q, i.okPct, 'bar-fill-green')).join('') : emptyBar();
+    top5.length ? top5.map(i => clickableBarHtml(i)).join('') : emptyBar();
 
   chartsEl.style.display = 'grid';
 }
@@ -1641,6 +1687,141 @@ function showMainDashQModal(type, qId) {
 
   document.getElementById('ans-dist-list').innerHTML = html;
   document.getElementById('ans-dist-modal').classList.add('active');
+}
+
+/* ─── 응시자 목록 모달 (메인 대시보드) ─── */
+function showAttendeeModalMain(empType) {
+  const sets = loadSets().filter(s => s.type === empType);
+  const setIds = sets.map(s => s.id);
+  const scores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'))
+    .sort((a,b) => (b.pct||0) - (a.pct||0));
+  _attendeeScoresList = scores;
+  const label = empType === 'new' ? '신규입사자' : '기존직원';
+  document.getElementById('attendee-modal-title').textContent = label + ' 응시자 목록 (' + scores.length + '명)';
+  document.getElementById('attendee-modal-list').innerHTML = scores.length === 0
+    ? '<div class="dash-empty">응시자가 없습니다.</div>'
+    : scores.map((s, i) => {
+        const color = (s.pct||0) >= 90 ? '#22c55e' : (s.pct||0) >= 80 ? '#0E94CD' : '#ef4444';
+        return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + i + ',true)">' +
+          '<div class="rank-num">' + (i+1) + '</div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div class="rank-name">' + (s.name||'-') + '</div>' +
+            '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + (s.quizName ? ' · ' + s.quizName : '') + '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+            '<div class="rank-score" style="color:' + color + ';">' + (s.pct||0) + '점</div>' +
+            '<div style="font-size:10px;color:var(--text-muted);">틀린문제↗</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+  document.getElementById('attendee-modal').classList.add('active');
+}
+
+/* ─── 응시자 목록 모달 (그 외 대시보드) ─── */
+function showAttendeeModalDetail() {
+  if (!_dashSetId) return;
+  const scores = _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId)
+    .sort((a,b) => (b.pct||0) - (a.pct||0));
+  _attendeeScoresList = scores;
+  const set = getSetById(_dashSetId);
+  const setName = set ? set.name : '퀴즈';
+  document.getElementById('attendee-modal-title').textContent = setName + ' 응시자 (' + scores.length + '명)';
+  document.getElementById('attendee-modal-list').innerHTML = scores.length === 0
+    ? '<div class="dash-empty">응시자가 없습니다.</div>'
+    : scores.map((s, i) => {
+        const color = (s.pct||0) >= 90 ? '#22c55e' : (s.pct||0) >= 80 ? '#0E94CD' : '#ef4444';
+        return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + i + ',true)">' +
+          '<div class="rank-num">' + (i+1) + '</div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div class="rank-name">' + (s.name||'-') + '</div>' +
+            '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+            '<div class="rank-score" style="color:' + color + ';">' + (s.pct||0) + '점</div>' +
+            '<div style="font-size:10px;color:var(--text-muted);">틀린문제↗</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+  document.getElementById('attendee-modal').classList.add('active');
+}
+
+/* ─── 직원 틀린 질문 모달 ─── */
+function showEmployeeWrongQ(idx, fromAttendee) {
+  const list = fromAttendee ? _attendeeScoresList : _rankScoresList;
+  const s = list[idx];
+  if (!s) return;
+
+  document.getElementById('wrong-q-modal-title').textContent = (s.name||'-') + '님의 틀린 질문';
+  document.getElementById('wrong-q-modal-sub').textContent =
+    (s.cohort ? s.cohort + '기' : '') + (s.quizName ? ' · ' + s.quizName : '') +
+    ' | 점수: ' + (s.pct||0) + '점 (' + (s.score||0) + '/' + (s.total||0) + ')';
+
+  // wrongQuestions 또는 answers에서 틀린 것 추출
+  let wrongList = [];
+  if (s.answers && s.answers.length > 0) {
+    wrongList = s.answers.filter(a => !a.ok);
+  } else if (s.wrongQuestions && s.wrongQuestions.length > 0) {
+    wrongList = s.wrongQuestions.map(q => ({ q: typeof q === 'string' ? q : (q.q||'질문'), ok: false }));
+  }
+
+  if (wrongList.length === 0) {
+    document.getElementById('wrong-q-modal-list').innerHTML = '<div class="dash-empty" style="color:#22c55e;">모든 문제를 맞혔습니다! 🎉</div>';
+  } else {
+    document.getElementById('wrong-q-modal-list').innerHTML = wrongList.map((a, i) => {
+      const qText = a.q || ('질문 ' + (i+1));
+      const chosen = a.chosen !== undefined ? '선택: 선지 ' + (Number(a.chosen)+1) : '';
+      const correct = a.correct !== undefined
+        ? (Array.isArray(a.correct) ? a.correct : [a.correct]).map(c => '선지 '+(Number(c)+1)).join(', ')
+        : '';
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);last-child:border-none;">' +
+        '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Q' + (i+1) + '. ' + qText + '</div>' +
+        (chosen ? '<div style="font-size:12px;color:#ef4444;">✗ ' + chosen + '</div>' : '') +
+        (correct ? '<div style="font-size:12px;color:#22c55e;">✓ 정답: ' + correct + '</div>' : '') +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('wrong-q-modal').classList.add('active');
+}
+
+/* ─── 기수별 응시자 모달 ─── */
+function showCohortModal(cohortLabel, source, empType) {
+  let scores;
+  if (source === 'main' && empType) {
+    const sets = loadSets().filter(s => s.type === empType);
+    const setIds = sets.map(s => s.id);
+    scores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'));
+  } else {
+    scores = _dashSetId
+      ? _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId)
+      : _dashScores;
+  }
+
+  // cohortLabel은 "3기" 형태이므로 앞 숫자만 비교
+  const cohortNum = cohortLabel.replace('기','').trim();
+  const cohortScores = scores.filter(s => String(s.cohort||'미분류') === cohortNum)
+    .sort((a,b) => (b.pct||0) - (a.pct||0));
+
+  document.getElementById('cohort-modal-title').textContent = cohortLabel + ' 응시자 (' + cohortScores.length + '명)';
+
+  if (cohortScores.length === 0) {
+    document.getElementById('cohort-modal-list').innerHTML = '<div class="dash-empty">해당 기수 응시자가 없습니다.</div>';
+  } else {
+    document.getElementById('cohort-modal-list').innerHTML = cohortScores.map((s, i) => {
+      const color = (s.pct||0) >= 90 ? '#22c55e' : (s.pct||0) >= 80 ? '#0E94CD' : '#ef4444';
+      const dur = s.duration ? formatDur(s.duration) : '-';
+      return '<div class="rank-item">' +
+        '<div class="rank-num">' + (i+1) + '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div class="rank-name">' + (s.name||'-') + '</div>' +
+          '<div class="rank-cohort">' + (s.quizName||'') + ' · ' + dur + '</div>' +
+        '</div>' +
+        '<div class="rank-score" style="color:' + color + ';flex-shrink:0;">' + (s.pct||0) + '점</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  document.getElementById('cohort-modal').classList.add('active');
 }
 
 /* ─── 기수 관리 ───────────────────────────────────────────────── */
