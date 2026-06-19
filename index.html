@@ -319,6 +319,35 @@
     .lec-reveal-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--blue); color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .lec-reveal-btn.revealed { background: var(--success); }
 
+    /* ══ DASH SUBTABS ══ */
+    .dash-subtabs { display:flex; gap:0; padding:0 16px; background:white; border-bottom:1.5px solid var(--border); overflow-x:auto; flex-shrink:0; }
+    .dash-subtab-btn { padding:10px 18px; font-size:13px; font-weight:700; color:var(--text-muted); border:none; background:none; cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1.5px; white-space:nowrap; font-family:inherit; transition:color 0.15s; }
+    .dash-subtab-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+    .dash-subtab-btn:hover:not(.active) { color:var(--text); }
+
+    /* ══ MAIN DASHBOARD ══ */
+    .main-dash-outer { max-width:1400px; margin:0 auto; padding:20px 16px 48px; }
+    .main-dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+    .main-dash-col { background:white; border:1.5px solid var(--border); border-radius:16px; padding:20px; min-width:0; }
+    .main-dash-col-title { font-size:16px; font-weight:800; color:var(--text); margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+    .mini-stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+    .mini-stat-card { background:var(--blue-light); border-radius:12px; padding:14px 10px; text-align:center; }
+    .mini-stat-num { font-size:20px; font-weight:800; color:var(--blue); }
+    .mini-stat-lbl { font-size:11px; color:var(--text-muted); margin-top:2px; }
+    .rank-seg-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:16px; }
+    .rank-seg { padding:12px 8px; border-radius:10px; text-align:center; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s; }
+    .rank-seg:hover { transform:translateY(-2px); box-shadow:0 4px 14px rgba(0,0,0,0.15); }
+    .rank-seg-num { font-size:20px; font-weight:800; color:white; }
+    .rank-seg-lbl { font-size:10px; font-weight:700; color:rgba(255,255,255,0.9); margin-top:3px; }
+    .rank-seg-sub { font-size:10px; color:rgba(255,255,255,0.7); margin-top:1px; }
+    .rank-item { display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--gray); border-radius:10px; margin-bottom:5px; }
+    .rank-num { font-size:13px; font-weight:800; color:var(--text-muted); width:22px; text-align:center; flex-shrink:0; }
+    .rank-name { font-size:13px; font-weight:700; flex:1; }
+    .rank-score { font-size:13px; font-weight:800; }
+    .rank-cohort { font-size:11px; color:var(--text-muted); }
+    .mini-section-title { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px; margin-top:16px; }
+    @media (max-width:700px) { .main-dash-grid { grid-template-columns:1fr; } }
+
     /* ══ LOADING ══ */
     .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -476,41 +505,62 @@
 
   <!-- Tab: Dashboard -->
   <div id="tab-dash" class="tab-content active">
-    <div class="page">
-      <div class="dash-header">
-        <select class="dash-select" id="dash-set-select" onchange="onDashSetChange()">
-          <option value="">퀴즈 선택...</option>
-        </select>
-        <button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button>
-      </div>
-      <div id="dash-stats" class="stat-grid" style="display:none;">
-        <div class="stat-card"><div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자</div></div>
-        <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
-        <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
-      </div>
-      <div id="dash-dist" style="display:none;margin-bottom:20px;">
-        <div class="score-dist-bar" id="dash-dist-bar"></div>
-        <div class="score-dist-labels" id="dash-dist-labels"></div>
-      </div>
-      <div class="dash-grid" id="dash-charts" style="display:none;">
-        <div class="dash-panel">
-          <div class="dash-panel-title">기수별 평균 점수</div>
-          <div id="dash-cohort-chart"></div>
+    <!-- 서브탭: 전체 + 퀴즈별 -->
+    <div class="dash-subtabs" id="dash-subtabs">
+      <button class="dash-subtab-btn active" id="dsub-btn-__all__" onclick="switchDashSubTab('__all__')">전체</button>
+    </div>
+
+    <!-- 전체 메인 대시보드 (신규/기존 2칼럼) -->
+    <div id="dash-main-view">
+      <div class="main-dash-outer">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
+          <button class="btn btn-sm btn-outline" onclick="loadDashboard()">새로고침</button>
         </div>
-        <div class="dash-panel">
-          <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
-          <div id="dash-top-wrong"></div>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-panel-title">질문별 오답률</div>
-          <div id="dash-q-error"></div>
-        </div>
-        <div class="dash-panel">
-          <div class="dash-panel-title">질문별 정답률</div>
-          <div id="dash-q-correct"></div>
+        <div class="main-dash-grid">
+          <div class="main-dash-col">
+            <div class="main-dash-col-title">🟢 신규입사자</div>
+            <div id="dash-col-new-content"><div class="dash-empty">로딩 중...</div></div>
+          </div>
+          <div class="main-dash-col">
+            <div class="main-dash-col-title">🔵 기존직원</div>
+            <div id="dash-col-existing-content"><div class="dash-empty">로딩 중...</div></div>
+          </div>
         </div>
       </div>
-      <div id="dash-placeholder" class="dash-empty" style="display:none;">퀴즈를 선택하면 대시보드가 표시됩니다.</div>
+    </div>
+
+    <!-- 퀴즈별 상세 대시보드 -->
+    <div id="dash-detail-view" style="display:none;">
+      <div class="page">
+        <div id="dash-stats" class="stat-grid" style="display:none;">
+          <div class="stat-card"><div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자</div></div>
+          <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
+          <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
+        </div>
+        <div id="dash-dist" style="display:none;margin-bottom:20px;">
+          <div class="score-dist-bar" id="dash-dist-bar"></div>
+          <div class="score-dist-labels" id="dash-dist-labels"></div>
+        </div>
+        <div class="dash-grid" id="dash-charts" style="display:none;">
+          <div class="dash-panel">
+            <div class="dash-panel-title">기수별 평균 점수</div>
+            <div id="dash-cohort-chart"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
+            <div id="dash-top-wrong"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-title">질문별 오답률</div>
+            <div id="dash-q-error"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-title">질문별 정답률</div>
+            <div id="dash-q-correct"></div>
+          </div>
+        </div>
+        <div id="dash-placeholder" class="dash-empty" style="display:none;"></div>
+      </div>
     </div>
   </div>
 
@@ -606,6 +656,17 @@
   </div>
 </div>
 
+<!-- ══ Modal: Rank ══ -->
+<div class="modal-overlay" id="rank-modal">
+  <div class="modal-box" style="max-width:480px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" id="rank-modal-title" style="margin-bottom:0;"></div>
+      <button class="btn btn-sm btn-outline" onclick="closeRankModal()">닫기</button>
+    </div>
+    <div id="rank-modal-list"></div>
+  </div>
+</div>
+
 <!-- ══ Modal: Answer Distribution ══ -->
 <div class="modal-overlay" id="ans-dist-modal">
   <div class="modal-box" style="max-width:520px;">
@@ -654,6 +715,17 @@
       <label>퀴즈 이름</label>
       <input type="text" id="new-set-name" placeholder="예: 제품 교육 퀴즈" maxlength="40"
         onkeydown="if(event.key==='Enter') createSet()">
+    </div>
+    <div class="form-group">
+      <label>대상 직원</label>
+      <div style="display:flex;gap:10px;margin-top:6px;">
+        <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
+          <input type="radio" name="new-set-type" value="new" checked style="accent-color:var(--blue);width:16px;height:16px;"> 신규입사자
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
+          <input type="radio" name="new-set-type" value="existing" style="accent-color:var(--blue);width:16px;height:16px;"> 기존직원
+        </label>
+      </div>
     </div>
     <div style="display:flex;gap:10px;">
       <button class="btn btn-primary" onclick="createSet()">만들기</button>
@@ -760,13 +832,21 @@ const DEFAULT_QUESTIONS = [
 /* ─── Quiz Sets Storage ──────────────────────────────────────── */
 function loadSets() {
   const raw = localStorage.getItem('lr_sets');
-  if (raw) return JSON.parse(raw);
+  if (raw) {
+    const sets = JSON.parse(raw);
+    // 마이그레이션: type 없는 세트에 'new' 추가
+    let changed = false;
+    sets.forEach(s => { if (!s.type) { s.type = 'new'; changed = true; } });
+    if (changed) saveSets(sets);
+    return sets;
+  }
   // 최초 실행 또는 구버전 마이그레이션
   const oldQ = localStorage.getItem('lr_q');
   const questions = oldQ ? JSON.parse(oldQ) : DEFAULT_QUESTIONS;
   const sets = [{
     id: 'set_default',
     name: '신규입사자 전체 퀴즈',
+    type: 'new',
     questions,
     quizCount: parseInt(localStorage.getItem('lr_cnt') || '0'),
     timerMin: parseInt(localStorage.getItem('lr_timer') || '0')
@@ -1001,7 +1081,13 @@ function switchTab(t) {
     document.getElementById('tab-' + id).classList.toggle('active', id === t);
     document.getElementById('tab-btn-' + id).classList.toggle('active', id === t);
   });
-  if (t === 'dash') loadDashboard();
+  if (t === 'dash') {
+    // 전체 뷰로 초기화
+    _currentDashSubTab = '__all__';
+    document.getElementById('dash-main-view').style.display = '';
+    document.getElementById('dash-detail-view').style.display = 'none';
+    loadDashboard();
+  }
   else if (t === 'scores') loadScoreList();
   else if (t === 'questions') { _qViewSetId = null; renderQTab(); }
   else if (t === 'qr') renderQRTab();
@@ -1019,27 +1105,183 @@ function downloadQRSet(setId) {
 /* ─── Dashboard ──────────────────────────────────────────────── */
 let _dashScores = [];
 let _dashSetId = null;
-let _dashQItems = []; // 질문별 통계 캐시 (모달용)
+let _dashQItems = [];
+let _currentDashSubTab = '__all__';
 
 async function loadDashboard() {
   _dashScores = await fsGet('scores');
-  // populate dropdown
   const sets = loadSets();
-  const sel = document.getElementById('dash-set-select');
-  const prev = sel.value;
-  sel.innerHTML = '<option value="">퀴즈 선택...</option>' +
-    sets.map(s => '<option value="' + s.id + '">' + s.name + '</option>').join('');
-  // restore or auto-select first if only one set
-  if (prev && sets.find(s => s.id === prev)) { sel.value = prev; _dashSetId = prev; }
-  else if (sets.length === 1) { sel.value = sets[0].id; _dashSetId = sets[0].id; }
-  else { _dashSetId = sel.value || null; }
-  renderDashboard();
+
+  // 서브탭 생성
+  const subtabsEl = document.getElementById('dash-subtabs');
+  subtabsEl.innerHTML =
+    '<button class="dash-subtab-btn' + (_currentDashSubTab === '__all__' ? ' active' : '') +
+    '" id="dsub-btn-__all__" onclick="switchDashSubTab(\'__all__\')">전체</button>' +
+    sets.map(s =>
+      '<button class="dash-subtab-btn' + (_currentDashSubTab === s.id ? ' active' : '') +
+      '" id="dsub-btn-' + s.id + '" onclick="switchDashSubTab(\'' + s.id + '\')">' + s.name + '</button>'
+    ).join('');
+
+  if (_currentDashSubTab === '__all__') {
+    renderMainDashboard();
+  } else {
+    _dashSetId = sets.find(s => s.id === _currentDashSubTab) ? _currentDashSubTab : null;
+    renderDashboard();
+  }
 }
 
-function onDashSetChange() {
-  _dashSetId = document.getElementById('dash-set-select').value || null;
-  renderDashboard();
+function switchDashSubTab(tabId) {
+  _currentDashSubTab = tabId;
+  // 버튼 active 상태 변경
+  document.querySelectorAll('.dash-subtab-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById('dsub-btn-' + tabId);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (tabId === '__all__') {
+    document.getElementById('dash-main-view').style.display = '';
+    document.getElementById('dash-detail-view').style.display = 'none';
+    renderMainDashboard();
+  } else {
+    document.getElementById('dash-main-view').style.display = 'none';
+    document.getElementById('dash-detail-view').style.display = '';
+    _dashSetId = tabId;
+    renderDashboard();
+  }
 }
+
+function renderMainDashboard() {
+  renderEmpTypeColumn('new', document.getElementById('dash-col-new-content'));
+  renderEmpTypeColumn('existing', document.getElementById('dash-col-existing-content'));
+}
+
+function renderEmpTypeColumn(type, el) {
+  const sets = loadSets().filter(s => s.type === type);
+  const setIds = sets.map(s => s.id);
+  const scores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'));
+
+  if (scores.length === 0) {
+    el.innerHTML = '<div class="dash-empty" style="padding:32px 0;">아직 응시 기록이 없습니다.</div>';
+    return;
+  }
+
+  const total = scores.length;
+  const avgScore = Math.round(scores.reduce((a,s) => a+(s.pct||0), 0) / total);
+  const cnt90  = scores.filter(s => (s.pct||0) >= 90).length;
+  const cnt80  = scores.filter(s => (s.pct||0) >= 80 && (s.pct||0) < 90).length;
+  const cntLow = scores.filter(s => (s.pct||0) < 80).length;
+
+  // 통계 카드
+  let html = '<div class="mini-stat-grid">' +
+    '<div class="mini-stat-card"><div class="mini-stat-num">' + total + '명</div><div class="mini-stat-lbl">총 응시자</div></div>' +
+    '<div class="mini-stat-card"><div class="mini-stat-num">' + avgScore + '점</div><div class="mini-stat-lbl">평균 점수</div></div>' +
+    '</div>';
+
+  // 우수/기본/미달 세그먼트 (클릭 가능)
+  const safeType = JSON.stringify(type);
+  html += '<div class="rank-seg-row">' +
+    '<div class="rank-seg" style="background:#22c55e;" onclick="showRankModal(\'excellent\',' + safeType + ')">' +
+      '<div class="rank-seg-num">' + cnt90 + '</div><div class="rank-seg-lbl">우수</div><div class="rank-seg-sub">90점↑</div>' +
+    '</div>' +
+    '<div class="rank-seg" style="background:#0E94CD;" onclick="showRankModal(\'basic\',' + safeType + ')">' +
+      '<div class="rank-seg-num">' + cnt80 + '</div><div class="rank-seg-lbl">기본</div><div class="rank-seg-sub">80~89점</div>' +
+    '</div>' +
+    '<div class="rank-seg" style="background:#ef4444;" onclick="showRankModal(\'below\',' + safeType + ')">' +
+      '<div class="rank-seg-num">' + cntLow + '</div><div class="rank-seg-lbl">미달</div><div class="rank-seg-sub">80점 미만</div>' +
+    '</div>' +
+    '</div>';
+
+  // 기수별 평균 점수 (바 형태)
+  const cohortMap = {};
+  scores.forEach(s => {
+    const c = (s.cohort || '미분류') + '기';
+    if (!cohortMap[c]) cohortMap[c] = { sum:0, cnt:0 };
+    cohortMap[c].sum += (s.pct||0);
+    cohortMap[c].cnt++;
+  });
+  const cohortItems = Object.entries(cohortMap)
+    .map(([c,v]) => ({ label:c, avg: Math.round(v.sum/v.cnt) }))
+    .sort((a,b) => { const na=parseInt(a.label),nb=parseInt(b.label); return isNaN(na)||isNaN(nb)?a.label.localeCompare(b.label):na-nb; });
+
+  if (cohortItems.length) {
+    html += '<div class="mini-section-title">기수별 평균 점수</div>';
+    cohortItems.forEach(item => {
+      html += '<div class="bar-item"><div class="bar-label">' + item.label + ' <span style="font-size:11px;color:var(--blue);font-weight:800;">' + item.avg + '점</span></div>' +
+        '<div class="bar-row"><div class="bar-track"><div class="bar-fill-blue" style="width:' + item.avg + '%"></div></div>' +
+        '<div class="bar-val">' + item.avg + '%</div></div></div>';
+    });
+  }
+
+  // 최다 오답 TOP 5
+  const qMap = {};
+  scores.forEach(s => {
+    (s.answers || []).forEach(a => {
+      if (!qMap[a.id]) qMap[a.id] = { q:a.q||('Q'+a.id), total:0, wrong:0 };
+      qMap[a.id].total++;
+      if (!a.ok) qMap[a.id].wrong++;
+    });
+  });
+  const top5 = Object.values(qMap)
+    .map(v => ({ q:v.q, pct: Math.round(v.wrong/v.total*100) }))
+    .sort((a,b) => b.pct-a.pct).slice(0,5);
+
+  if (top5.length) {
+    html += '<div class="mini-section-title">최다 오답 TOP 5</div>';
+    top5.forEach(item => {
+      const q = item.q.length > 30 ? item.q.slice(0,30) + '...' : item.q;
+      html += '<div class="bar-item"><div class="bar-label">' + q + '</div>' +
+        '<div class="bar-row"><div class="bar-track"><div class="bar-fill-red" style="width:' + item.pct + '%"></div></div>' +
+        '<div class="bar-val">' + item.pct + '%</div></div></div>';
+    });
+  }
+
+  el.innerHTML = html;
+}
+
+function showRankModal(grade, empType) {
+  const sets = loadSets().filter(s => s.type === empType);
+  const setIds = sets.map(s => s.id);
+  let scores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'));
+
+  let title, ranked;
+  if (grade === 'excellent') {
+    title = '🟢 우수 직원 순위 (90점↑)';
+    ranked = scores.filter(s => (s.pct||0) >= 90).sort((a,b) => (b.pct||0)-(a.pct||0));
+  } else if (grade === 'basic') {
+    title = '🔵 기본 직원 순위 (80~89점)';
+    ranked = scores.filter(s => (s.pct||0) >= 80 && (s.pct||0) < 90).sort((a,b) => (b.pct||0)-(a.pct||0));
+  } else {
+    title = '🔴 미달 직원 순위 (오답 많은 순)';
+    ranked = scores.filter(s => (s.pct||0) < 80).sort((a,b) => {
+      const wa = (a.wrongQuestions||[]).length, wb = (b.wrongQuestions||[]).length;
+      return wb - wa;
+    });
+  }
+
+  const empLabel = empType === 'new' ? '신규입사자' : '기존직원';
+  document.getElementById('rank-modal-title').textContent = '[' + empLabel + '] ' + title;
+
+  if (ranked.length === 0) {
+    document.getElementById('rank-modal-list').innerHTML = '<div class="dash-empty">해당하는 응시자가 없습니다.</div>';
+  } else {
+    document.getElementById('rank-modal-list').innerHTML = ranked.map((s, i) => {
+      const scoreText = grade === 'below'
+        ? (s.wrongQuestions||[]).length + '개 오답'
+        : (s.pct||0) + '점';
+      const scoreColor = grade === 'excellent' ? '#22c55e' : grade === 'basic' ? '#0E94CD' : '#ef4444';
+      return '<div class="rank-item">' +
+        '<div class="rank-num">' + (i+1) + '</div>' +
+        '<div>' +
+          '<div class="rank-name">' + (s.name||'-') + '</div>' +
+          '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + (s.quizName ? ' · ' + s.quizName : '') + '</div>' +
+        '</div>' +
+        '<div class="rank-score" style="color:' + scoreColor + ';">' + scoreText + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  document.getElementById('rank-modal').classList.add('active');
+}
+function closeRankModal() { document.getElementById('rank-modal').classList.remove('active'); }
 
 function renderDashboard() {
   const statsEl   = document.getElementById('dash-stats');
@@ -1049,6 +1291,7 @@ function renderDashboard() {
   if (!_dashSetId) {
     statsEl.style.display = 'none';
     chartsEl.style.display = 'none';
+    phEl.innerHTML = '퀴즈를 선택하면 대시보드가 표시됩니다.';
     phEl.style.display = 'block';
     return;
   }
@@ -1060,7 +1303,7 @@ function renderDashboard() {
     statsEl.style.display = 'none';
     chartsEl.style.display = 'none';
     document.getElementById('dash-dist').style.display = 'none';
-    phEl.textContent = '아직 응시 기록이 없습니다.';
+    phEl.innerHTML = '아직 응시 기록이 없습니다.';
     phEl.style.display = 'block';
     return;
   }
@@ -1086,14 +1329,19 @@ function renderDashboard() {
     '<div class="score-dist-seg" style="flex:' + pct90 + ';background:#22c55e;">' + (pct90 >= 12 ? pct90 + '%' : '') + '</div>' +
     '<div class="score-dist-seg" style="flex:' + pct80 + ';background:#0E94CD;">' + (pct80 >= 12 ? pct80 + '%' : '') + '</div>' +
     '<div class="score-dist-seg" style="flex:' + (pctLow||1) + ';background:#ef4444;">' + (pctLow >= 12 ? pctLow + '%' : '') + '</div>';
+  const set = getSetById(_dashSetId);
+  const setEmpType = (set && set.type) ? set.type : 'new';
   document.getElementById('dash-dist-labels').innerHTML =
-    '<div class="score-dist-lbl"><div class="score-dist-lbl-title" style="color:#22c55e;">우수 (90점↑)</div>' +
+    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'excellent\',\'' + setEmpType + '\')">' +
+      '<div class="score-dist-lbl-title" style="color:#22c55e;">우수 (90점↑)</div>' +
       '<div class="score-dist-lbl-val" style="color:#22c55e;">' + cnt90 + '명</div>' +
       '<div class="score-dist-lbl-sub">' + pct90 + '%</div></div>' +
-    '<div class="score-dist-lbl"><div class="score-dist-lbl-title" style="color:#0E94CD;">기본 (80~89점)</div>' +
+    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'basic\',\'' + setEmpType + '\')">' +
+      '<div class="score-dist-lbl-title" style="color:#0E94CD;">기본 (80~89점)</div>' +
       '<div class="score-dist-lbl-val" style="color:#0E94CD;">' + cnt80 + '명</div>' +
       '<div class="score-dist-lbl-sub">' + pct80 + '%</div></div>' +
-    '<div class="score-dist-lbl"><div class="score-dist-lbl-title" style="color:#ef4444;">미달 (80점 미만)</div>' +
+    '<div class="score-dist-lbl clickable" style="cursor:pointer;" onclick="showRankModal(\'below\',\'' + setEmpType + '\')">' +
+      '<div class="score-dist-lbl-title" style="color:#ef4444;">미달 (80점 미만)</div>' +
       '<div class="score-dist-lbl-val" style="color:#ef4444;">' + cntLow + '명</div>' +
       '<div class="score-dist-lbl-sub">' + pctLow + '%</div></div>';
   document.getElementById('dash-dist').style.display = 'block';
@@ -1439,7 +1687,7 @@ function renderEmployeesLevel() {
         '<span class="badge ' + bc + '">' + pct + '</span>' +
         '<span style="font-size:12px;color:var(--text-muted);">' + formatDur(s.duration) + '</span>' +
         '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
-        '</div></div>';
+              '</div></div>';
     });
     html += '</div>';
   }
@@ -1545,11 +1793,12 @@ function renderQSetList() {
   } else {
     html += '<div style="display:flex;flex-direction:column;gap:10px;">';
     sets.forEach(set => {
+      const typeLabel = set.type === 'existing' ? '기존직원' : '신규입사자';
       html += '<div class="card" style="padding:16px 18px;">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
         '<div style="cursor:pointer;flex:1;" onclick="drillToQSet(\'' + set.id + '\')">' +
         '<div style="font-size:15px;font-weight:800;">' + set.name + '</div>' +
-        '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">문제 ' + set.questions.length + '개</div></div>' +
+        '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">문제 ' + set.questions.length + '개 · ' + typeLabel + '</div></div>' +
         '<div style="display:flex;gap:6px;align-items:center;">' +
         '<span style="color:var(--text-muted);font-size:20px;cursor:pointer;" onclick="drillToQSet(\'' + set.id + '\')">›</span>' +
         '<button class="btn btn-sm btn-danger" onclick="confirmDeleteSet(\'' + set.id + '\')">삭제</button>' +
@@ -1619,6 +1868,7 @@ function saveSetSettings(setId) {
 /* ─── Quiz Set CRUD ──────────────────────────────────────────── */
 function openNewSetModal() {
   document.getElementById('new-set-name').value = '';
+  document.querySelectorAll('input[name="new-set-type"]').forEach(r => { r.checked = r.value === 'new'; });
   document.getElementById('new-set-modal').classList.add('active');
   setTimeout(() => document.getElementById('new-set-name').focus(), 100);
 }
@@ -1626,8 +1876,10 @@ function closeNewSetModal() { document.getElementById('new-set-modal').classList
 function createSet() {
   const name = document.getElementById('new-set-name').value.trim();
   if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
+  const typeRadio = document.querySelector('input[name="new-set-type"]:checked');
+  const type = typeRadio ? typeRadio.value : 'new';
   const sets = loadSets();
-  sets.push({ id: 'set_' + Date.now(), name, questions: [], quizCount: 0, timerMin: 0 });
+  sets.push({ id: 'set_' + Date.now(), name, type, questions: [], quizCount: 0, timerMin: 0 });
   saveSets(sets);
   closeNewSetModal();
   renderQTab();
@@ -1709,7 +1961,6 @@ function deleteQ(idx) {
   saveSets(sets);
   renderQListItems();
 }
-
 
 /* ─── QR Tab ─────────────────────────────────────────────────── */
 let _qrOpen = {};
