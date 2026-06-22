@@ -409,7 +409,8 @@
         </svg>
       </div>
       <p class="name-date" id="name-date"></p>
-      <p id="quiz-title-display" style="font-size:13px;color:var(--blue);font-weight:700;margin-bottom:8px;min-height:18px;"></p>
+      <p id="quiz-title-display" style="font-size:13px;color:var(--blue);font-weight:700;margin-bottom:4px;min-height:18px;"></p>
+      <p id="quiz-timer-display" style="font-size:12px;color:var(--text-muted);margin-bottom:12px;min-height:16px;"></p>
       <p class="name-title">오늘 함께하실 분의<br>이름을 알려주세요</p>
       <div class="form-group" style="text-align:left;">
         <label>이름</label>
@@ -431,6 +432,7 @@
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="q-progress" style="width:0%"></div>
   </div>
+  <div class="timer-wrap" id="timer-wrap"></div>
   <div class="page">
     <p class="q-text" id="q-text"></p>
     <div class="q-options" id="q-options"></div>
@@ -438,7 +440,6 @@
     <div class="q-next-wrap" id="q-next-wrap">
       <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
     </div>
-    <div class="timer-wrap" id="timer-wrap"></div>
   </div>
 </div>
 
@@ -1012,6 +1013,8 @@ function selectQuizSet(setId) {
   const set = getSetById(setId);
   document.getElementById('quiz-title-display').textContent = set ? set.name : '';
   document.getElementById('name-date').textContent = formatDate();
+  const timerEl = document.getElementById('quiz-timer-display');
+  if (timerEl) timerEl.textContent = (set && set.timerMin > 0) ? '⏱ 제한시간 ' + set.timerMin + '분' : '';
   showScreen('s-name');
 }
 
@@ -1606,8 +1609,9 @@ function renderDashboard() {
     });
   document.getElementById('dash-cohort-chart').innerHTML = cohortItems.length ? (function(items) {
     const W = 480, H = 212;
-    const pad = { top: 40, right: 46, bottom: 34, left: 44 };
+    const pad = { top: 40, right: 46, bottom: 42, left: 44 };
     const iW = W - pad.left - pad.right, iH = H - pad.top - pad.bottom;
+    const barBottom = pad.top + iH;
     const n = items.length;
     const step = iW / Math.max(n, 1);
     const barW = Math.min(38, step * 0.55);
@@ -1640,7 +1644,7 @@ function renderDashboard() {
       const by = pad.top + iH - bh;
       const lbl = "'" + item.label.replace(/'/g, "\\'") + "'";
       s += '<rect x="' + (cx-barW/2) + '" y="' + by + '" width="' + barW + '" height="' + (bh||1) + '" fill="#0E94CD" rx="4" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal(' + lbl + ',\'detail\',null)"/>';
-      s += '<text x="' + cx + '" y="' + (by-5) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1a2233" style="pointer-events:none;">' + item.avgScore + '점</text>';
+      s += '<text x="' + cx + '" y="' + (barBottom+13) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1a2233" style="pointer-events:none;">' + item.avgScore + '점</text>';
       s += '<text x="' + cx + '" y="' + (H-4) + '" text-anchor="middle" font-size="10" fill="#6b7c93">' + item.label + '</text>';
     });
     // 라인 (응시인원)
@@ -2297,6 +2301,7 @@ function setupSetDrag() {
       const [moved] = sets.splice(srcIdx, 1);
       sets.splice(dstIdx, 0, moved);
       saveSets(sets);
+      fsSyncSet(moved);
       renderQSetList();
     });
   });
@@ -2427,6 +2432,7 @@ function setupQDrag() {
       const [moved] = sets[setIdx].questions.splice(srcIdx, 1);
       sets[setIdx].questions.splice(dstIdx, 0, moved);
       saveSets(sets);
+      fsSyncSet(sets[setIdx]);
       renderQListItems();
     });
   });
@@ -2701,6 +2707,8 @@ if (URL_MODE === 'admin') {
   const localSet = getSetById(URL_QUIZ);
   if (localSet) {
     document.getElementById('quiz-title-display').textContent = localSet.name;
+    const timerEl = document.getElementById('quiz-timer-display');
+    if (timerEl) timerEl.textContent = (localSet.timerMin > 0) ? '⏱ 제한시간 ' + localSet.timerMin + '분' : '';
     showScreen('s-name');
   } else {
     // localStorage에 없으면 Firestore에서 조회
@@ -2713,6 +2721,8 @@ if (URL_MODE === 'admin') {
         if (!sets.find(s => s.id === remoteSet.id)) { sets.push(remoteSet); saveSets(sets); }
         currentQuizSetId = remoteSet.id;
         document.getElementById('quiz-title-display').textContent = remoteSet.name;
+        const timerEl = document.getElementById('quiz-timer-display');
+        if (timerEl) timerEl.textContent = (remoteSet.timerMin > 0) ? '⏱ 제한시간 ' + remoteSet.timerMin + '분' : '';
         showScreen('s-name');
       } else {
         renderQuizSelect();
