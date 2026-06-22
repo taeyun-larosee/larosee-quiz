@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ë¼ë¡ì§ìµ | LA ROSÃE</title>
+  <title>라로지앵 | LA ROSÉE</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -141,7 +141,7 @@
     }
     .fade-in { animation: fadeInUp 0.24s ease; }
 
-    /* ââ NAME / SELECT SCREEN ââ */
+    /* ══ NAME / SELECT SCREEN ══ */
     .name-screen-wrap {
       min-height: calc(100vh - 57px);
       display: flex;
@@ -163,7 +163,7 @@
     .name-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 28px; line-height: 1.4; }
     .name-logo { margin-bottom: 20px; }
 
-    /* ââ QUIZ SCREEN ââ */
+    /* ══ QUIZ SCREEN ══ */
     .progress-bar-wrap { height: 6px; background: var(--blue-light); border-radius: 999px; margin: 16px 20px; overflow: hidden; }
     .progress-bar-fill { height: 100%; background: var(--blue); border-radius: 999px; transition: width 0.3s ease; }
     .q-text { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 20px; line-height: 1.6; }
@@ -190,7 +190,7 @@
     .timer-wrap.warning { color: var(--error); font-weight: 700; }
     #s-quiz .page { padding-bottom: 100px; }
 
-    /* ââ RESULTS / REVIEW ââ */
+    /* ══ RESULTS / REVIEW ══ */
     .results-wrap {
       min-height: calc(100vh - 57px); display: flex; align-items: center;
       justify-content: center; padding: 24px 16px;
@@ -207,7 +207,7 @@
     .review-item-answer-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
     .review-item-answer { font-size: 14px; font-weight: 600; color: var(--success-text); background: var(--success-bg); padding: 8px 12px; border-radius: 8px; }
 
-    /* ââ ADMIN ââ */
+    /* ══ ADMIN ══ */
     .admin-login-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
     .admin-login-card {
       background: white; border-radius: 24px; border: 1px solid var(--border);
@@ -237,7 +237,7 @@
     .drag-handle:active { cursor: grabbing; }
     .drag-item.drag-over { outline: 2px dashed var(--blue); outline-offset: 2px; border-radius: 12px; }
     .tab-content.active { display: block; }
-    /* ââ Dashboard ââ */
+    /* ── Dashboard ── */
     .dash-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
     .dash-select { flex:1; min-width:180px; padding:9px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-weight:700; color:var(--text); background:white; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230E94CD' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
     .dash-select:focus { outline:none; border-color:var(--blue); }
@@ -305,7 +305,7 @@
     .employee-card { cursor: pointer; transition: background 0.15s; }
     .employee-card:hover { background: var(--gray) !important; }
 
-    /* ââ LECTURE ââ */
+    /* ══ LECTURE ══ */
     #s-lecture { background: #0a1628; min-height: 100vh; }
     .lecture-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .lecture-counter { color: rgba(255,255,255,0.5); font-size: 14px; font-weight: 600; }
@@ -322,18 +322,18 @@
     .lec-reveal-btn { padding: 12px 24px; border-radius: 10px; border: none; background: var(--blue); color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .lec-reveal-btn.revealed { background: var(--success); }
 
-    /* ââ DASH SIDEBAR LAYOUT ââ */
+    /* ══ DASH SIDEBAR LAYOUT ══ */
     .dash-with-sidebar { display:flex; align-items:stretch; min-height:calc(100vh - 100px); }
     .dash-sidebar { width:280px; flex-shrink:0; padding:16px 14px; border-right:1.5px solid var(--border); background:white; display:flex; flex-direction:column; gap:10px; }
     .dash-sidebar-label { font-size:10px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; }
     .dash-content { flex:1; min-width:0; overflow-x:auto; }
     .dash-select-wrap { position:relative; }
-    .dash-select-wrap::after { content:'â¾'; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:13px; pointer-events:none; font-weight:700; }
+    .dash-select-wrap::after { content:'▾'; position:absolute; right:10px; top:50%; transform:translateY(-50%); color:var(--blue); font-size:13px; pointer-events:none; font-weight:700; }
     .dash-quiz-select { width:100%; padding:10px 28px 10px 12px; font-size:13px; font-weight:600; color:var(--text); border:1.5px solid var(--border); border-radius:8px; background:white; appearance:none; -webkit-appearance:none; cursor:pointer; font-family:inherit; outline:none; transition:border-color 0.15s; }
     .dash-quiz-select:focus { border-color:var(--blue); }
     @media (max-width:700px) { .dash-with-sidebar{flex-direction:column;} .dash-sidebar{width:100%;border-right:none;border-bottom:1.5px solid var(--border);flex-direction:row;flex-wrap:wrap;align-items:center;} }
 
-    /* ââ MAIN DASHBOARD ââ */
+    /* ══ MAIN DASHBOARD ══ */
     .main-dash-outer { max-width:1400px; margin:0 auto; padding:20px 24px 48px; }
     .main-dash-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
     .main-dash-col { background:white; border:1.5px solid var(--border); border-radius:16px; padding:20px; min-width:0; }
@@ -356,7 +356,7 @@
     .mini-section-title { font-size:11px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px; margin-top:16px; }
     @media (max-width:700px) { .main-dash-grid { grid-template-columns:1fr; } }
 
-    /* ââ LOADING ââ */
+    /* ══ LOADING ══ */
     .loading-spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid var(--border); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -372,61 +372,61 @@
 </head>
 <body>
 
-<!-- ââ Header ââ -->
+<!-- ── Header ── -->
 <header class="header" id="main-header">
   <svg width="90" height="32" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÃE</text>
+    <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
     <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
   </svg>
   <button class="home-btn" onclick="goHome()">HOME</button>
 </header>
 
-<!-- ââ SCREEN: Quiz Select ââ -->
+<!-- ══ SCREEN: Quiz Select ══ -->
 <div id="s-quiz-select" class="screen">
   <div class="name-screen-wrap">
     <div class="name-card fade-in">
       <div class="name-logo">
         <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÃE</text>
+          <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
           <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
         </svg>
       </div>
       <p class="name-date" id="name-date-select"></p>
-      <p class="name-title">ì´ë¤ í´ì¦ë¥¼ ììí ê¹ì?</p>
+      <p class="name-title">어떤 퀴즈를 시작할까요?</p>
       <div id="quiz-select-list" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;"></div>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Name Input ââ -->
+<!-- ══ SCREEN: Name Input ══ -->
 <div id="s-name" class="screen">
   <div class="name-screen-wrap">
     <div class="name-card fade-in">
       <div class="name-logo">
         <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÃE</text>
+          <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
           <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
         </svg>
       </div>
       <p class="name-date" id="name-date"></p>
       <p id="quiz-title-display" style="font-size:13px;color:var(--blue);font-weight:700;margin-bottom:8px;min-height:18px;"></p>
-      <p class="name-title">ì¤ë í¨ê»íì¤ ë¶ì<br>ì´ë¦ì ìë ¤ì£¼ì¸ì</p>
+      <p class="name-title">오늘 함께하실 분의<br>이름을 알려주세요</p>
       <div class="form-group" style="text-align:left;">
-        <label>ì´ë¦</label>
-        <input type="text" id="name-input" placeholder="ì´ë¦ì ìë ¥í´ì£¼ì¸ì." maxlength="20"
+        <label>이름</label>
+        <input type="text" id="name-input" placeholder="이름을 입력해주세요." maxlength="20"
           onkeydown="if(event.key==='Enter') document.getElementById('cohort-input').focus()">
       </div>
       <div class="form-group" style="text-align:left;">
-        <label>ê¸°ì</label>
-        <input type="text" inputmode="numeric" id="cohort-input" placeholder="ê¸°ìë¥¼ ìë ¥í´ì£¼ì¸ì. (ì: 1)" maxlength="5"
+        <label>기수</label>
+        <input type="text" inputmode="numeric" id="cohort-input" placeholder="기수를 입력해주세요. (예: 1)" maxlength="5"
           onkeydown="if(event.key==='Enter') startQuiz()">
       </div>
-      <button class="btn btn-primary btn-block" onclick="startQuiz()">í´ì¦ ììíê¸° &rarr;</button>
+      <button class="btn btn-primary btn-block" onclick="startQuiz()">퀴즈 시작하기 &rarr;</button>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Quiz ââ -->
+<!-- ══ SCREEN: Quiz ══ -->
 <div id="s-quiz" class="screen">
   <div class="progress-bar-wrap">
     <div class="progress-bar-fill" id="q-progress" style="width:0%"></div>
@@ -436,123 +436,123 @@
     <div class="q-options" id="q-options"></div>
     <div class="q-feedback" id="q-feedback"></div>
     <div class="q-next-wrap" id="q-next-wrap">
-      <button class="btn btn-primary btn-block" onclick="nextQuestion()">ë¤ìì¼ë¡</button>
+      <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
     </div>
     <div class="timer-wrap" id="timer-wrap"></div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Results ââ -->
+<!-- ══ SCREEN: Results ══ -->
 <div id="s-results" class="screen">
   <div class="results-wrap">
     <div class="results-card fade-in">
       <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÃE</text>
+        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
         <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
       </svg>
-      <p class="results-msg">ìê³ íì¨ì´ì!</p>
+      <p class="results-msg">수고하셨어요!</p>
       <div class="results-btns">
-        <button class="btn btn-primary btn-block" id="btn-review" onclick="showReview()" style="display:none;">ë¤ì íë² ëë¬ë³¼ê¹ì?</button>
+        <button class="btn btn-primary btn-block" id="btn-review" onclick="showReview()" style="display:none;">다시 한번 둘러볼까요?</button>
         <button class="btn btn-outline btn-block" onclick="goHome()">HOME</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Review ââ -->
+<!-- ══ SCREEN: Review ══ -->
 <div id="s-review" class="screen">
   <div class="page">
     <div style="margin-bottom:24px;">
-      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">ë¬¸ì ë³ ë¦¬ë·°</h2>
-      <p style="font-size:14px;color:var(--text-muted);">íë¦° ë¬¸ì ë¥¼ ë¤ì íì¸í´ë³´ì¸ì</p>
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:6px;">문제별 리뷰</h2>
+      <p style="font-size:14px;color:var(--text-muted);">틀린 문제를 다시 확인해보세요</p>
     </div>
     <div id="review-list"></div>
     <div style="margin-top:8px;display:flex;flex-direction:column;gap:10px;">
-      <button class="btn btn-primary btn-block" onclick="retake()">ë¤ì ëì </button>
+      <button class="btn btn-primary btn-block" onclick="retake()">다시 도전</button>
       <button class="btn btn-outline btn-block" onclick="goHome()">HOME</button>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Admin Login ââ -->
+<!-- ══ SCREEN: Admin Login ══ -->
 <div id="s-admin-login" class="screen">
   <div class="admin-login-wrap">
     <div class="admin-login-card fade-in">
       <svg width="110" height="38" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:24px;">
-        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÃE</text>
+        <text x="0" y="28" font-family="Georgia, serif" font-size="18" font-weight="400" fill="#0E94CD" letter-spacing="3">LA ROSÉE</text>
         <text x="0" y="38" font-family="Georgia, serif" font-size="8" fill="#6b7c93" letter-spacing="5">PARIS</text>
       </svg>
-      <h2 style="font-size:18px;font-weight:800;margin-bottom:6px;">ê´ë¦¬ì ë¡ê·¸ì¸</h2>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">ì´ê¸° ë¹ë°ë²í¸: larosee1234</p>
+      <h2 style="font-size:18px;font-weight:800;margin-bottom:6px;">관리자 로그인</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px;">초기 비밀번호: larosee1234</p>
       <div class="form-group" style="text-align:left;">
-        <label>ë¹ë°ë²í¸</label>
-        <input type="password" id="admin-pw" placeholder="ë¹ë°ë²í¸" onkeydown="if(event.key==='Enter') adminLogin()">
+        <label>비밀번호</label>
+        <input type="password" id="admin-pw" placeholder="비밀번호" onkeydown="if(event.key==='Enter') adminLogin()">
       </div>
-      <div class="alert alert-error" id="admin-pw-err" style="display:none;">ë¹ë°ë²í¸ê° ì¬ë°ë¥´ì§ ììµëë¤.</div>
-      <button class="btn btn-primary btn-block" onclick="adminLogin()">ë¡ê·¸ì¸</button>
+      <div class="alert alert-error" id="admin-pw-err" style="display:none;">비밀번호가 올바르지 않습니다.</div>
+      <button class="btn btn-primary btn-block" onclick="adminLogin()">로그인</button>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Admin Panel ââ -->
+<!-- ══ SCREEN: Admin Panel ══ -->
 <div id="s-admin" class="screen">
   <div class="admin-header">
-    <span class="admin-title">ê´ë¦¬ì</span>
+    <span class="admin-title">관리자</span>
     <div class="admin-header-btns">
-      <button class="btn btn-sm btn-outline" onclick="startLecture()">ê°ì ëª¨ë</button>
-      <button class="btn btn-sm btn-danger" onclick="adminLogout()">ë¡ê·¸ìì</button>
+      <button class="btn btn-sm btn-outline" onclick="startLecture()">강의 모드</button>
+      <button class="btn btn-sm btn-danger" onclick="adminLogout()">로그아웃</button>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" id="tab-btn-dash" onclick="switchTab('dash')">ëìë³´ë</button>
-    <button class="tab-btn" id="tab-btn-scores" onclick="switchTab('scores')">ì ì</button>
-    <button class="tab-btn" id="tab-btn-questions" onclick="switchTab('questions')">ë¬¸ì </button>
+    <button class="tab-btn active" id="tab-btn-dash" onclick="switchTab('dash')">대시보드</button>
+    <button class="tab-btn" id="tab-btn-scores" onclick="switchTab('scores')">점수</button>
+    <button class="tab-btn" id="tab-btn-questions" onclick="switchTab('questions')">문제</button>
     <button class="tab-btn" id="tab-btn-qr" onclick="switchTab('qr')">QR</button>
-    <button class="tab-btn" id="tab-btn-settings" onclick="switchTab('settings')">ì¤ì </button>
+    <button class="tab-btn" id="tab-btn-settings" onclick="switchTab('settings')">설정</button>
   </div>
 
   <!-- Tab: Dashboard -->
   <div id="tab-dash" class="tab-content active">
     <div class="dash-with-sidebar">
-      <!-- ì¢ì¸¡ ì¬ì´ëë°: í´ì¦ ì í -->
+      <!-- 좌측 사이드바: 퀴즈 선택 -->
       <div class="dash-sidebar">
-        <div class="dash-sidebar-label">í´ì¦ ì í</div>
+        <div class="dash-sidebar-label">퀴즈 선택</div>
         <div class="dash-select-wrap">
           <select class="dash-quiz-select" id="dash-quiz-select" onchange="switchDashSubTab(this.value)">
-            <option value="__all__">ì ì²´ ëìë³´ë</option>
+            <option value="__all__">전체 대시보드</option>
           </select>
         </div>
-        <button class="btn btn-sm btn-outline" style="width:100%;font-size:12px;" onclick="loadDashboard()">ìë¡ê³ ì¹¨</button>
+        <button class="btn btn-sm btn-outline" style="width:100%;font-size:12px;" onclick="loadDashboard()">새로고침</button>
       </div>
 
-      <!-- ì°ì¸¡ ì½íì¸  ìì­ -->
+      <!-- 우측 콘텐츠 영역 -->
       <div class="dash-content">
 
-        <!-- ì ì²´ ë©ì¸ ëìë³´ë (ì ê·/ê¸°ì¡´ 2ì¹¼ë¼) -->
+        <!-- 전체 메인 대시보드 (신규/기존 2칼럼) -->
         <div id="dash-main-view">
           <div class="main-dash-outer">
             <div class="main-dash-grid">
               <div class="main-dash-col">
-                <div class="main-dash-col-title">ð¢ ì ê·ìì¬ì</div>
-                <div id="dash-col-new-content"><div class="dash-empty">ë¡ë© ì¤...</div></div>
+                <div class="main-dash-col-title">🟢 신규입사자</div>
+                <div id="dash-col-new-content"><div class="dash-empty">로딩 중...</div></div>
               </div>
               <div class="main-dash-col">
-                <div class="main-dash-col-title">ðµ ê¸°ì¡´ì§ì</div>
-                <div id="dash-col-existing-content"><div class="dash-empty">ë¡ë© ì¤...</div></div>
+                <div class="main-dash-col-title">🔵 기존직원</div>
+                <div id="dash-col-existing-content"><div class="dash-empty">로딩 중...</div></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- í´ì¦ë³ ìì¸ ëìë³´ë -->
+        <!-- 퀴즈별 상세 대시보드 -->
         <div id="dash-detail-view" style="display:none;">
           <div class="page">
             <div id="dash-stats" class="stat-grid" style="display:none;">
               <div class="stat-card" id="ds-total-card" style="cursor:pointer;" onclick="showAttendeeModalDetail()">
-                <div class="stat-num" id="ds-total">-</div><div class="stat-lbl">ì´ ììì â</div>
+                <div class="stat-num" id="ds-total">-</div><div class="stat-lbl">총 응시자 ↗</div>
               </div>
-              <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">íê·  ì ì</div></div>
-              <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">íê·  ìê°</div></div>
+              <div class="stat-card"><div class="stat-num" id="ds-avg">-</div><div class="stat-lbl">평균 점수</div></div>
+              <div class="stat-card"><div class="stat-num" id="ds-time">-</div><div class="stat-lbl">평균 시간</div></div>
             </div>
             <div id="dash-dist" style="display:none;margin-bottom:20px;">
               <div class="score-dist-bar" id="dash-dist-bar"></div>
@@ -560,11 +560,11 @@
             </div>
             <div class="dash-grid" id="dash-charts" style="display:none;">
               <div class="dash-panel">
-                <div class="dash-panel-title">ê¸°ìë³ íê·  ì ì</div>
+                <div class="dash-panel-title">기수별 평균 점수</div>
                 <div id="dash-cohort-chart"></div>
               </div>
               <div class="dash-panel">
-                <div class="dash-panel-title">ìµë¤ ì¤ëµ ì§ë¬¸ TOP 5</div>
+                <div class="dash-panel-title">최다 오답 질문 TOP 5</div>
                 <div id="dash-top-wrong"></div>
               </div>
             </div>
@@ -579,21 +579,21 @@
   <!-- Tab: Scores -->
   <div id="tab-scores" class="tab-content">
     <div class="page">
-      <!-- ê¸°ì ê´ë¦¬ -->
+      <!-- 기수 관리 -->
       <div class="card" style="margin-bottom:16px;">
-        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">ê¸°ì ê´ë¦¬</div>
+        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">기수 관리</div>
         <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <input type="text" inputmode="numeric" id="cohort-add-input" placeholder="ê¸°ì ìë ¥ (ì: 1)" maxlength="5" style="flex:1;"
+          <input type="text" inputmode="numeric" id="cohort-add-input" placeholder="기수 입력 (예: 1)" maxlength="5" style="flex:1;"
             onkeydown="if(event.key==='Enter') addCohort()">
-          <button class="btn btn-sm btn-primary" onclick="addCohort()">+ ì¶ê°</button>
+          <button class="btn btn-sm btn-primary" onclick="addCohort()">+ 추가</button>
         </div>
         <div id="cohort-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
-      <!-- í´ë° -->
+      <!-- 툴바 -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">-</span>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">ì­ì </button>
+          <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">삭제</button>
           <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV</button>
         </div>
       </div>
@@ -619,75 +619,75 @@
   <div id="tab-settings" class="tab-content">
     <div class="page">
       <div class="card">
-        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;">ë¹ë°ë²í¸ ë³ê²½</h3>
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;">비밀번호 변경</h3>
         <div class="form-group">
-          <label>íì¬ ë¹ë°ë²í¸</label>
-          <input type="password" id="pw-cur" placeholder="íì¬ ë¹ë°ë²í¸">
+          <label>현재 비밀번호</label>
+          <input type="password" id="pw-cur" placeholder="현재 비밀번호">
         </div>
         <div class="form-group">
-          <label>ì ë¹ë°ë²í¸</label>
-          <input type="password" id="pw-new" placeholder="ì ë¹ë°ë²í¸">
+          <label>새 비밀번호</label>
+          <input type="password" id="pw-new" placeholder="새 비밀번호">
         </div>
         <div class="form-group">
-          <label>ì ë¹ë°ë²í¸ íì¸</label>
-          <input type="password" id="pw-new2" placeholder="ì ë¹ë°ë²í¸ íì¸">
+          <label>새 비밀번호 확인</label>
+          <input type="password" id="pw-new2" placeholder="새 비밀번호 확인">
         </div>
         <div class="alert alert-error" id="pw-err" style="display:none;"></div>
-        <div class="alert alert-success" id="pw-ok" style="display:none;">ë¹ë°ë²í¸ê° ë³ê²½ëììµëë¤.</div>
-        <button class="btn btn-primary" onclick="changePw()">ë³ê²½ ì ì¥</button>
+        <div class="alert alert-success" id="pw-ok" style="display:none;">비밀번호가 변경되었습니다.</div>
+        <button class="btn btn-primary" onclick="changePw()">변경 저장</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ââ SCREEN: Lecture ââ -->
+<!-- ══ SCREEN: Lecture ══ -->
 <div id="s-lecture" class="screen">
   <div class="lecture-header">
     <span class="lecture-counter" id="lec-q-num">1 / 0</span>
     <span class="lecture-label" id="lec-label">QUESTION 1</span>
-    <button class="lec-nav-btn" onclick="exitLecture()">â ëê°ê¸°</button>
+    <button class="lec-nav-btn" onclick="exitLecture()">← 나가기</button>
   </div>
   <div class="lecture-q" id="lec-q"></div>
   <div class="lecture-options" id="lec-options"></div>
   <div id="lec-explanation" style="display:none;"></div>
   <div class="lecture-footer">
-    <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>â ì´ì </button>
-    <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">ì ëµ ê³µê°</button>
-    <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">ë¤ì â</button>
+    <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
+    <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
+    <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
   </div>
 </div>
 
-<!-- ââ Modal: Error Rate ââ -->
+<!-- ══ Modal: Error Rate ══ -->
 <div class="modal-overlay" id="error-rate-modal">
   <div class="modal-box">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <div class="modal-title" style="margin-bottom:0;">ë¬¸ì ë³ ì¤ëµë¥ </div>
-      <button class="btn btn-sm btn-outline" onclick="closeErrorRateModal()">ë«ê¸°</button>
+      <div class="modal-title" style="margin-bottom:0;">문제별 오답률</div>
+      <button class="btn btn-sm btn-outline" onclick="closeErrorRateModal()">닫기</button>
     </div>
     <div id="error-rate-modal-list"></div>
   </div>
 </div>
 
-<!-- ââ Modal: Rank ââ -->
+<!-- ══ Modal: Rank ══ -->
 <div class="modal-overlay" id="rank-modal">
   <div class="modal-box" style="max-width:480px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <div class="modal-title" id="rank-modal-title" style="margin-bottom:0;"></div>
-      <button class="btn btn-sm btn-outline" onclick="closeRankModal()">ë«ê¸°</button>
+      <button class="btn btn-sm btn-outline" onclick="closeRankModal()">닫기</button>
     </div>
     <div id="rank-modal-list"></div>
   </div>
 </div>
 
-<!-- ââ Modal: ììì ëª©ë¡ ââ -->
+<!-- ══ Modal: 응시자 목록 ══ -->
 <div class="modal-overlay" id="attendee-modal">
   <div class="modal-box" style="max-width:500px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div class="modal-title" id="attendee-modal-title" style="margin-bottom:0;">ììì ëª©ë¡</div>
-      <button class="btn btn-sm btn-outline" onclick="document.getElementById('attendee-modal').classList.remove('active')">ë«ê¸°</button>
+      <div class="modal-title" id="attendee-modal-title" style="margin-bottom:0;">응시자 목록</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('attendee-modal').classList.remove('active')">닫기</button>
     </div>
     <div style="margin-bottom:12px;">
-      <input type="text" id="attendee-search" placeholder="ì´ë¦ ê²ì..." oninput="filterAttendeeList()"
+      <input type="text" id="attendee-search" placeholder="이름 검색..." oninput="filterAttendeeList()"
         style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border-color 0.15s;"
         onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
     </div>
@@ -695,140 +695,140 @@
   </div>
 </div>
 
-<!-- ââ Modal: ì§ì íë¦° ì§ë¬¸ ââ -->
+<!-- ══ Modal: 직원 틀린 질문 ══ -->
 <div class="modal-overlay" id="wrong-q-modal">
   <div class="modal-box" style="max-width:540px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <div class="modal-title" id="wrong-q-modal-title" style="margin-bottom:0;">íë¦° ì§ë¬¸ ëª©ë¡</div>
-      <button class="btn btn-sm btn-outline" onclick="document.getElementById('wrong-q-modal').classList.remove('active')">ë«ê¸°</button>
+      <div class="modal-title" id="wrong-q-modal-title" style="margin-bottom:0;">틀린 질문 목록</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('wrong-q-modal').classList.remove('active')">닫기</button>
     </div>
     <div id="wrong-q-modal-sub" style="font-size:12px;color:var(--text-muted);margin-bottom:14px;"></div>
     <div id="wrong-q-modal-list"></div>
   </div>
 </div>
 
-<!-- ââ Modal: ê¸°ìë³ ììì ââ -->
+<!-- ══ Modal: 기수별 응시자 ══ -->
 <div class="modal-overlay" id="cohort-modal">
   <div class="modal-box" style="max-width:520px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <div class="modal-title" id="cohort-modal-title" style="margin-bottom:0;">ê¸°ì ììì</div>
-      <button class="btn btn-sm btn-outline" onclick="document.getElementById('cohort-modal').classList.remove('active')">ë«ê¸°</button>
+      <div class="modal-title" id="cohort-modal-title" style="margin-bottom:0;">기수 응시자</div>
+      <button class="btn btn-sm btn-outline" onclick="document.getElementById('cohort-modal').classList.remove('active')">닫기</button>
     </div>
     <div id="cohort-modal-list"></div>
   </div>
 </div>
 
-<!-- ââ Modal: Answer Distribution ââ -->
+<!-- ══ Modal: Answer Distribution ══ -->
 <div class="modal-overlay" id="ans-dist-modal">
   <div class="modal-box" style="max-width:520px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <div class="modal-title" style="margin-bottom:0;">ì ì§ë³ ì í ë¹ì¨</div>
-      <button class="btn btn-sm btn-outline" onclick="closeAnsDistModal()">ë«ê¸°</button>
+      <div class="modal-title" style="margin-bottom:0;">선지별 선택 비율</div>
+      <button class="btn btn-sm btn-outline" onclick="closeAnsDistModal()">닫기</button>
     </div>
     <div id="ans-dist-question" style="font-size:13px;color:var(--text-muted);margin-bottom:18px;line-height:1.5;"></div>
     <div id="ans-dist-list"></div>
   </div>
 </div>
 
-<!-- ââ Modal: Add/Edit Question ââ -->
+<!-- ══ Modal: Add/Edit Question ══ -->
 <div class="modal-overlay" id="q-modal">
   <div class="modal-box">
-    <div class="modal-title" id="modal-title">ë¬¸ì  ì¶ê°</div>
+    <div class="modal-title" id="modal-title">문제 추가</div>
     <div class="form-group">
-      <label>ì§ë¬¸</label>
-      <textarea id="m-question" rows="3" placeholder="ì§ë¬¸ì ìë ¥íì¸ì"></textarea>
+      <label>질문</label>
+      <textarea id="m-question" rows="3" placeholder="질문을 입력하세요"></textarea>
     </div>
     <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;">
-      ì íì§ &amp; ì ëµ â ì²´í¬ë°ì¤ë¡ ì ëµ ì í (ë³µì ê°ë¥) / â¢â£ë ë¹ìë ë©ëë¤
+      선택지 &amp; 정답 — 체크박스로 정답 선택 (복수 가능) / ③④는 비워도 됩니다
     </div>
     <div class="radio-group">
-      <label class="radio-opt"><input type="checkbox" name="correct" value="0"> <span>â  ì ëµ</span> <input type="text" id="m-opt0" placeholder="ì íì§ â " style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="1"> <span>â¡ ì ëµ</span> <input type="text" id="m-opt1" placeholder="ì íì§ â¡" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="2"> <span>â¢ ì ëµ</span> <input type="text" id="m-opt2" placeholder="ì íì§ â¢ (ì í)" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="3"> <span>â£ ì ëµ</span> <input type="text" id="m-opt3" placeholder="ì íì§ â£ (ì í)" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="0"> <span>① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="1"> <span>② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="2"> <span>③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
+      <label class="radio-opt"><input type="checkbox" name="correct" value="3"> <span>④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
     </div>
     <div class="form-group" style="margin-top:16px;">
-      <label>í´ì¤ (ì í)</label>
-      <textarea id="m-explanation" rows="2" placeholder="í´ì¤ (ì í)"></textarea>
+      <label>해설 (선택)</label>
+      <textarea id="m-explanation" rows="2" placeholder="해설 (선택)"></textarea>
     </div>
     <div style="display:flex;gap:10px;margin-top:4px;">
-      <button class="btn btn-primary" onclick="saveQuestion()">ì ì¥</button>
-      <button class="btn btn-outline" onclick="closeModal()">ì·¨ì</button>
+      <button class="btn btn-primary" onclick="saveQuestion()">저장</button>
+      <button class="btn btn-outline" onclick="closeModal()">취소</button>
     </div>
   </div>
 </div>
 
-<!-- ââ Modal: New Quiz Set ââ -->
+<!-- ══ Modal: New Quiz Set ══ -->
 <div class="modal-overlay" id="new-set-modal">
   <div class="modal-box" style="max-width:400px;">
-    <div class="modal-title">ì í´ì¦ ì¶ê°</div>
+    <div class="modal-title">새 퀴즈 추가</div>
     <div class="form-group">
-      <label>í´ì¦ ì´ë¦</label>
-      <input type="text" id="new-set-name" placeholder="ì: ì í êµì¡ í´ì¦" maxlength="40"
+      <label>퀴즈 이름</label>
+      <input type="text" id="new-set-name" placeholder="예: 제품 교육 퀴즈" maxlength="40"
         onkeydown="if(event.key==='Enter') createSet()">
     </div>
     <div class="form-group">
-      <label>ëì ì§ì</label>
+      <label>대상 직원</label>
       <div style="display:flex;gap:10px;margin-top:6px;">
         <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
-          <input type="radio" name="new-set-type" value="new" checked style="accent-color:var(--blue);width:16px;height:16px;"> ì ê·ìì¬ì
+          <input type="radio" name="new-set-type" value="new" checked style="accent-color:var(--blue);width:16px;height:16px;"> 신규입사자
         </label>
         <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
-          <input type="radio" name="new-set-type" value="existing" style="accent-color:var(--blue);width:16px;height:16px;"> ê¸°ì¡´ì§ì
+          <input type="radio" name="new-set-type" value="existing" style="accent-color:var(--blue);width:16px;height:16px;"> 기존직원
         </label>
       </div>
     </div>
     <div style="display:flex;gap:10px;">
-      <button class="btn btn-primary" onclick="createSet()">ë§ë¤ê¸°</button>
-      <button class="btn btn-outline" onclick="closeNewSetModal()">ì·¨ì</button>
+      <button class="btn btn-primary" onclick="createSet()">만들기</button>
+      <button class="btn btn-outline" onclick="closeNewSetModal()">취소</button>
     </div>
   </div>
 </div>
 
-<!-- ââ Modal: Edit Quiz Set ââ -->
+<!-- ══ Modal: Edit Quiz Set ══ -->
 <div class="modal-overlay" id="edit-set-modal">
   <div class="modal-box" style="max-width:400px;">
-    <div class="modal-title">í´ì¦ ìì </div>
+    <div class="modal-title">퀴즈 수정</div>
     <input type="hidden" id="edit-set-id">
     <div class="form-group">
-      <label>í´ì¦ ì´ë¦</label>
+      <label>퀴즈 이름</label>
       <input type="text" id="edit-set-name" maxlength="40" onkeydown="if(event.key==='Enter') saveEditSet()">
     </div>
     <div class="form-group">
-      <label>ëì ì§ì</label>
+      <label>대상 직원</label>
       <div style="display:flex;gap:10px;margin-top:6px;">
         <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
-          <input type="radio" name="edit-set-type" value="new" style="accent-color:var(--blue);width:16px;height:16px;"> ì ê·ìì¬ì
+          <input type="radio" name="edit-set-type" value="new" style="accent-color:var(--blue);width:16px;height:16px;"> 신규입사자
         </label>
         <label style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;">
-          <input type="radio" name="edit-set-type" value="existing" style="accent-color:var(--blue);width:16px;height:16px;"> ê¸°ì¡´ì§ì
+          <input type="radio" name="edit-set-type" value="existing" style="accent-color:var(--blue);width:16px;height:16px;"> 기존직원
         </label>
       </div>
     </div>
     <div style="display:flex;gap:10px;">
-      <button class="btn btn-primary" onclick="saveEditSet()">ì ì¥</button>
-      <button class="btn btn-outline" onclick="closeEditSetModal()">ì·¨ì</button>
+      <button class="btn btn-primary" onclick="saveEditSet()">저장</button>
+      <button class="btn btn-outline" onclick="closeEditSetModal()">취소</button>
     </div>
   </div>
 </div>
 
-<!-- ââ Modal: Lecture Set Select ââ -->
+<!-- ══ Modal: Lecture Set Select ══ -->
 <div class="modal-overlay" id="lec-set-modal">
   <div class="modal-box" style="max-width:360px;">
-    <div class="modal-title">ê°ìí  í´ì¦ ì í</div>
+    <div class="modal-title">강의할 퀴즈 선택</div>
     <div id="lec-set-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-    <button class="btn btn-outline btn-block" style="margin-top:12px;" onclick="document.getElementById('lec-set-modal').classList.remove('active')">ì·¨ì</button>
+    <button class="btn btn-outline btn-block" style="margin-top:12px;" onclick="document.getElementById('lec-set-modal').classList.remove('active')">취소</button>
   </div>
 </div>
 
 <script>
-/* âââ URL Params âââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── URL Params ─────────────────────────────────────────────── */
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const URL_MODE = URL_PARAMS.get('mode');
 const URL_QUIZ = URL_PARAMS.get('quiz');
 const BASE_URL = 'https://taeyun-larosee.github.io/larosee-quiz/';
 
-/* âââ Firebase âââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Firebase ───────────────────────────────────────────────── */
 let db = null;
 const firebaseConfig = {
   apiKey: 'AIzaSyCT3COLehsX7eHbrrKTem4ZZvPWSKAgjh8',
@@ -846,7 +846,7 @@ const firebaseConfig = {
     s2.src = 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js';
     s2.onload = function() {
       try { firebase.initializeApp(firebaseConfig); db = firebase.firestore(); }
-      catch(e) { console.warn('Firebase ì´ê¸°í ì¤í¨:', e); }
+      catch(e) { console.warn('Firebase 초기화 실패:', e); }
     };
     document.head.appendChild(s2);
   };
@@ -898,48 +898,47 @@ async function fsGetSetById(setId) {
   } catch(e) { return null; }
 }
 
-
-/* âââ Default Questions ââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Default Questions ──────────────────────────────────────── */
 const DEFAULT_QUESTIONS = [
-  { id:1, question:'ë¼ë¡ì ì ë¸ëë í¬ì§ìëì ê°ì¥ ì¬ë°ë¥´ê² ì¤ëªí ê²ì?', options:['100% ì ê¸°ëë§ì ê³ ì§íë ë­ìë¦¬ ë¸ëë','í¼ë¶ê³¼ ìì¤ì ìì ì±ê³¼ íì¥í í¹ì ì ì¦ê±°ì´ ì¬ì©ê°ì ëìì ì ê³µ','10ëë¥¼ íê¹ì¼ë¡ í ì ê° ì½ì¤ë©í± ë¸ëë','í¼ë¶ê³¼ ì²ë°© ì íë§ì íë§¤íë ëë§ ì ë¬¸ ë¸ëë'], correct:1, explanation:'ë¼ë¡ì ë í¼ë¶ê³¼ ìì¤ì ìì ì±ê³¼ íì¥íì ì¦ê±°ì´ ì¬ì©ê°ì ëìì ì¶êµ¬íë ë¸ëëìëë¤.' },
-  { id:2, question:'ë¼ë¡ì ì íµì¬ ê°ì¹ë?', options:['ìí°ìì´ì§','ì¹íê²½/ìì°ì ëì±ë¶','ííì ì¸ ì±ë¶','ê³¼í¬ì¥'], correct:1, explanation:'ë¼ë¡ì ë ì¹íê²½ ë° ìì°ì ëì±ë¶ì íµì¬ ê°ì¹ë¡ ì¼ê³  ììµëë¤.' },
-  { id:3, question:'ë¼ë¡ì (La RosÃ©e)ì ë»ì¼ë¡ ì¬ë°ë¥¸ ê²ì?', options:['ì¥ë¯¸ ì ì','ìì¹¨ ì´ì¬','ë§ì ìë¬¼','ììí ë¹'], correct:1, explanation:'La RosÃ©eë íëì¤ì´ë¡ "ìì¹¨ ì´ì¬"ì ë»í©ëë¤.' },
-  { id:4, question:'ë¼ë¡ì ì ì íì ì´ë¤ ì±ë¶ì ì£¼ë¡ ì¬ì©íëì?', options:['íë¼ë²¤','ì¸ê³µìì','ìì°ì ë ì±ë¶','í©ì±í¥ë£'], correct:2, explanation:'ë¼ë¡ì ë íë¼ë²¤, ì¸ê³µìì, í©ì±í¥ë£ ë± ì í´ ì±ë¶ì ë°°ì íê³  ìì°ì ë ì±ë¶ì ì£¼ë¡ ì¬ì©í©ëë¤.' },
-  { id:5, question:'ë¼ë¡ì ì ì í í¬ì¥ ë°©ìì ì´ë¤ í¹ì§ì´ ìëì?', options:['ê³¼ëí í¬ì¥','ë¹ë í¬ì¥','ì¬íì© ê°ë¥í í¬ì¥','ì¼íì© í¬ì¥'], correct:2, explanation:'ë¼ë¡ì ë íê²½ì ìê°íì¬ ì¬íì© ê°ë¥í í¬ì¥ì¬ë¥¼ ì¬ì©í©ëë¤.' },
-  { id:6, question:'ë¼ë¡ì ê° íì¬ ì´ì ì¤ì¸ ì í ë¼ì¸ì ìì ì´ SKU ìë?', options:['5ê°ì§ ë¼ì¸, 30ê° ì í','7ê°ì§ ë¼ì¸, 61ê° ì í','10ê°ì§ ë¼ì¸, 100ê° ì í','6ê°ì§ ë¼ì¸, 50ê° ì í'], correct:1, explanation:'ë¼ë¡ì ë íì¬ 7ê°ì§ ì í ë¼ì¸, ì´ 61ê° SKUë¥¼ ì´ìíê³  ììµëë¤.' },
-  { id:7, question:'ìí°í¼í°ê·¸ ìì´ì»¨í¬ì´ ì¤í±ì íì¥ ìì ì¬ì©í  ì ìë¤?', options:['ì§ì¤','ê±°ì§'], correct:0, explanation:'ìí°í¼í°ê·¸ ìì´ì»¨í¬ì´ ì¤í±ì íì¥ ììë ì¬ì© ê°ë¥í©ëë¤.' },
-  { id:8, question:'ìí°í¼í°ê·¸ ìì´ì»¨í¬ì´ ì¤í±ì í¨ë¥ì´ ìë ê²ì?', options:['ëê° ì£¼ë¦Â·ë¶ê¸° ìí','ì§ì Â·ë³´ìµ','ë¯¸ë°±','í¼ë¶ ìê·¹ ìí'], correct:2, explanation:'ë¯¸ë°±ì í´ë¹ ì íì í¨ë¥ì´ ìëëë¤.' },
-  { id:9, question:'ë°ëí¬ë¦¼ì ê¸ì¡ì?', options:['49,000ì','55,000ì','59,000ì','45,000ì'], correct:2, explanation:'ë¼ë¡ì  ë°ëí¬ë¦¼ì ì ê°ë 59,000ììëë¤.' },
-  { id:10, question:'ìí°í¼í°ê·¸ ìì´ì»¨í¬ì´ ì¤í±ì ê¸ì¡ì?', options:['39,000ì','49,000ì','45,000ì','52,000ì'], correct:1, explanation:'ìí°í¼í°ê·¸ ìì´ì»¨í¬ì´ ì¤í±ì ì ê°ë 49,000ììëë¤.' },
-  { id:11, question:'íìë£¨ë¡ ì° ì¸ë¼ì ê¸ì¡ì?', options:['55,000ì','52,000ì','59,000ì','45,000ì'], correct:0, explanation:'ë¼ë¡ì  íìë£¨ë¡ ì° ì¸ë¼ì ì ê°ë 55,000ììëë¤.' },
-  { id:12, question:'íì´í¸ ë¨¸ëì¤í±ì ê¸ì¡ì?', options:['36,000ì','42,000ì','35,000ì','39,000ì'], correct:3, explanation:'ë¼ë¡ì  íì´í¸ ë¨¸ëì¤í±ì ì ê°ë 39,000ììëë¤.' },
-  { id:13, question:'ì¤ìì¤ì¼ì ê¸ì¡ì?', options:['45,000ì','42,000ì','39,000ì','49,000ì'], correct:0, explanation:'ë¼ë¡ì  ì¤ìì¤ì¼ì ì ê°ë 45,000ììëë¤.' },
-  { id:14, question:'ë¤ì ì¤ ë¼ë¡ì ìì ì¶ì²íë ì í ì¡°í©ì´ ìë ê²ì?', options:['íìë£¨ë¡ ì° ì¸ë¼ + ìì´ì»¨í¬ì´ ì¤í±','ì¤ìì¤ì¼ + ë°ëì¤í¬ë½','ë¨¸ëì¤í± + ì¤ìì¤ì¼','ë¨¸ëì¤í± + í ëë¡ì'], correct:2, explanation:'ë¨¸ëì¤í±+ì¤ìì¤ì¼ì ë¼ë¡ì  ì¶ì² ì í ì¡°í©ì´ ìëëë¤.' },
-  { id:15, question:'í¸ëë¹(ì¸ë¶ ê³ ê° ì ì¹) ì ê¸°ë³¸ ìë ìì¸ë¡ ì¬ë°ë¥´ì§ ìì ê²ì?', options:['ê³ ê°ì ëì ì ë§ì§ ìëë¤','3ë°ê±¸ì ì  ëì ë§ì£¼ì¹ë©° ì¸ì¬íë¤','ê³ ê°ì´ ë©ì¶ ëê¹ì§ ê¸°ë¤ë ¸ë¤ê° ë§ì ê±´ë¤','ê³ ê° ì½ 15ë ì¸ì¬ ê°ëë¥¼ ì ì§íë¤'], correct:2, explanation:'í¸ëë¹ ììë ê³ ê°ì´ ë©ì¶ ëê¹ì§ ê¸°ë¤ë¦¬ë ê²ì´ ìëë¼ ë¨¼ì  ì ê·¹ì ì¼ë¡ ë¤ê°ê°ì¼ í©ëë¤.' },
-  { id:16, question:'ê³ ê°ì´ "ìë¶ì¤í±ì´ ì ë°ë¦° ê² ê°ìì"ë¼ê³  ë§í  ë ì¬ë°ë¥¸ ìëë?', options:['"ì£ì¡í©ëë¤, ë¤ë¥¸ ì íì ì¶ì²í´ ëë¦´ê²ì"','"ë¤ì í ë² ë ë°ë¼ë³´ì¸ì"','"ê·¸ê² íµì¬ì´ìì! ëì ìì´ ìì´ì ì¼ììíìì ì¬ì©í  ì ìê³  ì¤ì  í¼ë¶ ìë¶ëì 132% ì¦ê°ìíµëë¤"','"ì íì´ ìë ê·¸ëì"'], correct:2, explanation:'ìë¶ì¤í±ì íµì¬ í¹ì§ì¸ ë¬´ëì  ì íê³¼ í¼ë¶ ìë¶ë 132% ì¦ê°ë¥¼ ê°ì¡°íë ê²ì´ ì¬ë°ë¥¸ ìëìëë¤.' },
-  { id:17, question:'ê³ ê°ì´ "ì¢ ë¹ì¼ ê² ê°ìì"ë¼ê³  í  ë ìë¶ì¤í±ì ëí ì¬ë°ë¥¸ ê°ê²© ì´ì ìëë?', options:['"ì í¬ íë¡ëª¨ì ê¸°ê°ì´ë¼ì í ì¸í´ëë¦´ ì ìì´ì"','"3~4ê°ì ì¬ì© ê°ë¥íê³  í ë¬ ê¸°ì¤ ì½ 1ë§ ìì¼ë¡ ì¼ë° ìì´í¬ë¦¼ë³´ë¤ í¨ì¬ ê²½ì ì ìëë¤"','"ê°ê²©ì ë¹ì¸ì§ë§ ì±ë¶ì´ ìë ì¢ìì"','"ë¹êµ ì íì ê°ì ¸ì¤ìë©´ ê°ê²© ë¹êµë¥¼ ëìëë¦´ê²ì"'], correct:1, explanation:'ì ì¬ì© ë¹ì©(ì½ 1ë§ ì)ì¼ë¡ íì°í´ ê²½ì ì±ì êµ¬ì²´ì ì¼ë¡ ì¤ëªíë ê²ì´ í¨ê³¼ì ìëë¤.' },
-  { id:18, question:'ì¤ìì¤ì¼ì ëí ê³ ê°ì "ìì¬ê°ì´ ë¨ì§ ìëì?" ì§ë¬¸ì ì¬ë°ë¥¸ ìëë?', options:['"ìì¬ê°ì´ ë¨ì¼ì¨ë¤ë©´ í ë² ë í¹ê¶ì£¼ì¸ì"','"ì¤ì¼ì´ë¼ ìì¬ê°ì´ ë¨ì ì ìì´ì"','"ì²ììë ì¤ì¼ ì íì´ì§ë§ ë¬¼ì´ ë¿ì¼ë©´ ê±°íì¼ë¡ ë³íë©° ë¯¸ëê±°ë¦¼ ìì´ ë§ë¬´ë¦¬ë©ëë¤"','"ì ë§ íì±ì í´ì£¼ê¸° ëë¬¸ì ë³´ìµì ì¢ìì"'], correct:2, explanation:'ë¬¼ê³¼ ë§ëë©´ ê±°íì¼ë¡ ë³íë ì íê³¼ ë¯¸ëê±°ë¦¼ ìì´ ë§ë¬´ë¦¬ëë¤ë ì ì ê°ì¡°í´ì¼ í©ëë¤.' },
-  { id:19, question:'ê³ ê°ì´ "ë¯¼ê°í í¼ë¶ì¸ë° ì¬ì©í´ë ëëì?"ë¼ê³  ë¬¼ì ë ê°ì¥ ì¬ë°ë¥¸ ìëë?', options:['"ì¼ë¨ ì¬ì©í´ë³´ìê³  ì´ìì´ ìì¼ë©´ íë¶í´ëë¦´ê²ì"','"ë¯¼ê°íì  ë¶ë¤ì ë² ì´ë¹ ë¼ì¸ë§ ì¬ì©íì¸ì"','"íì¥í ì±ë¶ ìë¥¼ ìµìííê³  í¼ë¶ ìê·¹ íì¤í¸ë¥¼ ë§ì³ì ì¤íë ¤ ë¯¼ê°í í¼ë¶ ê³ ê°ëë¤ì´ ë§ì´ ì°¾ìì£¼ì¸ì"','"ë¯¼ê°í í¼ë¶ëë¼ë 1~2ì£¼ ì¬ì©íìë©´ ê´ì°®ìì§ì¤ê±°ìì"'], correct:2, explanation:'ì±ë¶ ìµìíì í¼ë¶ ìê·¹ íì¤í¸ ìë£ ì¬ì¤ì ê·¼ê±°ë¡ ë¯¼ê°í í¼ë¶ìë ìì íë¤ë íì ì ì£¼ì¸ì.' },
-  { id:20, question:'ë¤ì ì¤ í¸ëë¹(ì¸ë¶ ê³ ê° ì ì¹)ì ëª©ì ì¼ë¡ ì¬ë°ë¥´ì§ ìì ê²ì?', options:['ë¸ëë ì¸ì§ëë¥¼ ëì¸ë¤','ë§¤ì¥ ì ì ë° ì ì¬ êµ¬ë§¤ ê³ ê°ì íë³´íë¤','ê³ ê°ëê» ììë¥¼ ì°¨ë¦¬ê¸° ìí´ì íë¤','ë¥ëì ì¸ íë§¤íëì íë¤'], correct:2, explanation:'í¸ëë¹ì ëª©ì ì ë¸ëë ì¸ì§ë ì ê³ , ë§¤ì¥ ì ì, ë¥ëì  íë§¤íëìëë¤. ë¨ìí ììë¥¼ ì°¨ë¦¬ê¸° ìí ê²ì´ ìëëë¤.' }
+  { id:1, question:'라로제의 브랜드 포지셔닝을 가장 올바르게 설명한 것은?', options:['100% 유기농만을 고집하는 럭셔리 브랜드','피부과 수준의 안전성과 화장품 특유의 즐거운 사용감을 동시에 제공','10대를 타깃으로 한 저가 코스메틱 브랜드','피부과 처방 제품만을 판매하는 더마 전문 브랜드'], correct:1, explanation:'라로제는 피부과 수준의 안전성과 화장품의 즐거운 사용감을 동시에 추구하는 브랜드입니다.' },
+  { id:2, question:'라로제의 핵심 가치는?', options:['안티에이징','친환경/자연유래성분','화학적인 성분','과포장'], correct:1, explanation:'라로제는 친환경 및 자연유래성분을 핵심 가치로 삼고 있습니다.' },
+  { id:3, question:'라로제(La Rosée)의 뜻으로 올바른 것은?', options:['장미 정원','아침 이슬','맑은 샘물','순수한 빛'], correct:1, explanation:'La Rosée는 프랑스어로 "아침 이슬"을 뜻합니다.' },
+  { id:4, question:'라로제의 제품은 어떤 성분을 주로 사용하나요?', options:['파라벤','인공색소','자연유래 성분','합성향료'], correct:2, explanation:'라로제는 파라벤, 인공색소, 합성향료 등 유해 성분을 배제하고 자연유래 성분을 주로 사용합니다.' },
+  { id:5, question:'라로제의 제품 포장 방식은 어떤 특징이 있나요?', options:['과도한 포장','비닐 포장','재활용 가능한 포장','일회용 포장'], correct:2, explanation:'라로제는 환경을 생각하여 재활용 가능한 포장재를 사용합니다.' },
+  { id:6, question:'라로제가 현재 운영 중인 제품 라인의 수와 총 SKU 수는?', options:['5가지 라인, 30개 제품','7가지 라인, 61개 제품','10가지 라인, 100개 제품','6가지 라인, 50개 제품'], correct:1, explanation:'라로제는 현재 7가지 제품 라인, 총 61개 SKU를 운영하고 있습니다.' },
+  { id:7, question:'안티퍼티그 아이컨투어 스틱은 화장 위에 사용할 수 있다?', options:['진실','거짓'], correct:0, explanation:'안티퍼티그 아이컨투어 스틱은 화장 위에도 사용 가능합니다.' },
+  { id:8, question:'안티퍼티그 아이컨투어 스틱의 효능이 아닌 것은?', options:['눈가 주름·붓기 완화','진정·보습','미백','피부 자극 완화'], correct:2, explanation:'미백은 해당 제품의 효능이 아닙니다.' },
+  { id:9, question:'바디크림의 금액은?', options:['49,000원','55,000원','59,000원','45,000원'], correct:2, explanation:'라로제 바디크림의 정가는 59,000원입니다.' },
+  { id:10, question:'안티퍼티그 아이컨투어 스틱의 금액은?', options:['39,000원','49,000원','45,000원','52,000원'], correct:1, explanation:'안티퍼티그 아이컨투어 스틱의 정가는 49,000원입니다.' },
+  { id:11, question:'히알루론산 세럼의 금액은?', options:['55,000원','52,000원','59,000원','45,000원'], correct:0, explanation:'라로제 히알루론산 세럼의 정가는 55,000원입니다.' },
+  { id:12, question:'화이트 머드스틱의 금액은?', options:['36,000원','42,000원','35,000원','39,000원'], correct:3, explanation:'라로제 화이트 머드스틱의 정가는 39,000원입니다.' },
+  { id:13, question:'샤워오일의 금액은?', options:['45,000원','42,000원','39,000원','49,000원'], correct:0, explanation:'라로제 샤워오일의 정가는 45,000원입니다.' },
+  { id:14, question:'다음 중 라로제에서 추천하는 제품 조합이 아닌 것은?', options:['히알루론산 세럼 + 아이컨투어 스틱','샤워오일 + 바디스크럽','머드스틱 + 샤워오일','머드스틱 + 토닉로션'], correct:2, explanation:'머드스틱+샤워오일은 라로제 추천 제품 조합이 아닙니다.' },
+  { id:15, question:'핸드빌(외부 고객 유치) 시 기본 응대 자세로 올바르지 않은 것은?', options:['고객의 동선을 막지 않는다','3발걸음 전 눈을 마주치며 인사한다','고객이 멈출 때까지 기다렸다가 말을 건다','고개 약 15도 인사 각도를 유지한다'], correct:2, explanation:'핸드빌 시에는 고객이 멈출 때까지 기다리는 것이 아니라 먼저 적극적으로 다가가야 합니다.' },
+  { id:16, question:'고객이 "수분스틱이 안 발린 것 같아요"라고 말할 때 올바른 응대는?', options:['"죄송합니다, 다른 제품을 추천해 드릴게요"','"다시 한 번 더 발라보세요"','"그게 핵심이에요! 끈적임이 없어서 일상생활에서 사용할 수 있고 실제 피부 수분량을 132% 증가시킵니다"','"제형이 원래 그래요"'], correct:2, explanation:'수분스틱의 핵심 특징인 무끈적 제형과 피부 수분량 132% 증가를 강조하는 것이 올바른 응대입니다.' },
+  { id:17, question:'고객이 "좀 비싼 것 같아요"라고 할 때 수분스틱에 대한 올바른 가격 이의 응대는?', options:['"저희 프로모션 기간이라서 할인해드릴 수 있어요"','"3~4개월 사용 가능하고 한 달 기준 약 1만 원으로 일반 아이크림보다 훨씬 경제적입니다"','"가격은 비싸지만 성분이 워낙 좋아요"','"비교 제품을 가져오시면 가격 비교를 도와드릴게요"'], correct:1, explanation:'월 사용 비용(약 1만 원)으로 환산해 경제성을 구체적으로 설명하는 것이 효과적입니다.' },
+  { id:18, question:'샤워오일에 대한 고객의 "잔여감이 남지 않나요?" 질문에 올바른 응대는?', options:['"잔여감이 남으셨다면 한 번 더 헹궈주세요"','"오일이라 잔여감이 남을 수 있어요"','"처음에는 오일 제형이지만 물이 닿으면 거품으로 변하며 미끈거림 없이 마무리됩니다"','"유막 형성을 해주기 때문에 보습에 좋아요"'], correct:2, explanation:'물과 만나면 거품으로 변하는 제형과 미끈거림 없이 마무리된다는 점을 강조해야 합니다.' },
+  { id:19, question:'고객이 "민감한 피부인데 사용해도 되나요?"라고 물을 때 가장 올바른 응대는?', options:['"일단 사용해보시고 이상이 있으면 환불해드릴게요"','"민감하신 분들은 베이비 라인만 사용하세요"','"화장품 성분 수를 최소화하고 피부 자극 테스트를 마쳐서 오히려 민감한 피부 고객님들이 많이 찾아주세요"','"민감한 피부더라도 1~2주 사용하시면 괜찮아지실거에요"'], correct:2, explanation:'성분 최소화와 피부 자극 테스트 완료 사실을 근거로 민감한 피부에도 안전하다는 확신을 주세요.' },
+  { id:20, question:'다음 중 핸드빌(외부 고객 유치)의 목적으로 올바르지 않은 것은?', options:['브랜드 인지도를 높인다','매장 유입 및 잠재 구매 고객을 확보한다','고객님께 예의를 차리기 위해서 한다','능동적인 판매활동을 한다'], correct:2, explanation:'핸드빌의 목적은 브랜드 인지도 제고, 매장 유입, 능동적 판매활동입니다. 단순히 예의를 차리기 위한 것이 아닙니다.' }
 ];
 
-/* âââ Quiz Sets Storage ââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Quiz Sets Storage ──────────────────────────────────────── */
 function loadSets() {
   const raw = localStorage.getItem('lr_sets');
   if (raw) {
     const sets = JSON.parse(raw);
-    // ë§ì´ê·¸ë ì´ì: type ìë ì¸í¸ì 'new' ì¶ê°
+    // 마이그레이션: type 없는 세트에 'new' 추가
     let changed = false;
     sets.forEach(s => { if (!s.type) { s.type = 'new'; changed = true; } });
     if (changed) saveSets(sets);
     return sets;
   }
-  // ìµì´ ì¤í ëë êµ¬ë²ì  ë§ì´ê·¸ë ì´ì
+  // 최초 실행 또는 구버전 마이그레이션
   const oldQ = localStorage.getItem('lr_q');
   const questions = oldQ ? JSON.parse(oldQ) : DEFAULT_QUESTIONS;
   const sets = [{
     id: 'set_default',
-    name: 'ì ê·ìì¬ì ì ì²´ í´ì¦',
+    name: '신규입사자 전체 퀴즈',
     type: 'new',
     questions,
     quizCount: parseInt(localStorage.getItem('lr_cnt') || '0'),
@@ -953,20 +952,20 @@ function getSetById(id) { return loadSets().find(s => s.id === id) || null; }
 function loadStore() { return { password: localStorage.getItem('lr_pw') || 'larosee1234' }; }
 function savePw(p) { localStorage.setItem('lr_pw', p); }
 
-/* âââ Cohorts ââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Cohorts ────────────────────────────────────────────────── */
 function loadCohorts() { return JSON.parse(localStorage.getItem('lr_cohorts') || '[]'); }
 function saveCohorts(arr) { localStorage.setItem('lr_cohorts', JSON.stringify(arr)); }
 
-/* âââ Quiz State âââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Quiz State ─────────────────────────────────────────────── */
 let student = '';
 let studentCohort = '';
 let currentQuizSetId = URL_QUIZ || null;
 let qs = [], qi = 0, answers = [];
 let timerInterval = null, timerSeconds = 0, timerLimit = 0;
-let _selectedOptions = new Set(); // ì¤ë³µ ì ëµ ì í ì¶ì 
+let _selectedOptions = new Set(); // 중복 정답 선택 추적
 let startTime = 0;
 
-/* âââ Screen âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Screen ─────────────────────────────────────────────────── */
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -981,25 +980,25 @@ function goHome() {
   else renderQuizSelect();
 }
 
-/* âââ Date âââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Date ───────────────────────────────────────────────────── */
 function formatDate() {
   const d = new Date();
-  const days = ['ì¼','ì','í','ì','ëª©','ê¸','í '];
-  return d.getFullYear() + 'ë ' + (d.getMonth()+1) + 'ì ' + d.getDate() + 'ì¼ (' + days[d.getDay()] + ')';
+  const days = ['일','월','화','수','목','금','토'];
+  return d.getFullYear() + '년 ' + (d.getMonth()+1) + '월 ' + d.getDate() + '일 (' + days[d.getDay()] + ')';
 }
 function formatDur(sec) {
   if (!sec || sec <= 0) return '-';
   const m = Math.floor(sec/60), s = sec%60;
-  return m > 0 ? m + 'ë¶ ' + s + 'ì´' : s + 'ì´';
+  return m > 0 ? m + '분 ' + s + '초' : s + '초';
 }
 
-/* âââ Quiz Select ââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Quiz Select ────────────────────────────────────────────── */
 function renderQuizSelect() {
   const sets = loadSets();
   document.getElementById('name-date-select').textContent = formatDate();
   const list = document.getElementById('quiz-select-list');
   if (sets.length === 0) {
-    list.innerHTML = '<div class="empty">ë±ë¡ë í´ì¦ê° ììµëë¤.</div>';
+    list.innerHTML = '<div class="empty">등록된 퀴즈가 없습니다.</div>';
   } else {
     list.innerHTML = sets.map(set =>
       '<button class="btn btn-primary btn-block" onclick="selectQuizSet(\'' + set.id + '\')">' + set.name + '</button>'
@@ -1016,7 +1015,7 @@ function selectQuizSet(setId) {
   showScreen('s-name');
 }
 
-/* âââ Timer ââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Timer ──────────────────────────────────────────────────── */
 function startTimer(timerMin) {
   timerLimit = (timerMin || 0) * 60;
   timerSeconds = 0;
@@ -1028,26 +1027,26 @@ function startTimer(timerMin) {
     const remaining = timerLimit - timerSeconds;
     if (remaining <= 0) {
       el.className = 'timer-wrap warning';
-      el.textContent = 'ìê° ì´ê³¼';
+      el.textContent = '시간 초과';
       clearInterval(timerInterval);
       finishQuiz();
       return;
     }
     const m = Math.floor(remaining/60), s = remaining%60;
-    el.textContent = 'ë¨ì ìê°  ' + m + ':' + String(s).padStart(2,'0');
+    el.textContent = '남은 시간  ' + m + ':' + String(s).padStart(2,'0');
     el.className = remaining <= 60 ? 'timer-wrap warning' : 'timer-wrap';
   }, 1000);
 }
 function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
 
-/* âââ Quiz Flow ââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Quiz Flow ──────────────────────────────────────────────── */
 function startQuiz() {
   const name = document.getElementById('name-input').value.trim();
   const cohort = document.getElementById('cohort-input').value.trim();
-  if (!name) { alert('ì´ë¦ì ìë ¥í´ì£¼ì¸ì.'); return; }
-  if (!cohort) { alert('ê¸°ìë¥¼ ìë ¥í´ì£¼ì¸ì.'); return; }
+  if (!name) { alert('이름을 입력해주세요.'); return; }
+  if (!cohort) { alert('기수를 입력해주세요.'); return; }
   const set = getSetById(currentQuizSetId);
-  if (!set) { alert('í´ì¦ë¥¼ ì°¾ì ì ììµëë¤.'); return; }
+  if (!set) { alert('퀴즈를 찾을 수 없습니다.'); return; }
   student = name;
   studentCohort = cohort;
   let pool = [...set.questions];
@@ -1075,7 +1074,7 @@ function renderQuestion() {
   ).join('');
   const fb = document.getElementById('q-feedback');
   if (isMulti) {
-    fb.textContent = 'â» ì ëµì ëª¨ë ì ííì¸ì (' + correctArr.length + 'ê°)';
+    fb.textContent = '※ 정답을 모두 선택하세요 (' + correctArr.length + '개)';
     fb.className = 'q-feedback';
     fb.style.opacity = '0.6';
   } else {
@@ -1096,39 +1095,39 @@ function selectAnswer(idx) {
   if (isMulti) {
     if (opts[idx].disabled || opts[idx].classList.contains('correct')) return;
     if (correctArr.includes(idx)) {
-      // ì ëµ ì í
+      // 정답 선택
       _selectedOptions.add(idx);
       opts[idx].classList.add('correct');
       opts[idx].style.opacity = '0.75';
       const remaining = correctArr.length - _selectedOptions.size;
       if (remaining === 0) {
-        // ëª¨ë ì í ìë£
+        // 모두 선택 완료
         opts.forEach(btn => btn.disabled = true);
         answers.push({ q, ok: true, chosen: [..._selectedOptions], correct: q.correct });
-        fb.textContent = 'ì ê¸°ìµíê³  ìë¤ì!';
+        fb.textContent = '잘 기억하고 있네요!';
         fb.className = 'q-feedback correct';
         fb.style.opacity = '';
         document.getElementById('q-next-wrap').style.display = 'block';
       } else {
-        fb.textContent = 'â» ' + remaining + 'ê° ë ì ííì¸ì';
+        fb.textContent = '※ ' + remaining + '개 더 선택하세요';
         fb.className = 'q-feedback';
         fb.style.opacity = '0.6';
       }
     } else {
-      // ì¤ëµ ì í â ì¦ì ì¢ë£
+      // 오답 선택 → 즉시 종료
       opts.forEach((btn, i) => {
         btn.disabled = true;
         if (correctArr.includes(i)) btn.classList.add('correct');
         else if (i === idx) btn.classList.add('wrong');
       });
       answers.push({ q, ok: false, chosen: [..._selectedOptions, idx], correct: q.correct });
-      fb.textContent = 'ì´ ë¶ë¶ì í¨ê» ë¤ì ì´í´ë³¼ê¹ì?';
+      fb.textContent = '이 부분은 함께 다시 살펴볼까요?';
       fb.className = 'q-feedback wrong';
       fb.style.opacity = '';
       document.getElementById('q-next-wrap').style.display = 'block';
     }
   } else {
-    // ë¨ì¼ ì ëµ (ê¸°ì¡´ ë¡ì§)
+    // 단일 정답 (기존 로직)
     const ok = correctArr.includes(idx);
     answers.push({ q, ok, chosen: idx, correct: q.correct });
     opts.forEach((btn, i) => {
@@ -1136,8 +1135,8 @@ function selectAnswer(idx) {
       if (correctArr.includes(i)) btn.classList.add('correct');
       else if (i === idx && !ok) btn.classList.add('wrong');
     });
-    if (ok) { fb.textContent = 'ì ê¸°ìµíê³  ìë¤ì!'; fb.className = 'q-feedback correct'; }
-    else { fb.textContent = 'ì´ ë¶ë¶ì í¨ê» ë¤ì ì´í´ë³¼ê¹ì?'; fb.className = 'q-feedback wrong'; }
+    if (ok) { fb.textContent = '잘 기억하고 있네요!'; fb.className = 'q-feedback correct'; }
+    else { fb.textContent = '이 부분은 함께 다시 살펴볼까요?'; fb.className = 'q-feedback wrong'; }
     fb.style.opacity = '';
     document.getElementById('q-next-wrap').style.display = 'block';
   }
@@ -1192,7 +1191,7 @@ function showReview() {
     const ca = Array.isArray(a.correct) ? a.correct : [a.correct];
     return '<div class="review-item">' +
       '<div class="review-item-q">Q. ' + a.q.question + '</div>' +
-      '<div class="review-item-answer-label">ì ëµ</div>' +
+      '<div class="review-item-answer-label">정답</div>' +
       '<div class="review-item-answer">' + ca.map(i => a.q.options[i]).join(', ') + '</div>' +
       '</div>';
   }).join('');
@@ -1204,7 +1203,7 @@ function retake() {
   showScreen('s-name');
 }
 
-/* âââ Admin ââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Admin ──────────────────────────────────────────────────── */
 function adminLogin() {
   const pw = document.getElementById('admin-pw').value;
   if (pw === loadStore().password) {
@@ -1221,14 +1220,14 @@ function adminLogout() {
   else goHome();
 }
 
-/* âââ Tabs âââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Tabs ───────────────────────────────────────────────────── */
 function switchTab(t) {
   ['dash','scores','questions','qr','settings'].forEach(id => {
     document.getElementById('tab-' + id).classList.toggle('active', id === t);
     document.getElementById('tab-btn-' + id).classList.toggle('active', id === t);
   });
   if (t === 'dash') {
-    // ì ì²´ ë·°ë¡ ì´ê¸°í
+    // 전체 뷰로 초기화
     _currentDashSubTab = '__all__';
     document.getElementById('dash-main-view').style.display = '';
     document.getElementById('dash-detail-view').style.display = 'none';
@@ -1241,30 +1240,31 @@ function switchTab(t) {
 
 function downloadQRSet(setId) {
   const canvas = document.querySelector('#qr-out-' + setId + ' canvas');
-  if (!canvas) { alert('QRì ë¨¼ì  ìì±í´ì£¼ì¸ì.'); return; }
+  if (!canvas) { alert('QR을 먼저 생성해주세요.'); return; }
   const a = document.createElement('a');
-  a.download = 'ë¼ë¡ì _QR_' + setId + '.png';
+  a.download = '라로제_QR_' + setId + '.png';
   a.href = canvas.toDataURL();
   a.click();
 }
 
-/* âââ Dashboard ââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Dashboard ──────────────────────────────────────────────── */
 let _dashScores = [];
 let _dashSetId = null;
 let _dashQItems = [];
 let _currentDashSubTab = '__all__';
-let _mainDashQMap = {};  // ë©ì¸ ëìë³´ë TOP5 ì¤ëµ ë°ì´í° (type â qMap)
-let _rankScoresList = [];  // showRankModalìì í´ë¦­ì© ì ì¥
-let _attendeeScoresList = [];  // showAttendeeModal í´ë¦­ì© ì ì¥
+let _mainDashQMap = {};  // 메인 대시보드 TOP5 오답 데이터 (type → qMap)
+let _mainDashQuizFilter = { new: 'all', existing: 'all' };  // 메인 대시보드 퀴즈 토글 필터
+let _rankScoresList = [];  // showRankModal에서 클릭용 저장
+let _attendeeScoresList = [];  // showAttendeeModal 클릭용 저장
 
 async function loadDashboard() {
   _dashScores = await fsGet('scores');
   _mainDashQuizFilter = { new: 'all', existing: 'all' };  // 탭 전환 시 필터 초기화
   const sets = loadSets();
 
-  // ëë¡­ë¤ì´ í´ì¦ ì í ìë°ì´í¸
+  // 드롭다운 퀴즈 선택 업데이트
   const selectEl = document.getElementById('dash-quiz-select');
-  selectEl.innerHTML = '<option value="__all__">ì ì²´ ëìë³´ë</option>' +
+  selectEl.innerHTML = '<option value="__all__">전체 대시보드</option>' +
     sets.map(s => '<option value="' + s.id + '">' + s.name + '</option>').join('');
   selectEl.value = _currentDashSubTab;
 
@@ -1308,11 +1308,11 @@ function renderEmpTypeColumn(type, el) {
   const allTypeScores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'));
 
   if (allTypeScores.length === 0) {
-    el.innerHTML = '<div class="dash-empty" style="padding:32px 0;">ìì§ ìì ê¸°ë¡ì´ ììµëë¤.</div>';
+    el.innerHTML = '<div class="dash-empty" style="padding:32px 0;">아직 응시 기록이 없습니다.</div>';
     return;
   }
 
-  // ì íë í´ì¦ íí° ì ì©
+  // 선택된 퀴즈 필터 적용
   const currentFilter = _mainDashQuizFilter[type] || 'all';
   const scores = (currentFilter === 'all' || sets.length < 2)
     ? allTypeScores
@@ -1324,40 +1324,40 @@ function renderEmpTypeColumn(type, el) {
   const cnt80  = scores.filter(s => (s.pct||0) >= 80 && (s.pct||0) < 90).length;
   const cntLow = scores.filter(s => (s.pct||0) < 80).length;
 
-  // íµê³ ì¹´ë
+  // 통계 카드
   const safeTypeQ = "'" + type + "'";
   let html = '<div class="mini-stat-grid">' +
     '<div class="mini-stat-card" style="cursor:pointer;" onclick="showAttendeeModalMain(' + safeTypeQ + ')">' +
-      '<div class="mini-stat-num">' + total + 'ëª</div><div class="mini-stat-lbl">ì´ ììì â</div>' +
+      '<div class="mini-stat-num">' + total + '명</div><div class="mini-stat-lbl">총 응시자 ↗</div>' +
     '</div>' +
-    '<div class="mini-stat-card"><div class="mini-stat-num">' + avgScore + 'ì </div><div class="mini-stat-lbl">íê·  ì ì</div></div>' +
+    '<div class="mini-stat-card"><div class="mini-stat-num">' + avgScore + '점</div><div class="mini-stat-lbl">평균 점수</div></div>' +
     '</div>';
 
-  // ì°ì/ê¸°ë³¸/ë¯¸ë¬ ì¸ê·¸ë¨¼í¸ (í´ë¦­ ê°ë¥)
+  // 우수/기본/미달 세그먼트 (클릭 가능)
   const safeType = "'" + type + "'";
   html += '<div class="rank-seg-row">' +
     '<div class="rank-seg" style="background:#22c55e;" onclick="showRankModal(\'excellent\',' + safeType + ')">' +
-      '<div class="rank-seg-num">' + cnt90 + '</div><div class="rank-seg-lbl">ì°ì</div><div class="rank-seg-sub">90ì â</div>' +
+      '<div class="rank-seg-num">' + cnt90 + '</div><div class="rank-seg-lbl">우수</div><div class="rank-seg-sub">90점↑</div>' +
     '</div>' +
     '<div class="rank-seg" style="background:#0E94CD;" onclick="showRankModal(\'basic\',' + safeType + ')">' +
-      '<div class="rank-seg-num">' + cnt80 + '</div><div class="rank-seg-lbl">ê¸°ë³¸</div><div class="rank-seg-sub">80~89ì </div>' +
+      '<div class="rank-seg-num">' + cnt80 + '</div><div class="rank-seg-lbl">기본</div><div class="rank-seg-sub">80~89점</div>' +
     '</div>' +
     '<div class="rank-seg" style="background:#ef4444;" onclick="showRankModal(\'below\',' + safeType + ')">' +
-      '<div class="rank-seg-num">' + cntLow + '</div><div class="rank-seg-lbl">ë¯¸ë¬</div><div class="rank-seg-sub">80ì  ë¯¸ë§</div>' +
+      '<div class="rank-seg-num">' + cntLow + '</div><div class="rank-seg-lbl">미달</div><div class="rank-seg-sub">80점 미만</div>' +
     '</div>' +
     '</div>';
 
-  // ê¸°ìë³ íê·  ì ì í¤ë + í´ì¦ í ê¸ pill
+  // 기수별 평균 점수 헤더 + 퀴즈 토글 pill
   html += '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">' +
-    '<div class="mini-section-title" style="margin-bottom:0;">ê¸°ìë³ íê·  ì ì</div>';
+    '<div class="mini-section-title" style="margin-bottom:0;">기수별 평균 점수</div>';
 
   if (sets.length >= 2) {
     html += '<div style="display:flex;gap:0;border:1px solid var(--border);border-radius:99px;overflow:hidden;background:var(--gray);">';
     const allActive = (currentFilter === 'all') ? 'background:var(--blue);color:white;' : 'color:var(--text-muted);';
-    html += '<button style="font-size:11px;padding:3px 9px;border:none;cursor:pointer;font-family:inherit;' + allActive + '" onclick="setMainDashQuizFilter(' + safeType + ',\'all\')">ì ì²´</button>';
+    html += '<button style="font-size:11px;padding:3px 9px;border:none;cursor:pointer;font-family:inherit;' + allActive + '" onclick="setMainDashQuizFilter(' + safeType + ',\'all\')">전체</button>';
     sets.forEach(function(s, idx) {
       const qActive = (currentFilter === s.id) ? 'background:var(--blue);color:white;' : 'color:var(--text-muted);';
-      const qName = s.name.length > 7 ? s.name.slice(0,7) + 'â¦' : s.name;
+      const qName = s.name.length > 7 ? s.name.slice(0,7) + '…' : s.name;
       const safeQId = "'" + s.id + "'";
       html += '<button style="font-size:11px;padding:3px 9px;border:none;cursor:pointer;font-family:inherit;' + qActive + '" onclick="setMainDashQuizFilter(' + safeType + ',' + safeQId + ')">' + qName + '</button>';
     });
@@ -1365,10 +1365,10 @@ function renderEmpTypeColumn(type, el) {
   }
   html += '</div>';
 
-  // ê¸°ìë³ íê·  ì ì SVG ë°+ë¼ì¸ ì°¨í¸
+  // 기수별 평균 점수 SVG 바+라인 차트
   const cohortMap = {};
   scores.forEach(s => {
-    const c = (s.cohort || 'ë¯¸ë¶ë¥') + 'ê¸°';
+    const c = (s.cohort || '미분류') + '기';
     if (!cohortMap[c]) cohortMap[c] = { sum:0, cnt:0 };
     cohortMap[c].sum += (s.pct||0);
     cohortMap[c].cnt++;
@@ -1388,22 +1388,22 @@ function renderEmpTypeColumn(type, el) {
       const maxCnt=Math.max.apply(null,items.map(function(i){return i.cnt;}));
       const safeMaxCnt=maxCnt||1;
       const yMax=100, yStep=25;
-      const barBottom=pad.top+iH; // yì¢í ê¸°ì¤ ë§ë ë°ë¥
+      const barBottom=pad.top+iH; // y좌표 기준 막대 바닥
       var sv='<svg viewBox="0 0 '+W+' '+H+'" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;overflow:visible;">';
       sv+='<rect x="'+pad.left+'" y="4" width="10" height="10" fill="#0E94CD" rx="2"/>';
-      sv+='<text x="'+(pad.left+14)+'" y="13" font-size="8" fill="#6b7c93">íê· ì ì(ë§ë)</text>';
+      sv+='<text x="'+(pad.left+14)+'" y="13" font-size="8" fill="#6b7c93">평균점수(막대)</text>';
       sv+='<line x1="'+(pad.left+84)+'" y1="9" x2="'+(pad.left+96)+'" y2="9" stroke="#f59e0b" stroke-width="2"/>';
       sv+='<circle cx="'+(pad.left+90)+'" cy="9" r="3" fill="white" stroke="#f59e0b" stroke-width="2"/>';
-      sv+='<text x="'+(pad.left+100)+'" y="13" font-size="8" fill="#6b7c93">ììì¸ì(ì )</text>';
+      sv+='<text x="'+(pad.left+100)+'" y="13" font-size="8" fill="#6b7c93">응시인원(선)</text>';
       for(var v=0;v<=yMax;v+=yStep){
         var y=pad.top+iH-(v/yMax)*iH;
         sv+='<line x1="'+pad.left+'" y1="'+y+'" x2="'+(W-pad.right)+'" y2="'+y+'" stroke="#e8f4fb" stroke-width="1"/>';
-        sv+='<text x="'+(pad.left-4)+'" y="'+(y+4)+'" text-anchor="end" font-size="9.5" fill="#6b7c93">'+v+'ì </text>';
+        sv+='<text x="'+(pad.left-4)+'" y="'+(y+4)+'" text-anchor="end" font-size="9.5" fill="#6b7c93">'+v+'점</text>';
       }
       var cStep=Math.ceil(safeMaxCnt/3)||1;
       for(var cv=0;cv<=safeMaxCnt;cv+=cStep){
         var cy2=pad.top+iH-(cv/safeMaxCnt)*iH;
-        sv+='<text x="'+(W-pad.right+4)+'" y="'+(cy2+4)+'" text-anchor="start" font-size="9.5" fill="#f59e0b">'+cv+'ëª</text>';
+        sv+='<text x="'+(W-pad.right+4)+'" y="'+(cy2+4)+'" text-anchor="start" font-size="9.5" fill="#f59e0b">'+cv+'명</text>';
       }
       var empTypeStr="'"+type+"'";
       items.forEach(function(item,i){
@@ -1412,8 +1412,8 @@ function renderEmpTypeColumn(type, el) {
         var by=pad.top+iH-bh;
         var lbl="'"+item.label.replace(/'/g,"\\'")+"'";
         sv+='<rect x="'+(cx-barW/2)+'" y="'+by+'" width="'+barW+'" height="'+(bh||1)+'" fill="#0E94CD" rx="3" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal('+lbl+',\'main\','+empTypeStr+')"/>';
-        // ì ì: ë§ë ìë 8px, ê¸°ìëª ì
-        sv+='<text x="'+cx+'" y="'+(barBottom+14)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1a2233" style="pointer-events:none;">'+item.avg+'ì </text>';
+        // 점수: 막대 아래 8px, 기수명 위
+        sv+='<text x="'+cx+'" y="'+(barBottom+14)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="#1a2233" style="pointer-events:none;">'+item.avg+'점</text>';
         sv+='<text x="'+cx+'" y="'+(H-4)+'" text-anchor="middle" font-size="9.5" fill="#6b7c93">'+item.label+'</text>';
       });
       if(items.length>1){
@@ -1430,7 +1430,7 @@ function renderEmpTypeColumn(type, el) {
     })(cohortItems);
   }
 
-  // ìµë¤ ì¤ëµ TOP 5
+  // 최다 오답 TOP 5
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
@@ -1449,7 +1449,7 @@ function renderEmpTypeColumn(type, el) {
     .sort((a,b) => b.pct-a.pct).slice(0,5);
 
   if (top5.length) {
-    html += '<div class="mini-section-title">ìµë¤ ì¤ëµ TOP 5 <span style="font-size:10px;color:var(--blue);font-weight:400;">(í´ë¦­íë©´ ì¤ëµ ë¶í¬ íì¸)</span></div>';
+    html += '<div class="mini-section-title">최다 오답 TOP 5 <span style="font-size:10px;color:var(--blue);font-weight:400;">(클릭하면 오답 분포 확인)</span></div>';
     top5.forEach(item => {
       const q = item.q.length > 28 ? item.q.slice(0,28) + '...' : item.q;
       const safeId = typeof item.id === 'number' ? item.id : "'" + String(item.id).replace(/'/g,"\'") + "'";
@@ -1464,7 +1464,6 @@ function renderEmpTypeColumn(type, el) {
   el.innerHTML = html;
 }
 
-
 function showRankModal(grade, empType) {
   const sets = loadSets().filter(s => s.type === empType);
   const setIds = sets.map(s => s.id);
@@ -1472,40 +1471,40 @@ function showRankModal(grade, empType) {
 
   let title, ranked;
   if (grade === 'excellent') {
-    title = 'ð¢ ì°ì ì§ì ìì (90ì â)';
+    title = '🟢 우수 직원 순위 (90점↑)';
     ranked = scores.filter(s => (s.pct||0) >= 90).sort((a,b) => (b.pct||0)-(a.pct||0));
   } else if (grade === 'basic') {
-    title = 'ðµ ê¸°ë³¸ ì§ì ìì (80~89ì )';
+    title = '🔵 기본 직원 순위 (80~89점)';
     ranked = scores.filter(s => (s.pct||0) >= 80 && (s.pct||0) < 90).sort((a,b) => (b.pct||0)-(a.pct||0));
   } else {
-    title = 'ð´ ë¯¸ë¬ ì§ì ìì (ì¤ëµ ë§ì ì)';
+    title = '🔴 미달 직원 순위 (오답 많은 순)';
     ranked = scores.filter(s => (s.pct||0) < 80).sort((a,b) => {
       const wa = (a.wrongQuestions||[]).length, wb = (b.wrongQuestions||[]).length;
       return wb - wa;
     });
   }
 
-  const empLabel = empType === 'new' ? 'ì ê·ìì¬ì' : 'ê¸°ì¡´ì§ì';
+  const empLabel = empType === 'new' ? '신규입사자' : '기존직원';
   document.getElementById('rank-modal-title').textContent = '[' + empLabel + '] ' + title;
 
   _rankScoresList = ranked;
 
   if (ranked.length === 0) {
-    document.getElementById('rank-modal-list').innerHTML = '<div class="dash-empty">í´ë¹íë ìììê° ììµëë¤.</div>';
+    document.getElementById('rank-modal-list').innerHTML = '<div class="dash-empty">해당하는 응시자가 없습니다.</div>';
   } else {
     document.getElementById('rank-modal-list').innerHTML = ranked.map((s, i) => {
-      const scoreText = (s.pct||0) + 'ì ';
+      const scoreText = (s.pct||0) + '점';
       const scoreColor = grade === 'excellent' ? '#22c55e' : grade === 'basic' ? '#0E94CD' : '#ef4444';
       const hasWrong = (s.wrongQuestions||[]).length > 0 || (s.answers||[]).some(a => !a.ok);
       return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + i + ')">' +
         '<div class="rank-num">' + (i+1) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
           '<div class="rank-name">' + (s.name||'-') + '</div>' +
-          '<div class="rank-cohort">' + (s.cohort ? s.cohort+'ê¸°' : '') + (s.quizName ? ' Â· ' + s.quizName : '') + '</div>' +
+          '<div class="rank-cohort">' + (s.cohort ? s.cohort+'기' : '') + (s.quizName ? ' · ' + s.quizName : '') + '</div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
           '<div class="rank-score" style="color:' + scoreColor + ';">' + scoreText + '</div>' +
-          (hasWrong ? '<div style="font-size:10px;color:var(--text-muted);">íë¦°ë¬¸ì â</div>' : '') +
+          (hasWrong ? '<div style="font-size:10px;color:var(--text-muted);">틀린문제↗</div>' : '') +
         '</div>' +
         '</div>';
     }).join('');
@@ -1523,7 +1522,7 @@ function renderDashboard() {
   if (!_dashSetId) {
     statsEl.style.display = 'none';
     chartsEl.style.display = 'none';
-    phEl.innerHTML = 'í´ì¦ë¥¼ ì ííë©´ ëìë³´ëê° íìë©ëë¤.';
+    phEl.innerHTML = '퀴즈를 선택하면 대시보드가 표시됩니다.';
     phEl.style.display = 'block';
     return;
   }
@@ -1535,21 +1534,21 @@ function renderDashboard() {
     statsEl.style.display = 'none';
     chartsEl.style.display = 'none';
     document.getElementById('dash-dist').style.display = 'none';
-    phEl.innerHTML = 'ìì§ ìì ê¸°ë¡ì´ ììµëë¤.';
+    phEl.innerHTML = '아직 응시 기록이 없습니다.';
     phEl.style.display = 'block';
     return;
   }
 
-  // ââ ìë¨ íµê³ ââ
+  // ── 상단 통계 ──
   const maxTotal = Math.max(...scores.map(s => s.total || 0), 1);
   const avgScore = Math.round(scores.reduce((a,s) => a + (s.pct||0), 0) / scores.length);
   const avgDur   = Math.round(scores.reduce((s,r) => s+(r.duration||0), 0) / scores.length);
-  document.getElementById('ds-total').textContent = scores.length + 'ëª';
-  document.getElementById('ds-avg').textContent   = avgScore + 'ì ';
+  document.getElementById('ds-total').textContent = scores.length + '명';
+  document.getElementById('ds-avg').textContent   = avgScore + '점';
   document.getElementById('ds-time').textContent  = formatDur(avgDur);
   statsEl.style.display = 'grid';
 
-  // ââ ì ì êµ¬ê° ë¶í¬ ââ
+  // ── 점수 구간 분포 ──
   const cnt90  = scores.filter(s => (s.pct||0) >= 90).length;
   const cnt80  = scores.filter(s => (s.pct||0) >= 80 && (s.pct||0) < 90).length;
   const cntLow = scores.filter(s => (s.pct||0) < 80).length;
@@ -1565,21 +1564,21 @@ function renderDashboard() {
   const setEmpType = (set && set.type) ? set.type : 'new';
   document.getElementById('dash-dist-labels').innerHTML =
     '<div class="rank-seg" style="background:#22c55e;cursor:pointer;flex:1;" onclick="showRankModal(\'excellent\',\'' + setEmpType + '\')">' +
-      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt90 + 'ëª</div>' +
-      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">ì°ì Â· 90ì â</div>' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt90 + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">우수 · 90점↑</div>' +
     '</div>' +
     '<div class="rank-seg" style="background:#0E94CD;cursor:pointer;flex:1;" onclick="showRankModal(\'basic\',\'' + setEmpType + '\')">' +
-      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt80 + 'ëª</div>' +
-      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">ê¸°ë³¸ Â· 80~89ì </div>' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cnt80 + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">기본 · 80~89점</div>' +
     '</div>' +
     '<div class="rank-seg" style="background:#ef4444;cursor:pointer;flex:1;" onclick="showRankModal(\'below\',\'' + setEmpType + '\')">' +
-      '<div style="font-size:18px;font-weight:800;color:white;">' + cntLow + 'ëª</div>' +
-      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">ë¯¸ë¬ Â· 80ì  ë¯¸ë§</div>' +
+      '<div style="font-size:18px;font-weight:800;color:white;">' + cntLow + '명</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.9);margin-top:2px;">미달 · 80점 미만</div>' +
     '</div>';
   document.getElementById('dash-dist').style.display = 'block';
   statsEl.style.display = 'grid';
 
-  // ââ ê³µíµ í¬í¼: ê°ë¡ ë§ë ë ë ââ
+  // ── 공통 헬퍼: 가로 막대 렌더 ──
   function barHtml(label, pct, colorCls) {
     const p = Math.min(100, Math.max(0, pct));
     return '<div class="bar-item">' +
@@ -1589,12 +1588,12 @@ function renderDashboard() {
         '<div class="bar-val">' + p + '%</div>' +
       '</div></div>';
   }
-  function emptyBar() { return '<div class="dash-empty">ë°ì´í°ê° ììµëë¤.</div>'; }
+  function emptyBar() { return '<div class="dash-empty">데이터가 없습니다.</div>'; }
 
-  // ââ 1. ê¸°ìë³ ì ëµë¥  ââ
+  // ── 1. 기수별 정답률 ──
   const cohortMap = {};
   scores.forEach(s => {
-    const c = (s.cohort || 'ë¯¸ë¶ë¥') + 'ê¸°';
+    const c = (s.cohort || '미분류') + '기';
     if (!cohortMap[c]) cohortMap[c] = { scoreSum:0, cnt:0 };
     cohortMap[c].scoreSum += (s.pct||0);
     cohortMap[c].cnt++;
@@ -1613,38 +1612,38 @@ function renderDashboard() {
     const step = iW / Math.max(n, 1);
     const barW = Math.min(38, step * 0.55);
     const maxCnt = Math.max(...items.map(i => i.cnt), 1);
-    const yMax = 100; // 100ì  ë§ì 
+    const yMax = 100; // 100점 만점
     const yStep = 25;
     let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;overflow:visible;">';
-    // ë²ë¡
+    // 범례
     s += '<rect x="' + pad.left + '" y="4" width="10" height="10" fill="#0E94CD" rx="2"/>';
-    s += '<text x="' + (pad.left+14) + '" y="13" font-size="8" fill="#6b7c93">íê· ì ì(ë§ë)</text>';
+    s += '<text x="' + (pad.left+14) + '" y="13" font-size="8" fill="#6b7c93">평균점수(막대)</text>';
     s += '<line x1="' + (pad.left+88) + '" y1="9" x2="' + (pad.left+100) + '" y2="9" stroke="#f59e0b" stroke-width="2"/>';
     s += '<circle cx="' + (pad.left+94) + '" cy="9" r="3" fill="white" stroke="#f59e0b" stroke-width="2"/>';
-    s += '<text x="' + (pad.left+104) + '" y="13" font-size="8" fill="#6b7c93">ììì¸ì(ì )</text>';
-    // Y grid & ì¢ì¸¡ ë ì´ë¸ (ì ì)
+    s += '<text x="' + (pad.left+104) + '" y="13" font-size="8" fill="#6b7c93">응시인원(선)</text>';
+    // Y grid & 좌측 레이블 (점수)
     for(let v = 0; v <= yMax; v += yStep) {
       const y = pad.top + iH - (v/yMax)*iH;
       s += '<line x1="' + pad.left + '" y1="' + y + '" x2="' + (W-pad.right) + '" y2="' + y + '" stroke="#e8f4fb" stroke-width="1"/>';
-      s += '<text x="' + (pad.left-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="#6b7c93">' + v + 'ì </text>';
+      s += '<text x="' + (pad.left-6) + '" y="' + (y+4) + '" text-anchor="end" font-size="10" fill="#6b7c93">' + v + '점</text>';
     }
-    // ì°ì¸¡ Y ë ì´ë¸ (ììì¸ì)
+    // 우측 Y 레이블 (응시인원)
     const cStep = Math.ceil(maxCnt/3)||1;
     for(let v=0; v<=maxCnt; v+=cStep) {
       const y = pad.top + iH - (v/maxCnt)*iH;
-      s += '<text x="' + (W-pad.right+5) + '" y="' + (y+4) + '" text-anchor="start" font-size="10" fill="#f59e0b">' + v + 'ëª</text>';
+      s += '<text x="' + (W-pad.right+5) + '" y="' + (y+4) + '" text-anchor="start" font-size="10" fill="#f59e0b">' + v + '명</text>';
     }
-    // ë§ë
+    // 막대
     items.forEach((item, i) => {
       const cx = pad.left + step*i + step/2;
       const bh = (item.avgScore/yMax)*iH;
       const by = pad.top + iH - bh;
       const lbl = "'" + item.label.replace(/'/g, "\\'") + "'";
       s += '<rect x="' + (cx-barW/2) + '" y="' + by + '" width="' + barW + '" height="' + (bh||1) + '" fill="#0E94CD" rx="4" opacity="0.85" style="cursor:pointer;" onclick="showCohortModal(' + lbl + ',\'detail\',null)"/>';
-      s += '<text x="' + cx + '" y="' + (by-5) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1a2233" style="pointer-events:none;">' + item.avgScore + 'ì </text>';
+      s += '<text x="' + cx + '" y="' + (by-5) + '" text-anchor="middle" font-size="10" font-weight="700" fill="#1a2233" style="pointer-events:none;">' + item.avgScore + '점</text>';
       s += '<text x="' + cx + '" y="' + (H-4) + '" text-anchor="middle" font-size="10" fill="#6b7c93">' + item.label + '</text>';
     });
-    // ë¼ì¸ (ììì¸ì)
+    // 라인 (응시인원)
     if(items.length > 1) {
       const pts = items.map((item,i) => { const cx=pad.left+step*i+step/2; const cy=pad.top+iH-(item.cnt/maxCnt)*iH; return cx+','+cy; }).join(' ');
       s += '<polyline points="' + pts + '" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>';
@@ -1658,14 +1657,14 @@ function renderDashboard() {
     return s;
   })(cohortItems) : emptyBar();
 
-  // ââ 2. ìµë¤ ì¤ëµ ì§ë¬¸ & ì ì²´ ì§ë¬¸ë³ ì¤ëµë¥ /ì ëµë¥  ââ
+  // ── 2. 최다 오답 질문 & 전체 질문별 오답률/정답률 ──
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
       if (!qMap[a.id]) qMap[a.id] = { id: a.id, q: a.q || ('Q' + a.id), total:0, wrong:0, correct: a.correct, choices:{} };
       qMap[a.id].total++;
       if (!a.ok) qMap[a.id].wrong++;
-      // ì ì§ ì í ì§ê³ (chosenì ì íí ì¸ë±ì¤)
+      // 선지 선택 집계 (chosen은 선택한 인덱스)
       if (a.chosen !== undefined && a.chosen !== null) {
         qMap[a.id].choices[a.chosen] = (qMap[a.id].choices[a.chosen] || 0) + 1;
       }
@@ -1674,21 +1673,21 @@ function renderDashboard() {
   const qItems = Object.values(qMap)
     .map(v => ({ id: v.id, q: v.q, errPct: Math.round(v.wrong / v.total * 100), okPct: Math.round((v.total - v.wrong) / v.total * 100), choices: v.choices, total: v.total, correct: v.correct }))
     .sort((a,b) => b.errPct - a.errPct);
-  _dashQItems = qItems; // ëª¨ë¬ìì ì ê·¼íê¸° ìí´ ìºì
+  _dashQItems = qItems; // 모달에서 접근하기 위해 캐시
 
-  // í´ë¦­ ê°ë¥í ì¤ëµë¥  ë° (ì ì§ ë¶í¬ ëª¨ë¬ì©)
+  // 클릭 가능한 오답률 바 (선지 분포 모달용)
   function clickableBarHtml(item) {
     const p = Math.min(100, Math.max(0, item.errPct));
     const _sid = typeof item.id === 'number' ? item.id : "'" + String(item.id).replace(/'/g,"\\'") + "'";
     return '<div class="bar-item" style="cursor:pointer;" onclick="showAnsDistModal(' + _sid + ')">' +
-      '<div class="bar-label">' + item.q + ' <span style="font-size:10px;color:var(--blue);">â</span></div>' +
+      '<div class="bar-label">' + item.q + ' <span style="font-size:10px;color:var(--blue);">↗</span></div>' +
       '<div class="bar-row">' +
         '<div class="bar-track"><div class="bar-fill-red" style="width:' + p + '%"></div></div>' +
         '<div class="bar-val">' + p + '%</div>' +
       '</div></div>';
   }
 
-  // TOP 5 ì¤ëµ (í´ë¦­ ê°ë¥)
+  // TOP 5 오답 (클릭 가능)
   const top5 = qItems.slice(0, 5);
   document.getElementById('dash-top-wrong').innerHTML =
     top5.length ? top5.map(i => clickableBarHtml(i)).join('') : emptyBar();
@@ -1700,7 +1699,7 @@ function showErrorRateModal() {
   const scores = _dashSetId
     ? _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId)
     : _dashScores;
-  if (scores.length === 0) { alert('ìì§ ìì ê¸°ë¡ì´ ììµëë¤.'); return; }
+  if (scores.length === 0) { alert('아직 응시 기록이 없습니다.'); return; }
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
@@ -1711,12 +1710,12 @@ function showErrorRateModal() {
   });
   const items = Object.values(qMap).map(v => ({ q: v.q, pct: Math.round(v.wrong / v.total * 100) })).sort((a,b) => b.pct - a.pct);
   document.getElementById('error-rate-modal-list').innerHTML = items.length === 0
-    ? '<div class="empty">ë°ì´í°ê° ììµëë¤.</div>'
+    ? '<div class="empty">데이터가 없습니다.</div>'
     : items.map(item =>
         '<div class="error-bar-item">' +
         '<div class="error-bar-label">' + item.q.slice(0,50) + (item.q.length > 50 ? '...' : '') + '</div>' +
         '<div class="error-bar-track"><div class="error-bar-fill" style="width:' + item.pct + '%"></div></div>' +
-        '<div class="error-bar-pct">ì¤ëµë¥  ' + item.pct + '%</div></div>'
+        '<div class="error-bar-pct">오답률 ' + item.pct + '%</div></div>'
       ).join('');
   document.getElementById('error-rate-modal').classList.add('active');
 }
@@ -1726,33 +1725,33 @@ function showAnsDistModal(qId) {
   const item = _dashQItems.find(i => i.id === qId);
   if (!item) return;
 
-  // í´ë¹ ì¸í¸ì ë¬¸ì  ì ì§ íì¤í¸ ê°ì ¸ì¤ê¸°
+  // 해당 세트의 문제 선지 텍스트 가져오기
   const set = getSetById(_dashSetId);
   const qDef = set ? set.questions.find(q => q.id === qId) : null;
   const options = qDef ? qDef.options : null;
 
-  // ì ëµ ì¸ë±ì¤ ë°°ì´ ì ê·í
+  // 정답 인덱스 배열 정규화
   const correctArr = Array.isArray(item.correct) ? item.correct
     : (item.correct !== undefined && item.correct !== null) ? [item.correct] : [];
 
   document.getElementById('ans-dist-question').textContent = item.q;
 
-  // ì ì§ë³ ì§ê³ ë ë
+  // 선지별 집계 렌더
   let html = '';
   if (!options) {
-    // ì ì§ íì¤í¸ê° ìì¼ë©´ ì¸ë±ì¤ë§ íì
+    // 선지 텍스트가 없으면 인덱스만 표시
     const entries = Object.entries(item.choices).sort((a,b) => Number(a[0]) - Number(b[0]));
-    if (entries.length === 0) { html = '<div class="dash-empty">ì í ë°ì´í°ê° ììµëë¤.</div>'; }
+    if (entries.length === 0) { html = '<div class="dash-empty">선택 데이터가 없습니다.</div>'; }
     else {
       entries.forEach(([idx, cnt]) => {
         const pct = Math.round(cnt / item.total * 100);
         const isCorrect = correctArr.includes(Number(idx));
         const fill = isCorrect ? 'bar-fill-green' : 'bar-fill-red';
-        const label = 'ì ì§ ' + (Number(idx)+1) + (isCorrect ? ' â (ì ëµ)' : '');
+        const label = '선지 ' + (Number(idx)+1) + (isCorrect ? ' ✓ (정답)' : '');
         html += '<div class="bar-item">' +
           '<div class="bar-label">' + label + '</div>' +
           '<div class="bar-row"><div class="bar-track"><div class="' + fill + '" style="width:' + pct + '%"></div></div>' +
-          '<div class="bar-val">' + cnt + 'ëª (' + pct + '%)</div></div></div>';
+          '<div class="bar-val">' + cnt + '명 (' + pct + '%)</div></div></div>';
       });
     }
   } else {
@@ -1761,11 +1760,11 @@ function showAnsDistModal(qId) {
       const pct = Math.round(cnt / item.total * 100);
       const isCorrect = correctArr.includes(idx);
       const fill = isCorrect ? 'bar-fill-green' : 'bar-fill-red';
-      const badge = isCorrect ? ' <span style="font-size:10px;background:#dcfce7;color:#166534;padding:1px 6px;border-radius:99px;font-weight:700;">ì ëµ</span>' : '';
+      const badge = isCorrect ? ' <span style="font-size:10px;background:#dcfce7;color:#166534;padding:1px 6px;border-radius:99px;font-weight:700;">정답</span>' : '';
       html += '<div class="bar-item">' +
         '<div class="bar-label">' + opt + badge + '</div>' +
         '<div class="bar-row"><div class="bar-track"><div class="' + fill + '" style="width:' + pct + '%"></div></div>' +
-        '<div class="bar-val">' + cnt + 'ëª (' + pct + '%)</div></div></div>';
+        '<div class="bar-val">' + cnt + '명 (' + pct + '%)</div></div></div>';
     });
   }
 
@@ -1779,7 +1778,7 @@ function showMainDashQModal(type, qId) {
   if (!qData || !qData[qId]) return;
   const item = qData[qId];
 
-  // ì ì§ íì¤í¸ ì°¾ê¸°
+  // 선지 텍스트 찾기
   const sets = loadSets().filter(s => s.type === type);
   let options = null;
   let correct = item.correct;
@@ -1793,32 +1792,32 @@ function showMainDashQModal(type, qId) {
 
   let html = '';
   if (!options) {
-    // ì ì§ íì¤í¸ ìì ë - ë§ì´ ì íí ì ì ë ¬
+    // 선지 텍스트 없을 때 - 많이 선택한 순 정렬
     const entries = Object.entries(item.choices).sort((a,b) => Number(b[1]) - Number(a[1]));
-    if (entries.length === 0) { html = '<div class="dash-empty">ì í ë°ì´í°ê° ììµëë¤.</div>'; }
+    if (entries.length === 0) { html = '<div class="dash-empty">선택 데이터가 없습니다.</div>'; }
     else {
       entries.forEach(([idx, cnt]) => {
         const pct = Math.round(cnt / item.total * 100);
         const isCorrect = correctArr.includes(Number(idx));
         const fill = isCorrect ? 'bar-fill-green' : 'bar-fill-red';
-        const label = 'ì ì§ ' + (Number(idx)+1) + (isCorrect ? ' â (ì ëµ)' : '');
+        const label = '선지 ' + (Number(idx)+1) + (isCorrect ? ' ✓ (정답)' : '');
         html += '<div class="bar-item"><div class="bar-label">' + label + '</div>' +
           '<div class="bar-row"><div class="bar-track"><div class="' + fill + '" style="width:' + pct + '%"></div></div>' +
-          '<div class="bar-val">' + cnt + 'ëª (' + pct + '%)</div></div></div>';
+          '<div class="bar-val">' + cnt + '명 (' + pct + '%)</div></div></div>';
       });
     }
   } else {
-    // ì ì§ íì¤í¸ ìì ë - ë§ì´ ì íí ì ì ë ¬
+    // 선지 텍스트 있을 때 - 많이 선택한 순 정렬
     const sorted = options.map((opt, idx) => ({ opt, idx, cnt: item.choices[idx] || 0 }))
       .sort((a, b) => b.cnt - a.cnt);
     sorted.forEach(({ opt, idx, cnt }) => {
       const pct = item.total > 0 ? Math.round(cnt / item.total * 100) : 0;
       const isCorrect = correctArr.includes(idx);
       const fill = isCorrect ? 'bar-fill-green' : 'bar-fill-red';
-      const badge = isCorrect ? ' <span style="font-size:10px;background:#dcfce7;color:#166534;padding:1px 6px;border-radius:99px;font-weight:700;">ì ëµ</span>' : '';
+      const badge = isCorrect ? ' <span style="font-size:10px;background:#dcfce7;color:#166534;padding:1px 6px;border-radius:99px;font-weight:700;">정답</span>' : '';
       html += '<div class="bar-item"><div class="bar-label">' + opt + badge + '</div>' +
         '<div class="bar-row"><div class="bar-track"><div class="' + fill + '" style="width:' + pct + '%"></div></div>' +
-        '<div class="bar-val">' + cnt + 'ëª (' + pct + '%)</div></div></div>';
+        '<div class="bar-val">' + cnt + '명 (' + pct + '%)</div></div></div>';
     });
   }
 
@@ -1826,14 +1825,14 @@ function showMainDashQModal(type, qId) {
   document.getElementById('ans-dist-modal').classList.add('active');
 }
 
-/* âââ ììì ëª©ë¡ ê³µíµ ë ë âââ */
+/* ─── 응시자 목록 공통 렌더 ─── */
 function _renderAttendeeList(filtered) {
   document.getElementById('attendee-modal-list').innerHTML = filtered.length === 0
-    ? '<div class="dash-empty">ê²ì ê²°ê³¼ê° ììµëë¤.</div>'
+    ? '<div class="dash-empty">검색 결과가 없습니다.</div>'
     : filtered.map(s => {
         const origIdx = _attendeeScoresList.indexOf(s);
         const color = (s.pct||0) >= 90 ? '#22c55e' : (s.pct||0) >= 80 ? '#0E94CD' : '#ef4444';
-        const sub = [(s.cohort ? s.cohort+'ê¸°' : ''), (s.quizName || '')].filter(Boolean).join(' Â· ');
+        const sub = [(s.cohort ? s.cohort+'기' : ''), (s.quizName || '')].filter(Boolean).join(' · ');
         return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + origIdx + ',true)">' +
           '<div class="rank-num">' + (origIdx+1) + '</div>' +
           '<div style="flex:1;min-width:0;">' +
@@ -1841,8 +1840,8 @@ function _renderAttendeeList(filtered) {
             (sub ? '<div class="rank-cohort">' + sub + '</div>' : '') +
           '</div>' +
           '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
-            '<div class="rank-score" style="color:' + color + ';">' + (s.pct||0) + 'ì </div>' +
-            '<div style="font-size:10px;color:var(--text-muted);">íë¦°ë¬¸ì â</div>' +
+            '<div class="rank-score" style="color:' + color + ';">' + (s.pct||0) + '점</div>' +
+            '<div style="font-size:10px;color:var(--text-muted);">틀린문제↗</div>' +
           '</div>' +
         '</div>';
       }).join('');
@@ -1854,63 +1853,63 @@ function filterAttendeeList() {
 }
 function _openAttendeeModal(title, scores) {
   _attendeeScoresList = scores;
-  document.getElementById('attendee-modal-title').textContent = title + ' (' + scores.length + 'ëª)';
+  document.getElementById('attendee-modal-title').textContent = title + ' (' + scores.length + '명)';
   document.getElementById('attendee-search').value = '';
   _renderAttendeeList(scores);
   document.getElementById('attendee-modal').classList.add('active');
 }
 
-/* âââ ììì ëª©ë¡ ëª¨ë¬ (ë©ì¸ ëìë³´ë) âââ */
+/* ─── 응시자 목록 모달 (메인 대시보드) ─── */
 function showAttendeeModalMain(empType) {
   const sets = loadSets().filter(s => s.type === empType);
   const setIds = sets.map(s => s.id);
   const scores = _dashScores.filter(s => setIds.includes(s.quizId || 'set_default'))
     .sort((a,b) => (b.pct||0) - (a.pct||0));
-  const label = empType === 'new' ? 'ì ê·ìì¬ì ììì ëª©ë¡' : 'ê¸°ì¡´ì§ì ììì ëª©ë¡';
+  const label = empType === 'new' ? '신규입사자 응시자 목록' : '기존직원 응시자 목록';
   _openAttendeeModal(label, scores);
 }
 
-/* âââ ììì ëª©ë¡ ëª¨ë¬ (ê·¸ ì¸ ëìë³´ë) âââ */
+/* ─── 응시자 목록 모달 (그 외 대시보드) ─── */
 function showAttendeeModalDetail() {
   if (!_dashSetId) return;
   const scores = _dashScores.filter(s => (s.quizId || 'set_default') === _dashSetId)
     .sort((a,b) => (b.pct||0) - (a.pct||0));
   const set = getSetById(_dashSetId);
-  _openAttendeeModal((set ? set.name : 'í´ì¦') + ' ììì', scores);
+  _openAttendeeModal((set ? set.name : '퀴즈') + ' 응시자', scores);
 }
 
-/* âââ ì§ì íë¦° ì§ë¬¸ ëª¨ë¬ âââ */
+/* ─── 직원 틀린 질문 모달 ─── */
 function showEmployeeWrongQ(idx, fromAttendee) {
   const list = fromAttendee ? _attendeeScoresList : _rankScoresList;
   const s = list[idx];
   if (!s) return;
 
-  document.getElementById('wrong-q-modal-title').textContent = (s.name||'-') + 'ëì íë¦° ì§ë¬¸';
+  document.getElementById('wrong-q-modal-title').textContent = (s.name||'-') + '님의 틀린 질문';
   document.getElementById('wrong-q-modal-sub').textContent =
-    (s.cohort ? s.cohort + 'ê¸°' : '') + (s.quizName ? ' Â· ' + s.quizName : '') +
-    ' | ì ì: ' + (s.pct||0) + 'ì  (' + (s.score||0) + '/' + (s.total||0) + ')';
+    (s.cohort ? s.cohort + '기' : '') + (s.quizName ? ' · ' + s.quizName : '') +
+    ' | 점수: ' + (s.pct||0) + '점 (' + (s.score||0) + '/' + (s.total||0) + ')';
 
-  // wrongQuestions ëë answersìì íë¦° ê² ì¶ì¶
+  // wrongQuestions 또는 answers에서 틀린 것 추출
   let wrongList = [];
   if (s.answers && s.answers.length > 0) {
     wrongList = s.answers.filter(a => !a.ok);
   } else if (s.wrongQuestions && s.wrongQuestions.length > 0) {
-    wrongList = s.wrongQuestions.map(q => ({ q: typeof q === 'string' ? q : (q.q||'ì§ë¬¸'), ok: false }));
+    wrongList = s.wrongQuestions.map(q => ({ q: typeof q === 'string' ? q : (q.q||'질문'), ok: false }));
   }
 
   if (wrongList.length === 0) {
-    document.getElementById('wrong-q-modal-list').innerHTML = '<div class="dash-empty" style="color:#22c55e;">ëª¨ë  ë¬¸ì ë¥¼ ë§íìµëë¤! ð</div>';
+    document.getElementById('wrong-q-modal-list').innerHTML = '<div class="dash-empty" style="color:#22c55e;">모든 문제를 맞혔습니다! 🎉</div>';
   } else {
     document.getElementById('wrong-q-modal-list').innerHTML = wrongList.map((a, i) => {
-      const qText = a.q || ('ì§ë¬¸ ' + (i+1));
-      const chosen = a.chosen !== undefined ? 'ì í: ì ì§ ' + (Number(a.chosen)+1) : '';
+      const qText = a.q || ('질문 ' + (i+1));
+      const chosen = a.chosen !== undefined ? '선택: 선지 ' + (Number(a.chosen)+1) : '';
       const correct = a.correct !== undefined
-        ? (Array.isArray(a.correct) ? a.correct : [a.correct]).map(c => 'ì ì§ '+(Number(c)+1)).join(', ')
+        ? (Array.isArray(a.correct) ? a.correct : [a.correct]).map(c => '선지 '+(Number(c)+1)).join(', ')
         : '';
       return '<div style="padding:12px 0;border-bottom:1px solid var(--border);last-child:border-none;">' +
         '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Q' + (i+1) + '. ' + qText + '</div>' +
-        (chosen ? '<div style="font-size:12px;color:#ef4444;">â ' + chosen + '</div>' : '') +
-        (correct ? '<div style="font-size:12px;color:#22c55e;">â ì ëµ: ' + correct + '</div>' : '') +
+        (chosen ? '<div style="font-size:12px;color:#ef4444;">✗ ' + chosen + '</div>' : '') +
+        (correct ? '<div style="font-size:12px;color:#22c55e;">✓ 정답: ' + correct + '</div>' : '') +
       '</div>';
     }).join('');
   }
@@ -1918,7 +1917,7 @@ function showEmployeeWrongQ(idx, fromAttendee) {
   document.getElementById('wrong-q-modal').classList.add('active');
 }
 
-/* âââ ê¸°ìë³ ììì ëª¨ë¬ âââ */
+/* ─── 기수별 응시자 모달 ─── */
 function showCohortModal(cohortLabel, source, empType) {
   let scores;
   if (source === 'main' && empType) {
@@ -1931,15 +1930,15 @@ function showCohortModal(cohortLabel, source, empType) {
       : _dashScores;
   }
 
-  // cohortLabelì "3ê¸°" ííì´ë¯ë¡ ì ì«ìë§ ë¹êµ
-  const cohortNum = cohortLabel.replace('ê¸°','').trim();
-  const cohortScores = scores.filter(s => String(s.cohort||'ë¯¸ë¶ë¥') === cohortNum)
+  // cohortLabel은 "3기" 형태이므로 앞 숫자만 비교
+  const cohortNum = cohortLabel.replace('기','').trim();
+  const cohortScores = scores.filter(s => String(s.cohort||'미분류') === cohortNum)
     .sort((a,b) => (b.pct||0) - (a.pct||0));
 
-  document.getElementById('cohort-modal-title').textContent = cohortLabel + ' ììì (' + cohortScores.length + 'ëª)';
+  document.getElementById('cohort-modal-title').textContent = cohortLabel + ' 응시자 (' + cohortScores.length + '명)';
 
   if (cohortScores.length === 0) {
-    document.getElementById('cohort-modal-list').innerHTML = '<div class="dash-empty">í´ë¹ ê¸°ì ìììê° ììµëë¤.</div>';
+    document.getElementById('cohort-modal-list').innerHTML = '<div class="dash-empty">해당 기수 응시자가 없습니다.</div>';
   } else {
     document.getElementById('cohort-modal-list').innerHTML = cohortScores.map((s, i) => {
       const color = (s.pct||0) >= 90 ? '#22c55e' : (s.pct||0) >= 80 ? '#0E94CD' : '#ef4444';
@@ -1948,9 +1947,9 @@ function showCohortModal(cohortLabel, source, empType) {
         '<div class="rank-num">' + (i+1) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
           '<div class="rank-name">' + (s.name||'-') + '</div>' +
-          '<div class="rank-cohort">' + (s.quizName||'') + ' Â· ' + dur + '</div>' +
+          '<div class="rank-cohort">' + (s.quizName||'') + ' · ' + dur + '</div>' +
         '</div>' +
-        '<div class="rank-score" style="color:' + color + ';flex-shrink:0;">' + (s.pct||0) + 'ì </div>' +
+        '<div class="rank-score" style="color:' + color + ';flex-shrink:0;">' + (s.pct||0) + '점</div>' +
       '</div>';
     }).join('');
   }
@@ -1958,13 +1957,13 @@ function showCohortModal(cohortLabel, source, empType) {
   document.getElementById('cohort-modal').classList.add('active');
 }
 
-/* âââ ê¸°ì ê´ë¦¬ âââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── 기수 관리 ───────────────────────────────────────────────── */
 function renderCohortTags() {
   const cohorts = loadCohorts();
   document.getElementById('cohort-tags').innerHTML = cohorts.length === 0
-    ? '<span style="color:var(--text-muted);font-size:13px;">ë±ë¡ë ê¸°ìê° ììµëë¤</span>'
+    ? '<span style="color:var(--text-muted);font-size:13px;">등록된 기수가 없습니다</span>'
     : cohorts.map(c =>
-        '<span class="cohort-tag">' + c + 'ê¸° <button onclick="deleteCohort(\'' + c + '\')">â</button></span>'
+        '<span class="cohort-tag">' + c + '기 <button onclick="deleteCohort(\'' + c + '\')">✕</button></span>'
       ).join('');
 }
 function addCohort() {
@@ -1982,7 +1981,7 @@ function deleteCohort(c) {
   renderScoreView();
 }
 
-/* âââ Score List (4-level) âââââââââââââââââââââââââââââââââââââ */
+/* ─── Score List (4-level) ───────────────────────────────────── */
 let _scores = [];
 let _scoreViewLevel = 'sets'; // 'sets' | 'cohorts' | 'employees' | 'detail'
 let _selectedSetId = null;
@@ -2009,9 +2008,9 @@ function renderScoreView() {
 
 function renderScoreSetsLevel() {
   const sets = loadSets();
-  document.getElementById('s-count-lbl').textContent = 'ì ì²´ ' + _scores.length + 'ëª';
+  document.getElementById('s-count-lbl').textContent = '전체 ' + _scores.length + '명';
   if (sets.length === 0) {
-    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">ë±ë¡ë í´ì¦ê° ììµëë¤.</div>';
+    document.getElementById('score-table-wrap').innerHTML = '<div class="empty">등록된 퀴즈가 없습니다.</div>';
     return;
   }
   let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
@@ -2022,10 +2021,10 @@ function renderScoreSetsLevel() {
     html += '<div class="drill-card card" style="padding:18px 20px;" onclick="drillToScoreSet(\'' + set.id + '\')">' +
       '<div style="display:flex;align-items:center;justify-content:space-between;">' +
       '<div><div style="font-size:15px;font-weight:800;">' + set.name + '</div>' +
-      '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + setScores.length + 'ëª ìì</div></div>' +
+      '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + setScores.length + '명 응시</div></div>' +
       '<div style="display:flex;align-items:center;gap:10px;">' +
-      '<span class="badge ' + bc + '">' + (setScores.length > 0 ? 'íê·  ' + avg + '%' : 'ë¯¸ìì') + '</span>' +
-      '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">âº</span>' +
+      '<span class="badge ' + bc + '">' + (setScores.length > 0 ? '평균 ' + avg + '%' : '미응시') + '</span>' +
+      '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
       '</div></div></div>';
   });
   html += '</div>';
@@ -2039,20 +2038,20 @@ function renderCohortsLevel() {
   const set = getSetById(_selectedSetId);
   const cohortMap = {};
   setScores.forEach(s => {
-    const c = s.cohort || 'ë¯¸ë¶ë¥';
+    const c = s.cohort || '미분류';
     if (!cohortMap[c]) cohortMap[c] = [];
     cohortMap[c].push(s);
   });
   const cohorts = Object.entries(cohortMap).sort(([a],[b]) => {
-    if (a === 'ë¯¸ë¶ë¥') return 1;
-    if (b === 'ë¯¸ë¶ë¥') return -1;
+    if (a === '미분류') return 1;
+    if (b === '미분류') return -1;
     const na = parseFloat(a), nb = parseFloat(b);
     return isNaN(na) || isNaN(nb) ? a.localeCompare(b) : na - nb;
   });
-  document.getElementById('s-count-lbl').textContent = (set ? set.name : '') + ' Â· ' + setScores.length + 'ëª';
-  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToScoreSets()">â í´ì¦ ëª©ë¡</button></div>';
+  document.getElementById('s-count-lbl').textContent = (set ? set.name : '') + ' · ' + setScores.length + '명';
+  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToScoreSets()">← 퀴즈 목록</button></div>';
   if (cohorts.length === 0) {
-    html += '<div class="empty">ìì ê¸°ë¡ì´ ììµëë¤.</div>';
+    html += '<div class="empty">응시 기록이 없습니다.</div>';
   } else {
     html += '<div style="display:flex;flex-direction:column;gap:12px;">';
     cohorts.forEach(([c, scores]) => {
@@ -2060,11 +2059,11 @@ function renderCohortsLevel() {
       const bc = avg >= 80 ? 'badge-green' : avg >= 60 ? 'badge-blue' : 'badge-red';
       html += '<div class="drill-card card" style="padding:18px 20px;" onclick="drillToCohort(\'' + c.replace(/'/g,"\\'") + '\')">' +
         '<div style="display:flex;align-items:center;justify-content:space-between;">' +
-        '<div><div style="font-size:16px;font-weight:800;">' + (c === 'ë¯¸ë¶ë¥' ? 'ë¯¸ë¶ë¥' : c + 'ê¸°') + '</div>' +
-        '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + scores.length + 'ëª ìì</div></div>' +
+        '<div><div style="font-size:16px;font-weight:800;">' + (c === '미분류' ? '미분류' : c + '기') + '</div>' +
+        '<div style="font-size:13px;color:var(--text-muted);margin-top:3px;">' + scores.length + '명 응시</div></div>' +
         '<div style="display:flex;align-items:center;gap:10px;">' +
-        '<span class="badge ' + bc + '">íê·  ' + avg + '%</span>' +
-        '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">âº</span>' +
+        '<span class="badge ' + bc + '">평균 ' + avg + '%</span>' +
+        '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
         '</div></div></div>';
     });
     html += '</div>';
@@ -2077,12 +2076,12 @@ function drillToCohort(c) { _selectedCohort = c; _scoreViewLevel = 'employees'; 
 
 function renderEmployeesLevel() {
   const setScores = _scores.filter(s => (s.quizId || 'set_default') === _selectedSetId);
-  const cohortScores = setScores.filter(s => (s.cohort || 'ë¯¸ë¶ë¥') === _selectedCohort);
-  const label = _selectedCohort === 'ë¯¸ë¶ë¥' ? 'ë¯¸ë¶ë¥' : _selectedCohort + 'ê¸°';
-  document.getElementById('s-count-lbl').textContent = label + ' Â· ' + cohortScores.length + 'ëª';
-  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToCohorts()">â ê¸°ì ëª©ë¡</button></div>';
+  const cohortScores = setScores.filter(s => (s.cohort || '미분류') === _selectedCohort);
+  const label = _selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기';
+  document.getElementById('s-count-lbl').textContent = label + ' · ' + cohortScores.length + '명';
+  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToCohorts()">← 기수 목록</button></div>';
   if (cohortScores.length === 0) {
-    html += '<div class="empty">ìì ê¸°ë¡ì´ ììµëë¤.</div>';
+    html += '<div class="empty">응시 기록이 없습니다.</div>';
   } else {
     html += '<div style="display:flex;flex-direction:column;gap:8px;">';
     cohortScores.forEach(s => {
@@ -2095,7 +2094,7 @@ function renderEmployeesLevel() {
         '<div style="display:flex;align-items:center;gap:8px;">' +
         '<span class="badge ' + bc + '">' + pct + '</span>' +
         '<span style="font-size:12px;color:var(--text-muted);">' + formatDur(s.duration) + '</span>' +
-        '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">âº</span>' +
+        '<span style="color:var(--text-muted);font-size:20px;font-weight:300;">›</span>' +
               '</div></div>';
     });
     html += '</div>';
@@ -2109,29 +2108,29 @@ function drillToDetail(idx) { _selectedScoreId = idx; _scoreViewLevel = 'detail'
 function renderDetailLevel() {
   const s = _scores[_selectedScoreId];
   if (!s) { backToEmployees(); return; }
-  const label = _selectedCohort === 'ë¯¸ë¶ë¥' ? 'ë¯¸ë¶ë¥' : _selectedCohort + 'ê¸°';
+  const label = _selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기';
   const pct = s.pct !== undefined ? s.pct + '%' : '-';
   const bc = s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red';
   const wq = s.wrongQuestions || [];
-  document.getElementById('s-count-lbl').textContent = (s.name||'-') + ' ìì ìì¸';
-  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToEmployees()">â ' + label + ' ëª©ë¡</button></div>' +
+  document.getElementById('s-count-lbl').textContent = (s.name||'-') + ' 응시 상세';
+  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToEmployees()">← ' + label + ' 목록</button></div>' +
     '<div class="card" style="margin-bottom:16px;">' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
     '<div><div style="font-size:18px;font-weight:800;">' + (s.name||'-') + '</div>' +
-    '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">' + label + ' Â· ' + (s.date||'') + '</div></div>' +
+    '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">' + label + ' · ' + (s.date||'') + '</div></div>' +
     '<span class="badge ' + bc + '" style="font-size:15px;padding:6px 14px;">' + pct + '</span></div>' +
     '<div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted);">' +
-    '<span>ìììê° ' + formatDur(s.duration) + '</span><span>íë¦° ë¬¸ì  ' + wq.length + 'ê°</span></div></div>';
+    '<span>소요시간 ' + formatDur(s.duration) + '</span><span>틀린 문제 ' + wq.length + '개</span></div></div>';
   if (wq.length === 0) {
-    html += '<div class="card" style="text-align:center;padding:24px;color:var(--success-text);font-weight:700;font-size:15px;">ëª¨ë  ë¬¸ì  ì ëµ!</div>';
+    html += '<div class="card" style="text-align:center;padding:24px;color:var(--success-text);font-weight:700;font-size:15px;">모든 문제 정답!</div>';
   } else {
-    html += '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;">íë¦° ë¬¸ì  ' + wq.length + 'ê°</div><div style="display:flex;flex-direction:column;gap:10px;">';
+    html += '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;">틀린 문제 ' + wq.length + '개</div><div style="display:flex;flex-direction:column;gap:10px;">';
     wq.forEach(w => {
       html += '<div class="card" style="padding:16px 18px;">' +
         '<div style="font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5;">Q. ' + w.q + '</div>' +
         '<div style="display:flex;flex-direction:column;gap:6px;">' +
-        '<div style="font-size:13px;padding:8px 12px;background:var(--success-bg);border-radius:8px;color:var(--success-text);">â ì ëµ: ' + w.correct + '</div>' +
-        (w.chosen ? '<div style="font-size:13px;padding:8px 12px;background:var(--error-bg);border-radius:8px;color:var(--error-text);">â ì í: ' + w.chosen + '</div>' : '') +
+        '<div style="font-size:13px;padding:8px 12px;background:var(--success-bg);border-radius:8px;color:var(--success-text);">✓ 정답: ' + w.correct + '</div>' +
+        (w.chosen ? '<div style="font-size:13px;padding:8px 12px;background:var(--error-bg);border-radius:8px;color:var(--error-text);">✗ 선택: ' + w.chosen + '</div>' : '') +
         '</div></div>';
     });
     html += '</div>';
@@ -2144,17 +2143,17 @@ async function confirmDeleteAll() {
   let targets, msg;
   if (_scoreViewLevel === 'detail' && _selectedScoreId !== null) {
     targets = [_scores[_selectedScoreId]];
-    msg = (_scores[_selectedScoreId].name||'') + 'ëì ìì ê¸°ë¡ì ì­ì í ê¹ì?';
+    msg = (_scores[_selectedScoreId].name||'') + '님의 응시 기록을 삭제할까요?';
   } else if (_scoreViewLevel === 'employees' && _selectedCohort) {
-    targets = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId && (s.cohort||'ë¯¸ë¶ë¥') === _selectedCohort);
-    msg = (_selectedCohort === 'ë¯¸ë¶ë¥' ? 'ë¯¸ë¶ë¥' : _selectedCohort + 'ê¸°') + ' ì ì²´ ê¸°ë¡ì ì­ì í ê¹ì?';
+    targets = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId && (s.cohort||'미분류') === _selectedCohort);
+    msg = (_selectedCohort === '미분류' ? '미분류' : _selectedCohort + '기') + ' 전체 기록을 삭제할까요?';
   } else if (_scoreViewLevel === 'cohorts' && _selectedSetId) {
     targets = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId);
     const set = getSetById(_selectedSetId);
-    msg = (set ? set.name : '') + ' ì ì²´ ê¸°ë¡ì ì­ì í ê¹ì?';
+    msg = (set ? set.name : '') + ' 전체 기록을 삭제할까요?';
   } else {
     targets = _scores;
-    msg = 'ëª¨ë  ì ì ê¸°ë¡ì ì­ì í ê¹ì?';
+    msg = '모든 점수 기록을 삭제할까요?';
   }
   if (!confirm(msg)) return;
   for (const s of targets) { if (s._id) await fsDelete('scores', s._id); }
@@ -2168,27 +2167,27 @@ function exportCSV() {
   if (_scoreViewLevel === 'detail' && _selectedScoreId !== null) {
     filtered = [_scores[_selectedScoreId]];
   } else if (_scoreViewLevel === 'employees' && _selectedCohort) {
-    filtered = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId && (s.cohort||'ë¯¸ë¶ë¥') === _selectedCohort);
+    filtered = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId && (s.cohort||'미분류') === _selectedCohort);
   } else if (_scoreViewLevel === 'cohorts' && _selectedSetId) {
     filtered = _scores.filter(s => (s.quizId||'set_default') === _selectedSetId);
   } else {
     filtered = _scores;
   }
-  if (filtered.length === 0) { alert('ë°ì´í°ê° ììµëë¤.'); return; }
-  const rows = [['ì´ë¦','ê¸°ì','í´ì¦','ì ì(%)','ìììê°(ì´)','ë ì§','íë¦°ë¬¸ì ì']];
+  if (filtered.length === 0) { alert('데이터가 없습니다.'); return; }
+  const rows = [['이름','기수','퀴즈','점수(%)','소요시간(초)','날짜','틀린문제수']];
   filtered.forEach(s => rows.push([s.name||'', s.cohort||'', s.quizName||'', s.pct||0, s.duration||0, s.date||'', (s.wrongQuestions||[]).length]));
-  const csv = 'ï»¿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g,'""') + '"').join(',')).join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = 'ë¼ë¡ì _í´ì¦ì ì_' + new Date().toLocaleDateString('ko-KR').replace(/[.\s]/g,'') + '.csv';
+  a.download = '라로제_퀴즈점수_' + new Date().toLocaleDateString('ko-KR').replace(/[.\s]/g,'') + '.csv';
   a.click();
 }
 
-/* âââ Questions Tab (2-level) ââââââââââââââââââââââââââââââââââ */
+/* ─── Questions Tab (2-level) ────────────────────────────────── */
 let _qViewSetId = null;
-let _qEditMode = false;    // í´ì¦ ëª©ë¡ ìì  ëª¨ë
-let _qListEditMode = false; // ë¬¸ì  ëª©ë¡ ìì  ëª¨ë
-let _qSetScoreMap = {};    // ë¬¸ì ë³ ì ëµ/ì¤ëµ íµê³ (questionId â {total, correct})
+let _qEditMode = false;    // 퀴즈 목록 수정 모드
+let _qListEditMode = false; // 문제 목록 수정 모드
+let _qSetScoreMap = {};    // 문제별 정답/오답 통계 (questionId → {total, correct})
 
 function renderQTab() {
   if (_qViewSetId === null) renderQSetList();
@@ -2198,39 +2197,39 @@ function renderQTab() {
 function renderQSetList() {
   const sets = loadSets();
   const editBtn = _qEditMode
-    ? '<button class="btn btn-sm btn-primary" onclick="toggleQEditMode()">â ìë£</button>'
-    : '<button class="btn btn-sm btn-outline" onclick="toggleQEditMode()">í´ì¦ ìì </button>';
+    ? '<button class="btn btn-sm btn-primary" onclick="toggleQEditMode()">✓ 완료</button>'
+    : '<button class="btn btn-sm btn-outline" onclick="toggleQEditMode()">퀴즈 수정</button>';
   let html = '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
-    '<span style="font-size:14px;font-weight:700;color:var(--text-muted);">í´ì¦ ' + sets.length + 'ê°</span>' +
+    '<span style="font-size:14px;font-weight:700;color:var(--text-muted);">퀴즈 ' + sets.length + '개</span>' +
     '<div style="display:flex;gap:8px;">' + editBtn +
-    '<button class="btn btn-sm btn-primary" onclick="openNewSetModal()">+ í´ì¦ ì¶ê°</button>' +
+    '<button class="btn btn-sm btn-primary" onclick="openNewSetModal()">+ 퀴즈 추가</button>' +
     '</div></div>';
   if (sets.length === 0) {
-    html += '<div class="empty">ë±ë¡ë í´ì¦ê° ììµëë¤.<br>+ í´ì¦ ì¶ê° ë²í¼ì¼ë¡ ì í´ì¦ë¥¼ ë§ëì¸ì.</div>';
+    html += '<div class="empty">등록된 퀴즈가 없습니다.<br>+ 퀴즈 추가 버튼으로 새 퀴즈를 만드세요.</div>';
   } else {
     html += '<div id="q-set-drag-list" style="display:flex;flex-direction:column;gap:10px;">';
     sets.forEach((set, i) => {
-      const typeLabel = set.type === 'existing' ? 'ê¸°ì¡´ì§ì' : 'ì ê·ìì¬ì';
+      const typeLabel = set.type === 'existing' ? '기존직원' : '신규입사자';
       if (_qEditMode) {
         html += '<div class="card drag-item" style="padding:14px 16px;" draggable="true" data-setid="' + set.id + '">' +
           '<div style="display:flex;align-items:center;gap:8px;">' +
-          '<span class="drag-handle" title="ëëê·¸íì¬ ìì ë³ê²½">â®â®</span>' +
+          '<span class="drag-handle" title="드래그하여 순서 변경">⋮⋮</span>' +
           '<div style="flex:1;min-width:0;">' +
           '<div style="font-size:15px;font-weight:800;">' + set.name + '</div>' +
-          '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">ë¬¸ì  ' + set.questions.length + 'ê° Â· ' + typeLabel + '</div>' +
+          '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">문제 ' + set.questions.length + '개 · ' + typeLabel + '</div>' +
           '</div>' +
           '<div style="display:flex;gap:6px;">' +
-          '<button class="btn btn-sm btn-outline" onclick="openEditSetModal(\'' + set.id + '\')">ìì </button>' +
-          '<button class="btn btn-sm btn-danger" onclick="confirmDeleteSet(\'' + set.id + '\')">ì­ì </button>' +
+          '<button class="btn btn-sm btn-outline" onclick="openEditSetModal(\'' + set.id + '\')">수정</button>' +
+          '<button class="btn btn-sm btn-danger" onclick="confirmDeleteSet(\'' + set.id + '\')">삭제</button>' +
           '</div></div></div>';
       } else {
         html += '<div class="card" style="padding:16px 18px;cursor:pointer;" onclick="drillToQSet(\'' + set.id + '\')">' +
           '<div style="display:flex;align-items:center;justify-content:space-between;">' +
           '<div>' +
           '<div style="font-size:15px;font-weight:800;">' + set.name + '</div>' +
-          '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">ë¬¸ì  ' + set.questions.length + 'ê° Â· ' + typeLabel + '</div>' +
+          '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">문제 ' + set.questions.length + '개 · ' + typeLabel + '</div>' +
           '</div>' +
-          '<span style="color:var(--text-muted);font-size:20px;">âº</span>' +
+          '<span style="color:var(--text-muted);font-size:20px;">›</span>' +
           '</div></div>';
       }
     });
@@ -2254,7 +2253,7 @@ function openEditSetModal(setId) {
 function closeEditSetModal() { document.getElementById('edit-set-modal').classList.remove('active'); }
 function saveEditSet() {
   const name = document.getElementById('edit-set-name').value.trim();
-  if (!name) { alert('í´ì¦ ì´ë¦ì ìë ¥í´ì£¼ì¸ì.'); return; }
+  if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
   const setId = document.getElementById('edit-set-id').value;
   const typeRadio = document.querySelector('input[name="edit-set-type"]:checked');
   const type = typeRadio ? typeRadio.value : 'new';
@@ -2323,28 +2322,28 @@ async function loadQSetScores(setId) {
     });
   });
   _qSetScoreMap = map;
-  renderQListItems(); // íµê³ ë¡ë í ì¬ë ë
+  renderQListItems(); // 통계 로드 후 재렌더
 }
 
 function renderQList() {
   const set = getSetById(_qViewSetId);
   if (!set) { _qViewSetId = null; renderQTab(); return; }
-  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToQSets()">â í´ì¦ ëª©ë¡</button></div>' +
+  let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToQSets()">← 퀴즈 목록</button></div>' +
     '<div class="card" style="margin-bottom:16px;">' +
-    '<div style="font-size:14px;font-weight:800;margin-bottom:12px;">' + set.name + ' â í´ì¦ ì¤ì </div>' +
+    '<div style="font-size:14px;font-weight:800;margin-bottom:12px;">' + set.name + ' — 퀴즈 설정</div>' +
     '<div style="display:flex;gap:12px;flex-wrap:wrap;">' +
-    '<div style="flex:1;min-width:130px;"><label>ì¶ì  ë¬¸ì  ì (0=ì ì²´)</label>' +
+    '<div style="flex:1;min-width:130px;"><label>출제 문제 수 (0=전체)</label>' +
     '<input type="number" id="set-quiz-cnt" min="0" max="100" value="' + (set.quizCount||0) + '" style="margin-top:4px;"></div>' +
-    '<div style="flex:1;min-width:130px;"><label>íì´ë¨¸ (ë¶, 0=ë¯¸ì¬ì©)</label>' +
+    '<div style="flex:1;min-width:130px;"><label>타이머 (분, 0=미사용)</label>' +
     '<input type="number" id="set-timer" min="0" max="60" value="' + (set.timerMin||0) + '" style="margin-top:4px;"></div>' +
-    '</div><button class="btn btn-sm btn-primary" style="margin-top:12px;" onclick="saveSetSettings(\'' + set.id + '\')">ì ì¥</button></div>' +
+    '</div><button class="btn btn-sm btn-primary" style="margin-top:12px;" onclick="saveSetSettings(\'' + set.id + '\')">저장</button></div>' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
-    '<span id="q-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">ë¬¸ì  ' + set.questions.length + 'ê°</span>' +
+    '<span id="q-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">문제 ' + set.questions.length + '개</span>' +
     '<div style="display:flex;gap:8px;">' +
     (_qListEditMode
-      ? '<button class="btn btn-sm btn-primary" onclick="toggleQListEditMode()">â ìë£</button>'
-      : '<button class="btn btn-sm btn-outline" onclick="toggleQListEditMode()">ë¬¸ì  ìì </button>') +
-    '<button class="btn btn-sm btn-primary" onclick="openModal()">+ ë¬¸ì  ì¶ê°</button>' +
+      ? '<button class="btn btn-sm btn-primary" onclick="toggleQListEditMode()">✓ 완료</button>'
+      : '<button class="btn btn-sm btn-outline" onclick="toggleQListEditMode()">문제 수정</button>') +
+    '<button class="btn btn-sm btn-primary" onclick="openModal()">+ 문제 추가</button>' +
     '</div></div>' +
     '<div id="q-list"></div>';
   document.getElementById('q-tab-content').innerHTML = html;
@@ -2356,21 +2355,21 @@ function renderQListItems() {
   if (!set) return;
   const qArr = set.questions;
   const lbl = document.getElementById('q-count-lbl');
-  if (lbl) lbl.textContent = 'ë¬¸ì  ' + qArr.length + 'ê°';
+  if (lbl) lbl.textContent = '문제 ' + qArr.length + '개';
   const listEl = document.getElementById('q-list');
   if (!listEl) return;
-  if (qArr.length === 0) { listEl.innerHTML = '<div class="empty">ë±ë¡ë ë¬¸ì ê° ììµëë¤.</div>'; return; }
+  if (qArr.length === 0) { listEl.innerHTML = '<div class="empty">등록된 문제가 없습니다.</div>'; return; }
   if (_qListEditMode) {
     listEl.innerHTML = '<div id="q-drag-list">' + qArr.map((q, i) =>
       '<div class="q-list-item drag-item" draggable="true" data-qidx="' + i + '">' +
       '<div class="q-list-item-head">' +
-      '<span class="drag-handle" title="ëëê·¸íì¬ ìì ë³ê²½">â®â®</span>' +
+      '<span class="drag-handle" title="드래그하여 순서 변경">⋮⋮</span>' +
       '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
       '<div class="q-list-item-btns">' +
-      '<button class="btn btn-sm btn-outline" onclick="openModal(' + i + ')">ìì </button>' +
-      '<button class="btn btn-sm btn-danger" onclick="deleteQ(' + i + ')">ì­ì </button>' +
+      '<button class="btn btn-sm btn-outline" onclick="openModal(' + i + ')">수정</button>' +
+      '<button class="btn btn-sm btn-danger" onclick="deleteQ(' + i + ')">삭제</button>' +
       '</div></div>' +
-      '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">ì ëµ: ' +
+      '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' +
       (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
       '</div></div>'
     ).join('') + '</div>';
@@ -2380,16 +2379,16 @@ function renderQListItems() {
       const stats = _qSetScoreMap[q.id];
       const statsHtml = (stats && stats.total > 0)
         ? '<div style="display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap;">' +
-          '<span style="font-size:11px;background:#f0fdf4;color:#166534;padding:2px 9px;border-radius:99px;font-weight:700;">ì ëµë¥  ' + Math.round(stats.correct/stats.total*100) + '%</span>' +
-          '<span style="font-size:11px;background:#fef2f2;color:#991b1b;padding:2px 9px;border-radius:99px;font-weight:700;">ì¤ëµë¥  ' + Math.round((stats.total-stats.correct)/stats.total*100) + '%</span>' +
-          '<span style="font-size:11px;color:var(--text-muted);">' + stats.total + 'ëª ìì</span>' +
+          '<span style="font-size:11px;background:#f0fdf4;color:#166534;padding:2px 9px;border-radius:99px;font-weight:700;">정답률 ' + Math.round(stats.correct/stats.total*100) + '%</span>' +
+          '<span style="font-size:11px;background:#fef2f2;color:#991b1b;padding:2px 9px;border-radius:99px;font-weight:700;">오답률 ' + Math.round((stats.total-stats.correct)/stats.total*100) + '%</span>' +
+          '<span style="font-size:11px;color:var(--text-muted);">' + stats.total + '명 응시</span>' +
           '</div>'
         : '';
       return '<div class="q-list-item">' +
         '<div class="q-list-item-head">' +
         '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
         '</div>' +
-        '<div style="font-size:12px;color:var(--success-text);margin-top:6px;">ì ëµ: ' +
+        '<div style="font-size:12px;color:var(--success-text);margin-top:6px;">정답: ' +
         (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
         '</div>' + statsHtml + '</div>';
     }).join('');
@@ -2440,10 +2439,10 @@ function saveSetSettings(setId) {
   sets[idx].quizCount = parseInt(document.getElementById('set-quiz-cnt').value) || 0;
   sets[idx].timerMin = parseInt(document.getElementById('set-timer').value) || 0;
   saveSets(sets);
-  alert('ì ì¥ëììµëë¤.');
+  alert('저장되었습니다.');
 }
 
-/* âââ Quiz Set CRUD ââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Quiz Set CRUD ──────────────────────────────────────────── */
 function openNewSetModal() {
   document.getElementById('new-set-name').value = '';
   document.querySelectorAll('input[name="new-set-type"]').forEach(r => { r.checked = r.value === 'new'; });
@@ -2453,11 +2452,12 @@ function openNewSetModal() {
 function closeNewSetModal() { document.getElementById('new-set-modal').classList.remove('active'); }
 function createSet() {
   const name = document.getElementById('new-set-name').value.trim();
-  if (!name) { alert('í´ì¦ ì´ë¦ì ìë ¥í´ì£¼ì¸ì.'); return; }
+  if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
   const typeRadio = document.querySelector('input[name="new-set-type"]:checked');
   const type = typeRadio ? typeRadio.value : 'new';
   const sets = loadSets();
-  sets.push({ id: 'set_' + Date.now(), name, type, questions: [], quizCount: 0, timerMin: 0 });
+  const newSet = { id: 'set_' + Date.now(), name, type, questions: [], quizCount: 0, timerMin: 0 };
+  sets.push(newSet);
   saveSets(sets);
   fsSyncSet(newSet);
   closeNewSetModal();
@@ -2465,19 +2465,19 @@ function createSet() {
 }
 function confirmDeleteSet(setId) {
   const set = getSetById(setId);
-  if (!confirm('"' + (set ? set.name : '') + '" í´ì¦ë¥¼ ì­ì í ê¹ì?\në¬¸ì ì QRì´ ëª¨ë ì­ì ë©ëë¤.')) return;
+  if (!confirm('"' + (set ? set.name : '') + '" 퀴즈를 삭제할까요?\n문제와 QR이 모두 삭제됩니다.')) return;
   saveSets(loadSets().filter(s => s.id !== setId));
   fsDeleteSet(setId);
   if (_qViewSetId === setId) _qViewSetId = null;
   renderQTab();
 }
 
-/* âââ Modal: Question ââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Modal: Question ────────────────────────────────────────── */
 let editIdx = -1;
 
 function openModal(idx) {
   editIdx = (idx !== undefined) ? idx : -1;
-  document.getElementById('modal-title').textContent = editIdx >= 0 ? 'ë¬¸ì  ìì ' : 'ë¬¸ì  ì¶ê°';
+  document.getElementById('modal-title').textContent = editIdx >= 0 ? '문제 수정' : '문제 추가';
   const set = getSetById(_qViewSetId);
   const qArr = set ? set.questions : [];
   if (editIdx >= 0 && qArr[editIdx]) {
@@ -2503,15 +2503,15 @@ function closeModal() { document.getElementById('q-modal').classList.remove('act
 
 function saveQuestion() {
   const question = document.getElementById('m-question').value.trim();
-  if (!question) { alert('ì§ë¬¸ì ìë ¥í´ì£¼ì¸ì.'); return; }
+  if (!question) { alert('질문을 입력해주세요.'); return; }
   const allOptions = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim());
   const filteredOptions = allOptions.filter(o => o);
-  if (filteredOptions.length < 2) { alert('ì íì§ë¥¼ 2ê° ì´ì ìë ¥í´ì£¼ì¸ì.'); return; }
+  if (filteredOptions.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
   const checkedBoxes = Array.from(document.querySelectorAll('input[name="correct"]:checked'));
-  if (checkedBoxes.length === 0) { alert('ì ëµì 1ê° ì´ì ì íí´ì£¼ì¸ì.'); return; }
+  if (checkedBoxes.length === 0) { alert('정답을 1개 이상 선택해주세요.'); return; }
   const correctVals = checkedBoxes.map(cb => parseInt(cb.value));
   for (const cv of correctVals) {
-    if (!allOptions[cv]) { alert('ì ëµì¼ë¡ ì íí ì íì§ê° ë¹ì´ììµëë¤.'); return; }
+    if (!allOptions[cv]) { alert('정답으로 선택한 선택지가 비어있습니다.'); return; }
   }
   const correctIndices = correctVals.map(cv => filteredOptions.indexOf(allOptions[cv]));
   const newQ = {
@@ -2534,7 +2534,7 @@ function saveQuestion() {
 }
 
 function deleteQ(idx) {
-  if (!confirm('ì´ ë¬¸ì ë¥¼ ì­ì í ê¹ì?')) return;
+  if (!confirm('이 문제를 삭제할까요?')) return;
   const sets = loadSets();
   const setIdx = sets.findIndex(s => s.id === _qViewSetId);
   if (setIdx < 0) return;
@@ -2544,7 +2544,7 @@ function deleteQ(idx) {
   renderQListItems();
 }
 
-/* âââ QR Tab âââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── QR Tab ─────────────────────────────────────────────────── */
 let _qrOpen = {};
 
 function renderQRTab() {
@@ -2552,7 +2552,7 @@ function renderQRTab() {
   const sets = loadSets();
   const wrap = document.getElementById('qr-sets-wrap');
   if (sets.length === 0) {
-    wrap.innerHTML = '<div class="empty">ë±ë¡ë í´ì¦ê° ììµëë¤.<br>ë¬¸ì  í­ìì í´ì¦ë¥¼ ë¨¼ì  ì¶ê°íì¸ì.</div>';
+    wrap.innerHTML = '<div class="empty">등록된 퀴즈가 없습니다.<br>문제 탭에서 퀴즈를 먼저 추가하세요.</div>';
     return;
   }
   let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
@@ -2563,8 +2563,8 @@ function renderQRTab() {
       '<div style="font-size:11px;color:var(--text-muted);word-break:break-all;margin-bottom:14px;">' + url + '</div>' +
       '<div id="qr-out-' + set.id + '" style="display:flex;justify-content:center;margin-bottom:12px;min-height:0;"></div>' +
       '<div style="display:flex;gap:8px;">' +
-      '<button class="btn btn-sm btn-primary" id="qr-btn-' + set.id + '" style="flex:1;" onclick="toggleQR(\'' + set.id + '\')">QR ìì±</button>' +
-      '<button class="btn btn-sm btn-outline" id="qr-dl-' + set.id + '" style="flex:1;display:none;" onclick="downloadSetQR(\'' + set.id + '\')">PNG ì ì¥</button>' +
+      '<button class="btn btn-sm btn-primary" id="qr-btn-' + set.id + '" style="flex:1;" onclick="toggleQR(\'' + set.id + '\')">QR 생성</button>' +
+      '<button class="btn btn-sm btn-outline" id="qr-dl-' + set.id + '" style="flex:1;display:none;" onclick="downloadSetQR(\'' + set.id + '\')">PNG 저장</button>' +
       '</div></div>';
   });
   html += '</div>';
@@ -2579,29 +2579,29 @@ function toggleQR(setId) {
     outEl.innerHTML = '';
     outEl.style.minHeight = '0';
     dlEl.style.display = 'none';
-    if (btnEl) btnEl.textContent = 'QR ìì±';
+    if (btnEl) btnEl.textContent = 'QR 생성';
     _qrOpen[setId] = false;
   } else {
     outEl.innerHTML = '';
     const url = BASE_URL + '?quiz=' + setId;
     new QRCode(outEl, { text: url, width: 160, height: 160, colorDark: '#0E94CD', colorLight: '#ffffff' });
     dlEl.style.display = 'block';
-    if (btnEl) btnEl.textContent = 'QR ë«ê¸°';
+    if (btnEl) btnEl.textContent = 'QR 닫기';
     _qrOpen[setId] = true;
   }
 }
 
 function downloadSetQR(setId) {
   const canvas = document.querySelector('#qr-out-' + setId + ' canvas');
-  if (!canvas) { alert('QRì ë¨¼ì  ìì±í´ì£¼ì¸ì.'); return; }
+  if (!canvas) { alert('QR을 먼저 생성해주세요.'); return; }
   const set = getSetById(setId);
   const a = document.createElement('a');
-  a.download = 'ë¼ë¡ì _QR_' + (set ? set.name : setId) + '.png';
+  a.download = '라로제_QR_' + (set ? set.name : setId) + '.png';
   a.href = canvas.toDataURL();
   a.click();
 }
 
-/* âââ Settings âââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Settings ───────────────────────────────────────────────── */
 function changePw() {
   const cur = document.getElementById('pw-cur').value;
   const nw = document.getElementById('pw-new').value;
@@ -2609,23 +2609,23 @@ function changePw() {
   const err = document.getElementById('pw-err');
   const ok = document.getElementById('pw-ok');
   err.style.display = 'none'; ok.style.display = 'none';
-  if (cur !== loadStore().password) { err.textContent = 'íì¬ ë¹ë°ë²í¸ê° ì¬ë°ë¥´ì§ ììµëë¤.'; err.style.display = 'block'; return; }
-  if (!nw) { err.textContent = 'ì ë¹ë°ë²í¸ë¥¼ ìë ¥í´ì£¼ì¸ì.'; err.style.display = 'block'; return; }
-  if (nw !== nw2) { err.textContent = 'ë¹ë°ë²í¸ê° ì¼ì¹íì§ ììµëë¤.'; err.style.display = 'block'; return; }
+  if (cur !== loadStore().password) { err.textContent = '현재 비밀번호가 올바르지 않습니다.'; err.style.display = 'block'; return; }
+  if (!nw) { err.textContent = '새 비밀번호를 입력해주세요.'; err.style.display = 'block'; return; }
+  if (nw !== nw2) { err.textContent = '비밀번호가 일치하지 않습니다.'; err.style.display = 'block'; return; }
   savePw(nw);
   ok.style.display = 'block';
   ['pw-cur','pw-new','pw-new2'].forEach(id => document.getElementById(id).value = '');
 }
 
-/* âââ Lecture Mode âââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Lecture Mode ───────────────────────────────────────────── */
 let lecIdx = 0, lecQs = [], lecRevealed = false;
 
 function startLecture() {
   const sets = loadSets();
-  if (sets.length === 0) { alert('ë±ë¡ë í´ì¦ê° ììµëë¤.'); return; }
+  if (sets.length === 0) { alert('등록된 퀴즈가 없습니다.'); return; }
   if (sets.length === 1) {
     lecQs = sets[0].questions;
-    if (lecQs.length === 0) { alert('ë¬¸ì ê° ììµëë¤.'); return; }
+    if (lecQs.length === 0) { alert('문제가 없습니다.'); return; }
     lecIdx = 0;
     showScreen('s-lecture');
     renderLec();
@@ -2641,7 +2641,7 @@ function startLectureWithSet(setId) {
   document.getElementById('lec-set-modal').classList.remove('active');
   const set = getSetById(setId);
   lecQs = set ? set.questions : [];
-  if (lecQs.length === 0) { alert('ë¬¸ì ê° ììµëë¤.'); return; }
+  if (lecQs.length === 0) { alert('문제가 없습니다.'); return; }
   lecIdx = 0;
   showScreen('s-lecture');
   renderLec();
@@ -2664,7 +2664,7 @@ function renderLec() {
   expl.style.display = 'none';
   expl.innerHTML = '';
   const revBtn = document.getElementById('lec-reveal-btn');
-  revBtn.textContent = 'ì ëµ ê³µê°';
+  revBtn.textContent = '정답 공개';
   revBtn.classList.remove('revealed');
   document.getElementById('lec-prev').disabled = lecIdx === 0;
   document.getElementById('lec-next').disabled = lecIdx === total - 1;
@@ -2681,17 +2681,17 @@ function lecReveal() {
   });
   const expl = document.getElementById('lec-explanation');
   if (q.explanation) {
-    expl.innerHTML = '<div class="lecture-explanation"><strong>í´ì¤</strong><br>' + q.explanation + '</div>';
+    expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
     expl.style.display = 'block';
   }
   const revBtn = document.getElementById('lec-reveal-btn');
-  revBtn.textContent = 'ê³µê°ë¨';
+  revBtn.textContent = '공개됨';
   revBtn.classList.add('revealed');
 }
 function lecPrev() { if (lecIdx > 0) { lecIdx--; renderLec(); } }
 function lecNext() { if (lecIdx < lecQs.length - 1) { lecIdx++; renderLec(); } }
 
-/* âââ Init âââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* ─── Init ───────────────────────────────────────────────────── */
 document.getElementById('name-date').textContent = formatDate();
 loadSets(); // migration
 
@@ -2703,12 +2703,12 @@ if (URL_MODE === 'admin') {
     document.getElementById('quiz-title-display').textContent = localSet.name;
     showScreen('s-name');
   } else {
-    // localStorageì ìì¼ë©´ Firestoreìì ì¡°í
+    // localStorage에 없으면 Firestore에서 조회
     (async () => {
       await waitForDb();
       const remoteSet = await fsGetSetById(URL_QUIZ);
       if (remoteSet) {
-        // ë¡ì»¬ì ì ì¥ í ì§í
+        // 로컬에 저장 후 진행
         const sets = loadSets();
         if (!sets.find(s => s.id === remoteSet.id)) { sets.push(remoteSet); saveSets(sets); }
         currentQuizSetId = remoteSet.id;
@@ -2722,7 +2722,6 @@ if (URL_MODE === 'admin') {
 } else {
   renderQuizSelect();
 }
-</script>
 </script>
 </body>
 </html>
