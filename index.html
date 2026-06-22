@@ -2139,6 +2139,7 @@ function exportCSV() {
 let _qViewSetId = null;
 let _qEditMode = false;    // 퀴즈 목록 수정 모드
 let _qListEditMode = false; // 문제 목록 수정 모드
+let _qSetScoreMap = {};    // 문제별 정답/오답 통계 (questionId → {total, correct})
 
 function renderQTab() {
   if (_qViewSetId === null) renderQSetList();
@@ -2252,8 +2253,28 @@ function setupSetDrag() {
   });
 }
 
-function drillToQSet(setId) { _qViewSetId = setId; _qListEditMode = false; renderQTab(); }
-function backToQSets() { _qViewSetId = null; editIdx = -1; _qEditMode = false; renderQTab(); }
+function drillToQSet(setId) {
+  _qViewSetId = setId; _qListEditMode = false; _qSetScoreMap = {};
+  renderQTab();
+  loadQSetScores(setId);
+}
+function backToQSets() { _qViewSetId = null; editIdx = -1; _qEditMode = false; _qSetScoreMap = {}; renderQTab(); }
+
+async function loadQSetScores(setId) {
+  let scores = _dashScores.length > 0 ? _dashScores : await fsGet('scores');
+  const setScores = scores.filter(s => (s.quizId || 'set_default') === setId);
+  const map = {};
+  setScores.forEach(s => {
+    (s.answers || []).forEach(a => {
+      if (a.id === undefined || a.id === null) return;
+      if (!map[a.id]) map[a.id] = { total: 0, correct: 0 };
+      map[a.id].total++;
+      if (a.ok) map[a.id].correct++;
+    });
+  });
+  _qSetScoreMap = map;
+  renderQListItems(); // 통계 로드 후 재렌더
+}
 
 function renderQList() {
   const set = getSetById(_qViewSetId);
@@ -2305,15 +2326,23 @@ function renderQListItems() {
     ).join('') + '</div>';
     setupQDrag();
   } else {
-    listEl.innerHTML = qArr.map((q, i) =>
-      '<div class="q-list-item">' +
-      '<div class="q-list-item-head">' +
-      '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
-      '</div>' +
-      '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' +
-      (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
-      '</div></div>'
-    ).join('');
+    listEl.innerHTML = qArr.map((q, i) => {
+      const stats = _qSetScoreMap[q.id];
+      const statsHtml = (stats && stats.total > 0)
+        ? '<div style="display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap;">' +
+          '<span style="font-size:11px;background:#f0fdf4;color:#166534;padding:2px 9px;border-radius:99px;font-weight:700;">정답률 ' + Math.round(stats.correct/stats.total*100) + '%</span>' +
+          '<span style="font-size:11px;background:#fef2f2;color:#991b1b;padding:2px 9px;border-radius:99px;font-weight:700;">오답률 ' + Math.round((stats.total-stats.correct)/stats.total*100) + '%</span>' +
+          '<span style="font-size:11px;color:var(--text-muted);">' + stats.total + '명 응시</span>' +
+          '</div>'
+        : '';
+      return '<div class="q-list-item">' +
+        '<div class="q-list-item-head">' +
+        '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--success-text);margin-top:6px;">정답: ' +
+        (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
+        '</div>' + statsHtml + '</div>';
+    }).join('');
   }
 }
 
