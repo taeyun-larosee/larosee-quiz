@@ -2668,6 +2668,7 @@ function renderQRTab() {
     return;
   }
   let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
+  sets.forEach(set => {
     const url = BASE_URL + '?quiz=' + set.id;
     html += '<div class="card" style="padding:20px;">' +
       '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">' + set.name + '</div>' +
