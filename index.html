@@ -237,6 +237,33 @@
     .drag-handle:active { cursor: grabbing; }
     .drag-item.drag-over { outline: 2px dashed var(--blue); outline-offset: 2px; border-radius: 12px; }
     .tab-content.active { display: block; }
+    /* ── Quiz Two-Panel ── */
+    .quiz-two-panel { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 115px); }
+    .quiz-panel-left { border-right: 1px solid var(--border); overflow-y: auto; }
+    .quiz-panel-right { overflow-y: auto; }
+    .quiz-panel-header { background: var(--blue-light); padding: 12px 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1; }
+    .quiz-panel-title { font-size: 14px; font-weight: 800; color: var(--blue-dark); }
+    .quiz-panel-sub { font-size: 11px; color: var(--blue); margin-top: 2px; }
+    .quiz-panel-body { padding: 16px; }
+    /* ── Flashcard Admin ── */
+    .fc-set-card { background: white; border-radius: 14px; border: 1px solid var(--border); padding: 18px 20px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(14,148,205,0.06); }
+    .fc-set-card-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .fc-set-card-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
+    .fc-set-card-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    /* ── Flashcard Employee View ── */
+    .fc-view-tabs { display: flex; gap: 0; overflow-x: auto; padding: 0 16px; border-bottom: 2px solid var(--border); background: white; position: sticky; top: 0; z-index: 10; }
+    .fc-view-tab { padding: 10px 14px; font-size: 13px; font-weight: 700; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; font-family: inherit; }
+    .fc-view-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+    .fc-card-item { background: white; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(14,148,205,0.06); }
+    .fc-card-q { padding: 18px 20px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+    .fc-card-a { padding: 0 20px 18px; font-size: 14px; line-height: 1.7; color: var(--text); display: none; }
+    .fc-card-a.open { display: block; }
+    .fc-card-tip { margin-top: 10px; font-size: 12px; color: var(--blue-dark); background: var(--blue-light); border-radius: 8px; padding: 8px 12px; }
+    .fc-chevron { font-size: 18px; color: var(--text-muted); transition: transform 0.2s; }
+    .fc-chevron.open { transform: rotate(180deg); }
+    /* ── Flashcard Lecture ── */
+    .lec-answer-box { margin: 0 24px 20px; padding: 20px 24px; border-radius: 14px; background: rgba(255,255,255,0.1); color: white; font-size: 17px; line-height: 1.7; }
+    .lec-tip-box { margin: 0 24px; padding: 12px 16px; border-radius: 10px; background: rgba(14,148,205,0.25); color: #7dd3fc; font-size: 13px; }
     /* ── Dashboard ── */
     .dash-header { display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
     .dash-select { flex:1; min-width:180px; padding:9px 14px; border:1.5px solid var(--border); border-radius:10px; font-size:14px; font-weight:700; color:var(--text); background:white; cursor:pointer; appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230E94CD' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; }
@@ -505,15 +532,15 @@
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" id="tab-btn-dash" onclick="switchTab('dash')">대시보드</button>
-    <button class="tab-btn" id="tab-btn-scores" onclick="switchTab('scores')">점수</button>
-    <button class="tab-btn" id="tab-btn-questions" onclick="switchTab('questions')">문제</button>
+    <button class="tab-btn" id="tab-btn-dash" onclick="switchTab('dash')">대시보드</button>
+    <button class="tab-btn active" id="tab-btn-quiz" onclick="switchTab('quiz')">퀴즈</button>
+    <button class="tab-btn" id="tab-btn-flashcard" onclick="switchTab('flashcard')">플래시카드</button>
     <button class="tab-btn" id="tab-btn-qr" onclick="switchTab('qr')">QR</button>
     <button class="tab-btn" id="tab-btn-settings" onclick="switchTab('settings')">설정</button>
   </div>
 
   <!-- Tab: Dashboard -->
-  <div id="tab-dash" class="tab-content active">
+  <div id="tab-dash" class="tab-content">
     <div class="dash-with-sidebar">
       <!-- 좌측 사이드바: 퀴즈 선택 -->
       <div class="dash-sidebar">
@@ -577,35 +604,56 @@
     </div><!-- /.dash-with-sidebar -->
   </div>
 
-  <!-- Tab: Scores -->
-  <div id="tab-scores" class="tab-content">
-    <div class="page">
-      <!-- 기수 관리 -->
-      <div class="card" style="margin-bottom:16px;">
-        <div style="font-size:14px;font-weight:800;margin-bottom:12px;">기수 관리</div>
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <input type="text" inputmode="numeric" id="cohort-add-input" placeholder="기수 입력 (예: 1)" maxlength="5" style="flex:1;"
-            onkeydown="if(event.key==='Enter') addCohort()">
-          <button class="btn btn-sm btn-primary" onclick="addCohort()">+ 추가</button>
+  <!-- Tab: Quiz (문제 관리 + 점수 관리) -->
+  <div id="tab-quiz" class="tab-content active">
+    <div class="quiz-two-panel">
+      <!-- Left: 문제 관리 -->
+      <div class="quiz-panel-left">
+        <div class="quiz-panel-header">
+          <div class="quiz-panel-title">문제 관리</div>
+          <div class="quiz-panel-sub">퀴즈셋 편집 · 문항 추가/수정</div>
         </div>
-        <div id="cohort-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-      </div>
-      <!-- 툴바 -->
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">-</span>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">삭제</button>
-          <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV</button>
+        <div class="quiz-panel-body">
+          <div id="q-tab-content"></div>
         </div>
       </div>
-      <div id="score-table-wrap"></div>
+      <!-- Right: 점수 관리 -->
+      <div class="quiz-panel-right">
+        <div class="quiz-panel-header">
+          <div class="quiz-panel-title">점수 관리</div>
+          <div class="quiz-panel-sub">기수별 응시 결과 조회</div>
+        </div>
+        <div class="quiz-panel-body">
+          <div class="card" style="margin-bottom:16px;">
+            <div style="font-size:14px;font-weight:800;margin-bottom:12px;">기수 관리</div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+              <input type="text" inputmode="numeric" id="cohort-add-input" placeholder="기수 입력 (예: 1)" maxlength="5" style="flex:1;"
+                onkeydown="if(event.key==='Enter') addCohort()">
+              <button class="btn btn-sm btn-primary" onclick="addCohort()">+ 추가</button>
+            </div>
+            <div id="cohort-tags" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <span id="s-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">-</span>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm btn-danger" onclick="confirmDeleteAll()">삭제</button>
+              <button class="btn btn-sm btn-outline" onclick="exportCSV()">CSV</button>
+            </div>
+          </div>
+          <div id="score-table-wrap"></div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Tab: Questions -->
-  <div id="tab-questions" class="tab-content">
-    <div class="page">
-      <div id="q-tab-content"></div>
+  <!-- Tab: Flashcard -->
+  <div id="tab-flashcard" class="tab-content">
+    <div class="quiz-panel-body">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span id="fc-set-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);"></span>
+        <button class="btn btn-sm btn-primary" onclick="openNewFcSetModal()">+ 세트 추가</button>
+      </div>
+      <div id="fc-set-list"></div>
     </div>
   </div>
 
@@ -655,6 +703,65 @@
     <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
     <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
     <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: Flashcard Employee View ══ -->
+<div id="s-fc-view" class="screen">
+  <div class="header">
+    <div class="logo-wrap" style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:11px;letter-spacing:2px;font-weight:700;color:var(--blue);">LA ROSÉE</span>
+    </div>
+    <button class="home-btn" onclick="goHome()">HOME</button>
+  </div>
+  <div id="fc-view-title" style="padding:16px 20px 4px;font-size:17px;font-weight:800;"></div>
+  <div class="fc-view-tabs" id="fc-view-tabs"></div>
+  <div class="page" style="padding-top:16px;">
+    <div id="fc-view-cards"></div>
+  </div>
+</div>
+
+<!-- ══ Modal: Flashcard Set Add/Edit ══ -->
+<div class="modal-overlay" id="fc-set-modal">
+  <div class="modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" id="fc-set-modal-title" style="margin-bottom:0;">플래시카드 세트 추가</div>
+      <button class="btn btn-sm btn-outline" onclick="closeFcSetModal()">닫기</button>
+    </div>
+    <div class="form-group">
+      <label>세트 이름</label>
+      <input type="text" id="fc-set-name-input" placeholder="예: 제품 이의제기 응대">
+    </div>
+    <div id="fc-set-modal-err" class="alert alert-error" style="display:none;"></div>
+    <button class="btn btn-primary btn-block" onclick="saveFcSet()">저장</button>
+  </div>
+</div>
+
+<!-- ══ Modal: Flashcard Card Add/Edit ══ -->
+<div class="modal-overlay" id="fc-card-modal">
+  <div class="modal-box" style="max-width:520px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div class="modal-title" id="fc-card-modal-title" style="margin-bottom:0;">카드 추가</div>
+      <button class="btn btn-sm btn-outline" onclick="closeFcCardModal()">닫기</button>
+    </div>
+    <div class="form-group">
+      <label>카테고리 (제품명 등)</label>
+      <input type="text" id="fc-card-category" placeholder="예: 아이컨투어 스틱">
+    </div>
+    <div class="form-group">
+      <label>질문 (이의제기)</label>
+      <input type="text" id="fc-card-question" placeholder="예: 비싸요">
+    </div>
+    <div class="form-group">
+      <label>답변 (응대법)</label>
+      <textarea id="fc-card-answer" rows="4" placeholder="응대 방법을 입력하세요" style="width:100%;resize:vertical;"></textarea>
+    </div>
+    <div class="form-group">
+      <label>핵심 팁 (선택)</label>
+      <input type="text" id="fc-card-tip" placeholder="예: 월 1만원 포인트 강조">
+    </div>
+    <div id="fc-card-modal-err" class="alert alert-error" style="display:none;"></div>
+    <button class="btn btn-primary btn-block" onclick="saveFcCard()">저장</button>
   </div>
 </div>
 
@@ -1213,7 +1320,7 @@ function adminLogin() {
     document.getElementById('admin-pw').value = '';
     document.getElementById('admin-pw-err').style.display = 'none';
     showScreen('s-admin');
-    switchTab('dash');
+    switchTab('quiz');
   } else {
     document.getElementById('admin-pw-err').style.display = 'block';
   }
@@ -1225,19 +1332,18 @@ function adminLogout() {
 
 /* ─── Tabs ───────────────────────────────────────────────────── */
 function switchTab(t) {
-  ['dash','scores','questions','qr','settings'].forEach(id => {
+  ['dash','quiz','flashcard','qr','settings'].forEach(id => {
     document.getElementById('tab-' + id).classList.toggle('active', id === t);
     document.getElementById('tab-btn-' + id).classList.toggle('active', id === t);
   });
   if (t === 'dash') {
-    // 전체 뷰로 초기화
     _currentDashSubTab = '__all__';
     document.getElementById('dash-main-view').style.display = '';
     document.getElementById('dash-detail-view').style.display = 'none';
     loadDashboard();
   }
-  else if (t === 'scores') loadScoreList();
-  else if (t === 'questions') { _qViewSetId = null; renderQTab(); }
+  else if (t === 'quiz') { _qViewSetId = null; renderQTab(); loadScoreList(); }
+  else if (t === 'flashcard') renderFcSetList();
   else if (t === 'qr') renderQRTab();
 }
 
@@ -2562,7 +2668,6 @@ function renderQRTab() {
     return;
   }
   let html = '<div style="display:flex;flex-direction:column;gap:16px;">';
-  sets.forEach(set => {
     const url = BASE_URL + '?quiz=' + set.id;
     html += '<div class="card" style="padding:20px;">' +
       '<div style="font-size:15px;font-weight:800;margin-bottom:4px;">' + set.name + '</div>' +
@@ -2623,10 +2728,270 @@ function changePw() {
   ['pw-cur','pw-new','pw-new2'].forEach(id => document.getElementById(id).value = '');
 }
 
+/* ─── Flashcard Data ─────────────────────────────────────────── */
+const FC_KEY = 'lr_fcsets';
+function loadFcSets() { try { return JSON.parse(localStorage.getItem(FC_KEY)) || []; } catch(e) { return []; } }
+function saveFcSets(sets) { localStorage.setItem(FC_KEY, JSON.stringify(sets)); }
+function getFcSetById(id) { return loadFcSets().find(s => s.id === id) || null; }
+function genFcId() { return 'fc_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+
+/* ─── Flashcard Admin UI ─────────────────────────────────────── */
+let _fcEditSetId = null; // 현재 편집 중인 세트 ID
+let _fcEditCardIdx = -1; // 현재 편집 중인 카드 인덱스
+
+function renderFcSetList() {
+  const sets = loadFcSets();
+  const lbl = document.getElementById('fc-set-count-lbl');
+  if (lbl) lbl.textContent = '플래시카드 세트 ' + sets.length + '개';
+  const el = document.getElementById('fc-set-list');
+  if (!el) return;
+  if (sets.length === 0) {
+    el.innerHTML = '<div class="empty">등록된 플래시카드 세트가 없습니다.<br>+ 세트 추가 버튼으로 시작하세요.</div>';
+    return;
+  }
+  el.innerHTML = sets.map(set => {
+    const cats = [...new Set((set.cards||[]).map(c=>c.category).filter(Boolean))];
+    const meta = (set.cards||[]).length + '개 카드' + (cats.length ? ' · ' + cats.slice(0,3).join(', ') + (cats.length>3?'…':'') : '');
+    return '<div class="fc-set-card">' +
+      '<div class="fc-set-card-title">' + escHtml(set.name) + '</div>' +
+      '<div class="fc-set-card-meta">' + meta + '</div>' +
+      '<div class="fc-set-card-btns">' +
+      '<button class="btn btn-sm btn-primary" onclick="startFcLecture(\'' + set.id + '\')">강의 모드</button>' +
+      '<button class="btn btn-sm btn-outline" onclick="openFcQRModal(\'' + set.id + '\')">QR 생성</button>' +
+      '<button class="btn btn-sm btn-outline" onclick="openFcEditor(\'' + set.id + '\')">카드 편집</button>' +
+      '<button class="btn btn-sm btn-outline" onclick="openEditFcSetModal(\'' + set.id + '\')">이름 변경</button>' +
+      '<button class="btn btn-sm btn-danger" onclick="confirmDeleteFcSet(\'' + set.id + '\')">삭제</button>' +
+      '</div></div>';
+  }).join('');
+}
+
+/* ── Flashcard Set Modal ── */
+let _fcSetEditId = null;
+function openNewFcSetModal() {
+  _fcSetEditId = null;
+  document.getElementById('fc-set-modal-title').textContent = '플래시카드 세트 추가';
+  document.getElementById('fc-set-name-input').value = '';
+  document.getElementById('fc-set-modal-err').style.display = 'none';
+  document.getElementById('fc-set-modal').classList.add('active');
+}
+function openEditFcSetModal(id) {
+  const set = getFcSetById(id);
+  if (!set) return;
+  _fcSetEditId = id;
+  document.getElementById('fc-set-modal-title').textContent = '세트 이름 변경';
+  document.getElementById('fc-set-name-input').value = set.name;
+  document.getElementById('fc-set-modal-err').style.display = 'none';
+  document.getElementById('fc-set-modal').classList.add('active');
+}
+function closeFcSetModal() { document.getElementById('fc-set-modal').classList.remove('active'); }
+function saveFcSet() {
+  const name = document.getElementById('fc-set-name-input').value.trim();
+  const err = document.getElementById('fc-set-modal-err');
+  if (!name) { err.textContent = '세트 이름을 입력해주세요.'; err.style.display = 'block'; return; }
+  const sets = loadFcSets();
+  if (_fcSetEditId) {
+    const idx = sets.findIndex(s => s.id === _fcSetEditId);
+    if (idx >= 0) sets[idx].name = name;
+  } else {
+    sets.push({ id: genFcId(), name, cards: [] });
+  }
+  saveFcSets(sets);
+  closeFcSetModal();
+  renderFcSetList();
+}
+function confirmDeleteFcSet(id) {
+  const set = getFcSetById(id);
+  if (!set) return;
+  if (!confirm('"' + set.name + '" 세트를 삭제할까요?\n카드 ' + (set.cards||[]).length + '개가 모두 삭제됩니다.')) return;
+  saveFcSets(loadFcSets().filter(s => s.id !== id));
+  renderFcSetList();
+}
+
+/* ── Flashcard Card Editor ── */
+function openFcEditor(setId) {
+  _fcEditSetId = setId;
+  const set = getFcSetById(setId);
+  if (!set) return;
+  const el = document.getElementById('fc-set-list');
+  const sets = loadFcSets();
+  const editHtml = '<div style="margin-bottom:12px;">' +
+    '<button class="btn btn-sm btn-outline" onclick="renderFcSetList()">← 세트 목록</button>' +
+    '</div>' +
+    '<div class="fc-set-card">' +
+    '<div class="fc-set-card-title">' + escHtml(set.name) + '</div>' +
+    '<div class="fc-set-card-meta">' + (set.cards||[]).length + '개 카드</div>' +
+    '<button class="btn btn-sm btn-primary" onclick="openAddFcCardModal()">+ 카드 추가</button>' +
+    '</div>' +
+    '<div id="fc-card-edit-list">' + renderFcCardEditItems(set) + '</div>';
+  el.innerHTML = editHtml;
+  const lbl = document.getElementById('fc-set-count-lbl');
+  if (lbl) lbl.textContent = '';
+  document.querySelector('[onclick="openNewFcSetModal()"]') && (document.querySelector('[onclick="openNewFcSetModal()"]').style.display = 'none');
+}
+
+function renderFcCardEditItems(set) {
+  if (!set || !(set.cards||[]).length) return '<div class="empty">카드가 없습니다. + 카드 추가로 시작하세요.</div>';
+  return set.cards.map((c, i) =>
+    '<div class="card" style="padding:14px 16px;margin-bottom:8px;">' +
+    '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px;">' + escHtml(c.category||'') + '</div>' +
+    '<div style="font-size:15px;font-weight:800;margin-bottom:6px;">Q. ' + escHtml(c.question) + '</div>' +
+    '<div style="font-size:13px;color:var(--text);margin-bottom:6px);">' + escHtml(c.answer) + '</div>' +
+    (c.tip ? '<div style="font-size:12px;color:var(--blue-dark);background:var(--blue-light);border-radius:6px;padding:6px 10px;margin-top:6px;">✅ ' + escHtml(c.tip) + '</div>' : '') +
+    '<div style="display:flex;gap:6px;margin-top:10px;">' +
+    '<button class="btn btn-sm btn-outline" onclick="openEditFcCardModal(' + i + ')">수정</button>' +
+    '<button class="btn btn-sm btn-danger" onclick="deleteFcCard(' + i + ')">삭제</button>' +
+    '</div></div>'
+  ).join('');
+}
+
+function refreshFcCardList() {
+  const set = getFcSetById(_fcEditSetId);
+  const el = document.getElementById('fc-card-edit-list');
+  if (el && set) el.innerHTML = renderFcCardEditItems(set);
+}
+
+function openAddFcCardModal() {
+  _fcEditCardIdx = -1;
+  document.getElementById('fc-card-modal-title').textContent = '카드 추가';
+  ['fc-card-category','fc-card-question','fc-card-tip'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fc-card-answer').value = '';
+  document.getElementById('fc-card-modal-err').style.display = 'none';
+  document.getElementById('fc-card-modal').classList.add('active');
+}
+function openEditFcCardModal(idx) {
+  const set = getFcSetById(_fcEditSetId);
+  if (!set || !set.cards[idx]) return;
+  _fcEditCardIdx = idx;
+  const c = set.cards[idx];
+  document.getElementById('fc-card-modal-title').textContent = '카드 수정';
+  document.getElementById('fc-card-category').value = c.category || '';
+  document.getElementById('fc-card-question').value = c.question || '';
+  document.getElementById('fc-card-answer').value = c.answer || '';
+  document.getElementById('fc-card-tip').value = c.tip || '';
+  document.getElementById('fc-card-modal-err').style.display = 'none';
+  document.getElementById('fc-card-modal').classList.add('active');
+}
+function closeFcCardModal() { document.getElementById('fc-card-modal').classList.remove('active'); }
+function saveFcCard() {
+  const question = document.getElementById('fc-card-question').value.trim();
+  const answer = document.getElementById('fc-card-answer').value.trim();
+  const err = document.getElementById('fc-card-modal-err');
+  if (!question) { err.textContent = '질문을 입력해주세요.'; err.style.display = 'block'; return; }
+  if (!answer) { err.textContent = '답변을 입력해주세요.'; err.style.display = 'block'; return; }
+  const sets = loadFcSets();
+  const idx = sets.findIndex(s => s.id === _fcEditSetId);
+  if (idx < 0) return;
+  const card = {
+    id: genFcId(),
+    category: document.getElementById('fc-card-category').value.trim(),
+    question,
+    answer,
+    tip: document.getElementById('fc-card-tip').value.trim()
+  };
+  if (_fcEditCardIdx >= 0) {
+    card.id = sets[idx].cards[_fcEditCardIdx].id || card.id;
+    sets[idx].cards[_fcEditCardIdx] = card;
+  } else {
+    sets[idx].cards.push(card);
+  }
+  saveFcSets(sets);
+  closeFcCardModal();
+  refreshFcCardList();
+}
+function deleteFcCard(cardIdx) {
+  if (!confirm('이 카드를 삭제할까요?')) return;
+  const sets = loadFcSets();
+  const idx = sets.findIndex(s => s.id === _fcEditSetId);
+  if (idx < 0) return;
+  sets[idx].cards.splice(cardIdx, 1);
+  saveFcSets(sets);
+  refreshFcCardList();
+}
+
+/* ── Flashcard QR Modal ── */
+function openFcQRModal(setId) {
+  const set = getFcSetById(setId);
+  if (!set) return;
+  const url = BASE_URL + '?fc=' + setId;
+  // 기존 QR 탭 팝업 재활용
+  const box = document.createElement('div');
+  box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
+  box.innerHTML = '<div style="background:white;border-radius:20px;padding:32px;text-align:center;max-width:320px;">' +
+    '<div style="font-size:15px;font-weight:800;margin-bottom:16px;">' + escHtml(set.name) + '</div>' +
+    '<div id="fc-qr-tmp" style="margin:0 auto 16px;display:inline-block;"></div>' +
+    '<div style="font-size:12px;color:#6b7c93;word-break:break-all;margin-bottom:16px;">' + url + '</div>' +
+    '<button class="btn btn-primary btn-block" onclick="this.closest(\'[style*=fixed]\').remove()">닫기</button>' +
+    '</div>';
+  document.body.appendChild(box);
+  new QRCode(document.getElementById('fc-qr-tmp'), { text: url, width: 180, height: 180 });
+}
+
+/* ── Flashcard Employee View ── */
+const URL_FC = URL_PARAMS.get('fc');
+let _fcViewSetId = null;
+let _fcViewCat = '__all__';
+
+function showFcView(setId) {
+  _fcViewSetId = setId;
+  _fcViewCat = '__all__';
+  const set = getFcSetById(setId);
+  if (!set) { renderQuizSelect(); return; }
+  document.getElementById('fc-view-title').textContent = set.name;
+  renderFcViewTabs(set);
+  renderFcViewCards(set);
+  showScreen('s-fc-view');
+}
+
+function renderFcViewTabs(set) {
+  const cats = ['__all__', ...new Set((set.cards||[]).map(c=>c.category).filter(Boolean))];
+  const el = document.getElementById('fc-view-tabs');
+  el.innerHTML = cats.map(cat =>
+    '<button class="fc-view-tab' + (cat===_fcViewCat?' active':'') + '" onclick="fcViewSelectCat(\'' + cat.replace(/'/g,"\\'") + '\')">' +
+    (cat==='__all__'?'전체':escHtml(cat)) + '</button>'
+  ).join('');
+}
+
+function fcViewSelectCat(cat) {
+  _fcViewCat = cat;
+  const set = getFcSetById(_fcViewSetId);
+  if (!set) return;
+  renderFcViewTabs(set);
+  renderFcViewCards(set);
+}
+
+function renderFcViewCards(set) {
+  const cards = (set.cards||[]).filter(c => _fcViewCat==='__all__' || c.category===_fcViewCat);
+  const el = document.getElementById('fc-view-cards');
+  if (!cards.length) { el.innerHTML = '<div class="empty">카드가 없습니다.</div>'; return; }
+  el.innerHTML = cards.map((c,i) =>
+    '<div class="fc-card-item">' +
+    '<div class="fc-card-q" onclick="toggleFcCard(this)">' +
+    escHtml(c.question) +
+    '<span class="fc-chevron">▼</span>' +
+    '</div>' +
+    '<div class="fc-card-a">' +
+    '<div style="margin-bottom:8px;">' + escHtml(c.answer).replace(/\n/g,'<br>') + '</div>' +
+    (c.tip ? '<div class="fc-card-tip">✅ ' + escHtml(c.tip) + '</div>' : '') +
+    '</div>' +
+    '</div>'
+  ).join('');
+}
+
+function toggleFcCard(qEl) {
+  const card = qEl.closest('.fc-card-item');
+  const ans = card.querySelector('.fc-card-a');
+  const chev = card.querySelector('.fc-chevron');
+  const isOpen = ans.classList.contains('open');
+  ans.classList.toggle('open', !isOpen);
+  chev.classList.toggle('open', !isOpen);
+}
+
 /* ─── Lecture Mode ───────────────────────────────────────────── */
 let lecIdx = 0, lecQs = [], lecRevealed = false;
+let lecMode = 'quiz'; // 'quiz' | 'flashcard'
 
 function startLecture() {
+  lecMode = 'quiz';
   const sets = loadSets();
   if (sets.length === 0) { alert('등록된 퀴즈가 없습니다.'); return; }
   if (sets.length === 1) {
@@ -2645,6 +3010,7 @@ function startLecture() {
 
 function startLectureWithSet(setId) {
   document.getElementById('lec-set-modal').classList.remove('active');
+  lecMode = 'quiz';
   const set = getSetById(setId);
   lecQs = set ? set.questions : [];
   if (lecQs.length === 0) { alert('문제가 없습니다.'); return; }
@@ -2653,7 +3019,17 @@ function startLectureWithSet(setId) {
   renderLec();
 }
 
-function exitLecture() { showScreen('s-admin'); }
+function startFcLecture(setId) {
+  const set = getFcSetById(setId);
+  if (!set || !(set.cards||[]).length) { alert('카드가 없습니다.'); return; }
+  lecMode = 'flashcard';
+  lecQs = set.cards;
+  lecIdx = 0;
+  showScreen('s-lecture');
+  renderLec();
+}
+
+function exitLecture() { showScreen('s-admin'); switchTab('quiz'); }
 
 function renderLec() {
   if (lecQs.length === 0) return;
@@ -2661,11 +3037,7 @@ function renderLec() {
   const q = lecQs[lecIdx];
   const total = lecQs.length;
   document.getElementById('lec-q-num').textContent = (lecIdx+1) + ' / ' + total;
-  document.getElementById('lec-label').textContent = 'QUESTION ' + (lecIdx+1);
   document.getElementById('lec-q').textContent = q.question;
-  document.getElementById('lec-options').innerHTML = q.options.map(function(opt, i) {
-    return '<div class="lecture-opt" id="lec-opt-' + i + '">' + opt + '</div>';
-  }).join('');
   const expl = document.getElementById('lec-explanation');
   expl.style.display = 'none';
   expl.innerHTML = '';
@@ -2675,22 +3047,41 @@ function renderLec() {
   revBtn.onclick = lecReveal;
   document.getElementById('lec-prev').disabled = lecIdx === 0;
   document.getElementById('lec-next').disabled = lecIdx === total - 1;
+
+  if (lecMode === 'flashcard') {
+    document.getElementById('lec-label').textContent = (q.category || 'FLASHCARD');
+    document.getElementById('lec-options').innerHTML = '';
+  } else {
+    document.getElementById('lec-label').textContent = 'QUESTION ' + (lecIdx+1);
+    document.getElementById('lec-options').innerHTML = q.options.map(function(opt, i) {
+      return '<div class="lecture-opt" id="lec-opt-' + i + '">' + opt + '</div>';
+    }).join('');
+  }
 }
 
 function lecReveal() {
   if (lecRevealed) return;
   lecRevealed = true;
   const q = lecQs[lecIdx];
-  const ca = Array.isArray(q.correct) ? q.correct : [q.correct];
-  ca.forEach(function(i) {
-    const el = document.getElementById('lec-opt-' + i);
-    if (el) el.classList.add('revealed-correct');
-  });
   const expl = document.getElementById('lec-explanation');
-  if (q.explanation) {
-    expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
+
+  if (lecMode === 'flashcard') {
+    let html = '<div class="lec-answer-box">' + escHtml(q.answer).replace(/\n/g,'<br>') + '</div>';
+    if (q.tip) html += '<div class="lec-tip-box">✅ ' + escHtml(q.tip) + '</div>';
+    expl.innerHTML = html;
     expl.style.display = 'block';
+  } else {
+    const ca = Array.isArray(q.correct) ? q.correct : [q.correct];
+    ca.forEach(function(i) {
+      const el = document.getElementById('lec-opt-' + i);
+      if (el) el.classList.add('revealed-correct');
+    });
+    if (q.explanation) {
+      expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
+      expl.style.display = 'block';
+    }
   }
+
   const revBtn = document.getElementById('lec-reveal-btn');
   revBtn.textContent = '다음으로';
   revBtn.classList.add('revealed');
@@ -2699,12 +3090,48 @@ function lecReveal() {
 function lecPrev() { if (lecIdx > 0) { lecIdx--; renderLec(); } }
 function lecNext() { if (lecIdx < lecQs.length - 1) { lecIdx++; renderLec(); } }
 
+/* ─── Flashcard Initial Data ─────────────────────────────────── */
+(function seedFcData() {
+  if (loadFcSets().length > 0) return;
+  const cards = [
+    { category:'아이컨투어 스틱', question:'비싸요', answer:'고객님마다 다르지만 매일 사용 시 약 3~4개월 사용 가능합니다.\n한 달 기준 약 1만원 수준으로 일반 아이크림(15ml 기준 7~8만원대)보다 훨씬 경제적입니다.', tip:'일반 아이크림과 가격 비교로 경제성 강조 → 월 1만원 포인트' },
+    { category:'아이컨투어 스틱', question:'언제 사용하나요?', answer:'기초 케어 단계에서 에센스 다음에 발라주세요.\n외출 시 건조할 때마다 수시 사용 가능합니다.\n집에서는 눈가, 팔자, 목 등 아이크림처럼 사용하세요.', tip:'사용 타이밍 3가지 (기초/외출/취침) 명확히 설명' },
+    { category:'아이컨투어 스틱', question:'화장 밀려요?', answer:'얇게 바른 쿠션/비비크림에는 거의 밀림 없습니다.\n매트 화장이나 파우더 처리 후에는 수정화장 단계에서 발라주시면 됩니다.', tip:'메이크업 상태 확인 후 수정화장 단계 활용법 안내' },
+    { category:'아이컨투어 스틱', question:'안 발리는 것 같아요', answer:'끈적임 없는 것이 핵심입니다! 유분감 없이 산뜻하게 흡수되는 것이 저희 제품의 특징이에요.\n실제 피부 수분량 132% 증가, 서울권 하루 70개 이상 판매됩니다.', tip:'132% 수분 증가 데이터와 압도적 판매량으로 신뢰 형성' },
+    { category:'바디크림', question:'바디크림 비싸요', answer:'유기농 성분에 시어버터가 들어간 고보습·고영양 크림입니다.\n고객님들이 "성분은 착한데 금액도 착하다"고 많이 말씀해 주시는 제품입니다.', tip:'유기농·시어버터 성분 가치 강조 → 착한 성분, 착한 가격 키워드' },
+    { category:'바디크림', question:'바디크림만 발라도 되나요?', answer:'유기농 시어버터로 고보습·고영양 크림이지만, 심한 건조함에는 멀티케어 오일을 함께 사용하면 끈적임 없이 속건조를 잡을 수 있어 시너지 효과가 납니다.', tip:'건조 고객에게는 멀티케어 오일 업셀링 기회로 활용' },
+    { category:'바디크림', question:'200ml vs 400ml 차이?', answer:'200ml는 튜브, 400ml는 펌프 타입으로 용량 2배 차이입니다.\n200ml 2개 구매 시 78,000원 vs 400ml 59,000원으로 400ml 구매 시 약 24% 이상 할인 혜택을 받으실 수 있습니다.', tip:'가격 비교로 400ml 구매 유도 → 24% 할인 포인트 강조' },
+    { category:'바디크림', question:'향이 이것 하나예요?', answer:'고객의 90% 이상이 좋아하시는 아카시아 향입니다. 향 괜찮으실까요?\n괜찮다고 하면 그대로 바디크림 판매, 향이 마음에 안들 경우 → 베이비 로션 테스트 도와드릴게요.', tip:'향 반응 확인 후 → 긍정이면 업셀링 / 부정이면 베이비로션 제안' },
+    { category:'히알루론산 세럼', question:'여름에도 사용 가능한가요?', answer:'"퀀칭(Quenching)"은 냉각한다는 뜻으로, 홍조와 피부 열감을 낮춰주는 데 도움을 줍니다.\n여름철에도 오히려 더 효과적입니다.', tip:'여름 = 더 효과적! 퀀칭(냉각) 기능을 긍정적으로 전환' },
+    { category:'히알루론산 세럼', question:'세럼이 이미 많아요', answer:'일반 세럼은 수분만 채워주지만, 저희 히알루론산 세럼은 피부 열감 완화 + 저분자 히알루론산으로 속건조까지 케어합니다.\n기존 제품과 레이어링하면 시너지 효과를 볼 수 있습니다.', tip:'타브랜드 제품과 레이어링 → 대체가 아닌 추가 구매로 유도' },
+    { category:'히알루론산 세럼', question:'미끌거리거나 끈적이지 않나요?', answer:'약사 출신 두 명이 만들어 성분 배합을 세밀하게 했습니다.\n흡수력이 빠르면서 속건조 완화에 도움이 되어 사용 후 끈적임이 거의 없습니다.', tip:'약사 출신 개발 스토리로 신뢰도 강화 → 성분 배합 전문성 강조' },
+    { category:'히알루론산 세럼', question:'아침·저녁 둘 다 사용 가능한가요?', answer:'아침: 메이크업 흡수가 잘 되는 피부 환경 조성\n저녁: 속건조 완화 및 피부 열감 낮춤\n데일리 아침·저녁 모두 사용 가능합니다.', tip:'아침/저녁 각각의 효과를 명확히 설명 → 2배 사용 빈도 자연스럽게 유도' },
+    { category:'클렌징 샤워오일', question:'오일인데 잔여감 남지 않나요?', answer:'처음엔 오일 제형이지만 물이 닿으면 거품으로 변합니다.\n촉촉함은 남기면서 미끈거림 없이 마무리되어 사용 후 상쾌한 느낌을 경험하실 수 있습니다.', tip:'물 닿으면 거품 변화 시연으로 고객 직접 체험 유도' },
+    { category:'클렌징 샤워오일', question:'얼굴에도 사용 가능한가요?', answer:'얼굴 전용 클렌징 젤도 있지만, 건조한 피부의 경우 폼클렌징 개념으로 사용하시는 분들도 계십니다.\n거품이 잘 나는 점을 체험시켜 드리세요.', tip:'건조 피부 고객에게 얼굴 클렌징 활용 → 업셀링 기회' },
+    { category:'클렌징 샤워오일', question:'여름엔 안 좋지 않나요?', answer:'여름에는 잦은 샤워로 오히려 피부가 더 건조해집니다.\n여름철에 더 많이 찾아주시는 제품으로, 유막 형성으로 샤워 후에도 수분감이 지속됩니다.', tip:'여름 = 잦은 샤워 = 건조 문제 → 이 제품이 해결책임을 강조' },
+    { category:'클렌징 샤워오일', question:'바디크림 없이 이것만 써도 되나요?', answer:'샤워오일만으로도 기본 수분감 유지가 됩니다.\n하지만 바디크림을 함께 바르면 수분감을 더 오래 유지해 시너지 효과를 얻으실 수 있습니다.', tip:'샤워오일 구매 고객에게 바디크림 세트 구성 자연스럽게 제안' },
+    { category:'화이트 머드스틱', question:'피부가 건조해지지 않나요?', answer:'식물성 글리세린과 화이트머드 성분이 수분을 꽉 머금어 사용 후 오히려 피부가 촉촉해지는 것을 느끼실 수 있습니다.\n토닉로션을 추가하면 보습감 + 흡착력이 더욱 높아집니다.', tip:'머드 = 건조 공식을 깨는 것이 핵심 → 오히려 촉촉 강조' },
+    { category:'화이트 머드스틱', question:'머드팩이랑 뭐가 달라요?', answer:'워시오프·떼어내는 머드팩보다 훨씬 간편한 스틱 타입입니다.\n손에 묻히지 않고 간단하게 바르시고, 5~10분 후 씻어내기만 하면 됩니다.', tip:'번거로운 머드팩 대비 스틱 타입 간편함으로 차별화' },
+    { category:'화이트 머드스틱', question:'화장 전에 사용해도 되나요?', answer:'메이크업 전 사용 시 톤업 및 피부결 정돈에 도움을 줍니다.\n중요한 약속이 있는 날 오전에 사용하시면 화장이 훨씬 잘 먹으실 수 있습니다.', tip:'화장 전 사용 = 메이크업 베이스 효과 → 일상 사용 루틴화 유도' },
+    { category:'화이트 머드스틱', question:'머드스틱 판매 후 업셀링 포인트는?', answer:'머드스틱 판매 후 → 수분스틱(아이컨투어) 자연 연결 → 수전 응대 루틴 완성으로 추가 구매를 유도하세요.', tip:'머드스틱 → 아이컨투어 스틱 → 수전 루틴 3단계 업셀링 활용' }
+  ];
+  saveFcSets([{ id: genFcId(), name: '제품 이의제기 응대', cards: cards.map(c => ({ ...c, id: genFcId() })) }]);
+})();
+
 /* ─── Init ───────────────────────────────────────────────────── */
 document.getElementById('name-date').textContent = formatDate();
 loadSets(); // migration
 
 if (URL_MODE === 'admin') {
   showScreen('s-admin-login');
+} else if (URL_FC) {
+  // 플래시카드 직원 뷰
+  const localFcSet = getFcSetById(URL_FC);
+  if (localFcSet) {
+    showFcView(URL_FC);
+  } else {
+    renderQuizSelect();
+  }
 } else if (URL_QUIZ) {
   const localSet = getSetById(URL_QUIZ);
   if (localSet) {
@@ -2713,12 +3140,10 @@ if (URL_MODE === 'admin') {
     if (timerEl) timerEl.textContent = (localSet.timerMin > 0) ? '⏱ 제한시간 ' + localSet.timerMin + '분' : '';
     showScreen('s-name');
   } else {
-    // localStorage에 없으면 Firestore에서 조회
     (async () => {
       await waitForDb();
       const remoteSet = await fsGetSetById(URL_QUIZ);
       if (remoteSet) {
-        // 로컬에 저장 후 진행
         const sets = loadSets();
         if (!sets.find(s => s.id === remoteSet.id)) { sets.push(remoteSet); saveSets(sets); }
         currentQuizSetId = remoteSet.id;
