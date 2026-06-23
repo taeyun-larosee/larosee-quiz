@@ -333,20 +333,25 @@
     .employee-card:hover { background: var(--gray) !important; }
 
     /* ══ LECTURE ══ */
-    #s-lecture { background: white; min-height: 100vh; border: 2.5px solid var(--blue); }
-    .lecture-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-bottom: 1px solid var(--border); }
-    .lecture-counter { color: var(--text-muted); font-size: 14px; font-weight: 600; }
-    .lecture-cat-bar { background: var(--blue); color: white; text-align: center; padding: 14px 24px; font-size: 26px; font-weight: 800; letter-spacing: -0.3px; }
-    .lecture-q { font-size: 24px; font-weight: 800; color: #1a2233; line-height: 1.4; padding: 28px 24px 20px; text-align: center; }
-    .lecture-options { padding: 0 24px; display: flex; flex-direction: column; gap: 12px; }
-    .lecture-opt { padding: 16px 20px; border-radius: 12px; border: 1.5px solid var(--border); color: var(--text); font-size: 16px; font-weight: 500; line-height: 1.4; transition: all 0.2s; }
+    #s-lecture { background: #e8f5fb; min-height: 100vh; }
+    .lec-inner { max-width: 640px; margin: 0 auto; }
+    .lecture-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; }
+    .lecture-counter { color: var(--blue); font-size: 14px; font-weight: 700; }
+    .lec-progress-bar { height: 4px; background: #c8e8f5; }
+    .lec-progress-fill { height: 4px; background: var(--blue); border-radius: 2px; transition: width 0.3s ease; }
+    .lecture-cat-bar { padding: 16px 20px 8px; text-align: center; }
+    .lecture-cat-badge { display: inline-block; background: var(--blue); color: white; font-size: 12px; font-weight: 700; padding: 4px 16px; border-radius: 20px; letter-spacing: 0.02em; }
+    .lecture-q-card { margin: 8px 16px 12px; background: white; border-radius: 16px; border: 0.5px solid #c8e8f5; padding: 44px 24px; text-align: center; }
+    .lecture-q { font-size: 26px; font-weight: 800; color: #1a2233; line-height: 1.3; }
+    .lecture-options { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px; }
+    .lecture-opt { padding: 16px 20px; border-radius: 12px; border: 1.5px solid #c8e8f5; background: white; color: var(--text); font-size: 16px; font-weight: 500; line-height: 1.4; transition: all 0.2s; }
     .lecture-opt.revealed-correct { border-color: var(--success); background: var(--success-bg); color: var(--success-text); }
-    .lecture-explanation { margin: 20px 24px; padding: 16px 20px; border-radius: 12px; background: #f7fafd; border: 1px solid var(--border); color: #1a2233; font-size: 15px; line-height: 1.7; }
-    .lecture-footer { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; border-top: 1px solid var(--border); margin-top: 20px; }
-    .lec-nav-btn { padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border); background: none; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .lecture-explanation { margin: 0 16px 12px; padding: 16px 20px; border-radius: 12px; background: #f7fafd; border: 1px solid var(--border); color: #1a2233; font-size: 15px; line-height: 1.7; }
+    .lecture-footer { display: flex; align-items: center; gap: 10px; padding: 12px 16px 24px; }
+    .lec-nav-btn { padding: 10px 16px; border-radius: 8px; border: 0.5px solid #b0d8ee; background: white; color: #7bbdd6; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .lec-nav-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
-    .lec-nav-btn:disabled { opacity: 0.3; cursor: default; }
-    .lec-reveal-btn { padding: 10px 28px; border-radius: 8px; border: none; background: var(--blue); color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+    .lec-nav-btn:disabled { opacity: 0.35; cursor: default; }
+    .lec-reveal-btn { flex: 1; padding: 10px 28px; border-radius: 8px; border: none; background: var(--blue); color: white; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; }
     .lec-reveal-btn.revealed { background: var(--success); }
 
     /* ══ DASH SIDEBAR LAYOUT ══ */
@@ -391,9 +396,9 @@
       .stat-grid { gap: 8px; }
       .stat-num { font-size: 20px; }
       .dash-grid { grid-template-columns: 1fr; }
-      .lecture-q { font-size: 18px; padding: 20px 16px 16px; }
-      .lecture-options { padding: 0 16px; }
-      .lecture-footer { padding: 16px; }
+      .lecture-q { font-size: 20px; }
+      .lecture-q-card { padding: 32px 16px; }
+      .lecture-footer { padding: 10px 12px 20px; }
     }
   </style>
 </head>
@@ -691,18 +696,23 @@
 
 <!-- ══ SCREEN: Lecture ══ -->
 <div id="s-lecture" class="screen">
-  <div class="lecture-header">
-    <span class="lecture-counter" id="lec-q-num">1 / 0</span>
-    <button class="lec-nav-btn" onclick="exitLecture()">← 나가기</button>
-  </div>
-  <div class="lecture-cat-bar" id="lec-label">QUESTION 1</div>
-  <div class="lecture-q" id="lec-q"></div>
-  <div class="lecture-options" id="lec-options"></div>
-  <div id="lec-explanation" style="display:none;"></div>
-  <div class="lecture-footer">
-    <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
-    <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
-    <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
+  <div class="lec-inner">
+    <div class="lecture-header">
+      <button class="lec-nav-btn" onclick="exitLecture()">← 나가기</button>
+      <span class="lecture-counter" id="lec-q-num">1 / 0</span>
+    </div>
+    <div class="lec-progress-bar"><div class="lec-progress-fill" id="lec-progress-fill" style="width:5%"></div></div>
+    <div class="lecture-cat-bar"><span class="lecture-cat-badge" id="lec-label">QUESTION 1</span></div>
+    <div class="lecture-q-card">
+      <div class="lecture-q" id="lec-q"></div>
+    </div>
+    <div class="lecture-options" id="lec-options"></div>
+    <div id="lec-explanation" style="display:none;"></div>
+    <div class="lecture-footer">
+      <button class="lec-nav-btn" id="lec-prev" onclick="lecPrev()" disabled>← 이전</button>
+      <button class="lec-reveal-btn" id="lec-reveal-btn" onclick="lecReveal()">정답 공개</button>
+      <button class="lec-nav-btn" id="lec-next" onclick="lecNext()">다음 →</button>
+    </div>
   </div>
 </div>
 
@@ -2940,14 +2950,28 @@ function openFcQRModal(setId) {
   // 기존 QR 탭 팝업 재활용
   const box = document.createElement('div');
   box.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;';
-  box.innerHTML = '<div style="background:white;border-radius:20px;padding:32px;text-align:center;max-width:320px;">' +
-    '<div style="font-size:15px;font-weight:800;margin-bottom:16px;">' + escHtml(set.name) + '</div>' +
-    '<div id="fc-qr-tmp" style="margin:0 auto 16px;display:inline-block;"></div>' +
-    '<div style="font-size:12px;color:#6b7c93;word-break:break-all;margin-bottom:16px;">' + url + '</div>' +
-    '<button class="btn btn-primary btn-block" onclick="this.closest(\'[style*=fixed]\').remove()">닫기</button>' +
-    '</div>';
+  const fcSetName = set.name;
+  box.innerHTML = '<div style="background:white;border-radius:20px;padding:32px;text-align:center;max-width:320px;width:100%;">' +
+    '<div style="font-size:15px;font-weight:800;margin-bottom:16px;">' + escHtml(fcSetName) + '</div>' +
+    '<div id="fc-qr-tmp" style="margin:0 auto 12px;display:inline-block;"></div>' +
+    '<div style="font-size:11px;color:#6b7c93;word-break:break-all;margin-bottom:16px;">' + url + '</div>' +
+    '<div style="display:flex;gap:8px;">' +
+    '<button class="btn btn-outline" style="flex:1;" onclick="this.closest(\'[style*=fixed]\').remove()">닫기</button>' +
+    '<button class="btn btn-primary" style="flex:1;" id="fc-qr-dl-btn">PNG 저장</button>' +
+    '</div></div>';
   document.body.appendChild(box);
-  new QRCode(document.getElementById('fc-qr-tmp'), { text: url, width: 180, height: 180 });
+  new QRCode(document.getElementById('fc-qr-tmp'), { text: url, width: 180, height: 180, colorDark: '#0E94CD', colorLight: '#ffffff' });
+  setTimeout(() => {
+    const dlBtn = document.getElementById('fc-qr-dl-btn');
+    if (dlBtn) dlBtn.onclick = function() {
+      const canvas = document.querySelector('#fc-qr-tmp canvas');
+      if (!canvas) return;
+      const a = document.createElement('a');
+      a.download = '라로제_플래시카드QR_' + fcSetName + '.png';
+      a.href = canvas.toDataURL();
+      a.click();
+    };
+  }, 300);
 }
 
 /* ── Flashcard Employee View ── */
@@ -3061,6 +3085,8 @@ function renderLec() {
   const q = lecQs[lecIdx];
   const total = lecQs.length;
   document.getElementById('lec-q-num').textContent = (lecIdx+1) + ' / ' + total;
+  const fillEl = document.getElementById('lec-progress-fill');
+  if (fillEl) fillEl.style.width = ((lecIdx+1)/total*100) + '%';
   document.getElementById('lec-q').textContent = q.question;
   const expl = document.getElementById('lec-explanation');
   expl.style.display = 'none';
