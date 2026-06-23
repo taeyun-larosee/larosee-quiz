@@ -1021,6 +1021,13 @@ async function fsGetSetById(setId) {
     return doc.exists ? doc.data() : null;
   } catch(e) { return null; }
 }
+async function fsGetAllSets() {
+  if (!db) return null;
+  try {
+    const snap = await db.collection('sets').get();
+    return snap.docs.map(d => d.data()).filter(s => s && s.id);
+  } catch(e) { return null; }
+}
 async function fsSyncFcSet(set) {
   if (!db) return;
   try { await db.collection('fcsets').doc(set.id).set(set); } catch(e) {}
@@ -1086,7 +1093,11 @@ function loadSets() {
   localStorage.setItem('lr_sets', JSON.stringify(sets));
   return sets;
 }
-function saveSets(sets) { localStorage.setItem('lr_sets', JSON.stringify(sets)); }
+function saveSets(sets) {
+  localStorage.setItem('lr_sets', JSON.stringify(sets));
+  if (db) sets.forEach(set => db.collection('sets').doc(set.id).set(set).catch(() => {}));
+  else waitForDb().then(() => { if (db) sets.forEach(set => db.collection('sets').doc(set.id).set(set).catch(() => {})); });
+}
 function getSetById(id) { return loadSets().find(s => s.id === id) || null; }
 function loadStore() { return { password: localStorage.getItem('lr_pw') || 'larosee1234' }; }
 function savePw(p) { localStorage.setItem('lr_pw', p); }
@@ -2593,6 +2604,7 @@ function saveSetSettings(setId) {
   sets[idx].quizCount = parseInt(document.getElementById('set-quiz-cnt').value) || 0;
   sets[idx].timerMin = parseInt(document.getElementById('set-timer').value) || 0;
   saveSets(sets);
+  fsSyncSet(sets[idx]);
   alert('저장되었습니다.');
 }
 
@@ -3229,31 +3241,37 @@ if (URL_MODE === 'admin') {
     })();
   }
 } else if (URL_QUIZ) {
-  const localSet = getSetById(URL_QUIZ);
-  if (localSet) {
-    document.getElementById('quiz-title-display').textContent = localSet.name;
-    const timerEl = document.getElementById('quiz-timer-display');
-    if (timerEl) timerEl.textContent = (localSet.timerMin > 0) ? '⏱ 제한시간 ' + localSet.timerMin + '분' : '';
-    showScreen('s-name');
-  } else {
-    (async () => {
-      await waitForDb();
-      const remoteSet = await fsGetSetById(URL_QUIZ);
+  (async () => {
+    await waitForDb();
+    // Firebase 최신본 우선 → 없으면 로컬 폴백
+    const remoteSet = await fsGetSetById(URL_QUIZ);
+    const set = remoteSet || getSetById(URL_QUIZ);
+    if (set) {
       if (remoteSet) {
         const sets = loadSets();
-        if (!sets.find(s => s.id === remoteSet.id)) { sets.push(remoteSet); saveSets(sets); }
-        currentQuizSetId = remoteSet.id;
-        document.getElementById('quiz-title-display').textContent = remoteSet.name;
-        const timerEl = document.getElementById('quiz-timer-display');
-        if (timerEl) timerEl.textContent = (remoteSet.timerMin > 0) ? '⏱ 제한시간 ' + remoteSet.timerMin + '분' : '';
-        showScreen('s-name');
-      } else {
-        renderQuizSelect();
+        const idx = sets.findIndex(s => s.id === remoteSet.id);
+        if (idx >= 0) sets[idx] = remoteSet; else sets.push(remoteSet);
+        localStorage.setItem('lr_sets', JSON.stringify(sets));
       }
-    })();
-  }
+      currentQuizSetId = set.id;
+      document.getElementById('quiz-title-display').textContent = set.name;
+      const timerEl = document.getElementById('quiz-timer-display');
+      if (timerEl) timerEl.textContent = (set.timerMin > 0) ? '⏱ 제한시간 ' + set.timerMin + '분' : '';
+      showScreen('s-name');
+    } else {
+      renderQuizSelect();
+    }
+  })();
 } else {
-  renderQuizSelect();
+  (async () => {
+    await waitForDb();
+    // Firebase에서 전체 퀴즈 세트 최신본 동기화
+    const remoteSets = await fsGetAllSets();
+    if (remoteSets && remoteSets.length > 0) {
+      localStorage.setItem('lr_sets', JSON.stringify(remoteSets));
+    }
+    renderQuizSelect();
+  })();
 }
 </script>
 </body>
