@@ -1059,6 +1059,7 @@ function saveSets(sets) { localStorage.setItem('lr_sets', JSON.stringify(sets));
 function getSetById(id) { return loadSets().find(s => s.id === id) || null; }
 function loadStore() { return { password: localStorage.getItem('lr_pw') || 'larosee1234' }; }
 function savePw(p) { localStorage.setItem('lr_pw', p); }
+function escHtml(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ─── Cohorts ────────────────────────────────────────────────── */
 function loadCohorts() { return JSON.parse(localStorage.getItem('lr_cohorts') || '[]'); }
