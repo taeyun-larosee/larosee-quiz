@@ -2086,19 +2086,23 @@ function showCohortModal(cohortLabel, source, empType) {
 
 /* ─── 기수 관리 ───────────────────────────────────────────────── */
 function renderCohortTags() {
+  const el = document.getElementById('cohort-tags');
+  if (!el) return;
   const cohorts = loadCohorts();
-  document.getElementById('cohort-tags').innerHTML = cohorts.length === 0
+  el.innerHTML = cohorts.length === 0
     ? '<span style="color:var(--text-muted);font-size:13px;">등록된 기수가 없습니다</span>'
     : cohorts.map(c =>
         '<span class="cohort-tag">' + c + '기 <button onclick="deleteCohort(\'' + c + '\')">✕</button></span>'
       ).join('');
 }
 function addCohort() {
-  const val = document.getElementById('cohort-add-input').value.trim();
+  const inp = document.getElementById('cohort-add-input');
+  if (!inp) return;
+  const val = inp.value.trim();
   if (!val) return;
   const cohorts = loadCohorts();
   if (!cohorts.includes(val)) { cohorts.push(val); saveCohorts(cohorts); }
-  document.getElementById('cohort-add-input').value = '';
+  inp.value = '';
   renderCohortTags();
 }
 function deleteCohort(c) {
