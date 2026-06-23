@@ -2672,6 +2672,7 @@ function renderLec() {
   const revBtn = document.getElementById('lec-reveal-btn');
   revBtn.textContent = '정답 공개';
   revBtn.classList.remove('revealed');
+  revBtn.onclick = lecReveal;
   document.getElementById('lec-prev').disabled = lecIdx === 0;
   document.getElementById('lec-next').disabled = lecIdx === total - 1;
 }
@@ -2691,8 +2692,9 @@ function lecReveal() {
     expl.style.display = 'block';
   }
   const revBtn = document.getElementById('lec-reveal-btn');
-  revBtn.textContent = '공개됨';
+  revBtn.textContent = '다음으로';
   revBtn.classList.add('revealed');
+  revBtn.onclick = function() { lecNext(); };
 }
 function lecPrev() { if (lecIdx > 0) { lecIdx--; renderLec(); } }
 function lecNext() { if (lecIdx < lecQs.length - 1) { lecIdx++; renderLec(); } }
