@@ -663,6 +663,21 @@
   <!-- Tab: Settings -->
   <div id="tab-settings" class="tab-content">
     <div class="page">
+      <div class="card" style="margin-bottom:16px;">
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;">강의 모드 설정</h3>
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <div>
+            <div style="font-size:14px;font-weight:700;">카드 순서 랜덤</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">강의 모드 시작 시 카드 순서를 무작위로 섞습니다</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:46px;height:26px;flex-shrink:0;">
+            <input type="checkbox" id="shuffle-toggle" onchange="saveShuffleSetting(this.checked)" style="opacity:0;width:0;height:0;">
+            <span id="shuffle-slider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#ccc;border-radius:26px;transition:.3s;">
+              <span style="position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;display:block;" id="shuffle-knob"></span>
+            </span>
+          </label>
+        </div>
+      </div>
       <div class="card">
         <h3 style="font-size:15px;font-weight:800;margin-bottom:16px;">비밀번호 변경</h3>
         <div class="form-group">
@@ -1362,6 +1377,12 @@ function switchTab(t) {
   else if (t === 'quiz') { _qViewSetId = null; renderQTab(); loadScoreList(); }
   else if (t === 'flashcard') renderFcSetList();
   else if (t === 'qr') renderQRTab();
+  else if (t === 'settings') {
+    const val = localStorage.getItem('lr_shuffle_lecture') === 'true';
+    const chk = document.getElementById('shuffle-toggle');
+    if (chk) chk.checked = val;
+    updateShuffleToggleUI(val);
+  }
 }
 
 function downloadQRSet(setId) {
@@ -3066,10 +3087,30 @@ function startFcLecture(setId) {
   const set = getFcSetById(setId);
   if (!set || !(set.cards||[]).length) { alert('카드가 없습니다.'); return; }
   lecMode = 'flashcard';
-  lecQs = set.cards;
+  let cards = [...(set.cards||[])];
+  if (localStorage.getItem('lr_shuffle_lecture') === 'true') {
+    for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+  }
+  lecQs = cards;
   lecIdx = 0;
   showScreen('s-lecture');
   renderLec();
+}
+
+function saveShuffleSetting(val) {
+  localStorage.setItem('lr_shuffle_lecture', val ? 'true' : 'false');
+  updateShuffleToggleUI(val);
+}
+
+function updateShuffleToggleUI(val) {
+  const slider = document.getElementById('shuffle-slider');
+  const knob = document.getElementById('shuffle-knob');
+  if (!slider || !knob) return;
+  slider.style.background = val ? 'var(--blue)' : '#ccc';
+  knob.style.transform = val ? 'translateX(20px)' : 'translateX(0)';
 }
 
 function exitLecture() { showScreen('s-admin'); switchTab('quiz'); }
