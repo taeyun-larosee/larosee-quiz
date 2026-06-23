@@ -1005,6 +1005,21 @@ async function fsGetSetById(setId) {
     return doc.exists ? doc.data() : null;
   } catch(e) { return null; }
 }
+async function fsSyncFcSet(set) {
+  if (!db) return;
+  try { await db.collection('fcsets').doc(set.id).set(set); } catch(e) {}
+}
+async function fsDeleteFcSet(setId) {
+  if (!db) return;
+  try { await db.collection('fcsets').doc(setId).delete(); } catch(e) {}
+}
+async function fsGetFcSetById(setId) {
+  if (!db) return null;
+  try {
+    const doc = await db.collection('fcsets').doc(setId).get();
+    return doc.exists ? doc.data() : null;
+  } catch(e) { return null; }
+}
 
 /* ─── Default Questions ──────────────────────────────────────── */
 const DEFAULT_QUESTIONS = [
@@ -1321,7 +1336,7 @@ function adminLogin() {
     document.getElementById('admin-pw').value = '';
     document.getElementById('admin-pw-err').style.display = 'none';
     showScreen('s-admin');
-    switchTab('quiz');
+    switchTab('dash');
   } else {
     document.getElementById('admin-pw-err').style.display = 'block';
   }
@@ -2733,7 +2748,10 @@ function changePw() {
 /* ─── Flashcard Data ─────────────────────────────────────────── */
 const FC_KEY = 'lr_fcsets';
 function loadFcSets() { try { return JSON.parse(localStorage.getItem(FC_KEY)) || []; } catch(e) { return []; } }
-function saveFcSets(sets) { localStorage.setItem(FC_KEY, JSON.stringify(sets)); }
+function saveFcSets(sets) {
+  localStorage.setItem(FC_KEY, JSON.stringify(sets));
+  if (db) sets.forEach(set => db.collection('fcsets').doc(set.id).set(set).catch(() => {}));
+}
 function getFcSetById(id) { return loadFcSets().find(s => s.id === id) || null; }
 function genFcId() { return 'fc_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
 
@@ -2743,6 +2761,9 @@ let _fcEditCardIdx = -1; // 현재 편집 중인 카드 인덱스
 
 function renderFcSetList() {
   const sets = loadFcSets();
+  // Firebase 동기화 (기존 데이터 포함)
+  if (db) sets.forEach(set => db.collection('fcsets').doc(set.id).set(set).catch(() => {}));
+  else waitForDb().then(() => { if (db) sets.forEach(set => db.collection('fcsets').doc(set.id).set(set).catch(() => {})); });
   const lbl = document.getElementById('fc-set-count-lbl');
   if (lbl) lbl.textContent = '플래시카드 세트 ' + sets.length + '개';
   const el = document.getElementById('fc-set-list');
@@ -2806,6 +2827,7 @@ function confirmDeleteFcSet(id) {
   if (!set) return;
   if (!confirm('"' + set.name + '" 세트를 삭제할까요?\n카드 ' + (set.cards||[]).length + '개가 모두 삭제됩니다.')) return;
   saveFcSets(loadFcSets().filter(s => s.id !== id));
+  fsDeleteFcSet(id);
   renderFcSetList();
 }
 
@@ -3132,7 +3154,17 @@ if (URL_MODE === 'admin') {
   if (localFcSet) {
     showFcView(URL_FC);
   } else {
-    renderQuizSelect();
+    (async () => {
+      await waitForDb();
+      const remoteFcSet = await fsGetFcSetById(URL_FC);
+      if (remoteFcSet) {
+        const sets = loadFcSets();
+        if (!sets.find(s => s.id === remoteFcSet.id)) { sets.push(remoteFcSet); localStorage.setItem(FC_KEY, JSON.stringify(sets)); }
+        showFcView(URL_FC);
+      } else {
+        renderQuizSelect();
+      }
+    })();
   }
 } else if (URL_QUIZ) {
   const localSet = getSetById(URL_QUIZ);
