@@ -344,104 +344,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div id="tab-sessions" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
         <div style="font-size:20px;font-weight:800;">세션 관리</div>
-        <button class="btn btn-p">＋ 세션 추가</button>
+        <button class="btn btn-p" onclick="openSessionModal()">＋ 세션 추가</button>
       </div>
       <div id="sessions-list">
-        <!-- 신규입사자 교육 -->
-        <div class="sc-card">
-          <div class="sc-hdr" onclick="toggleSc(this)">
-            <div class="sc-meta">
-              <h3>신규입사자 교육</h3>
-              <p>DAY 1 · DAY 2 · 총 6일 과정</p>
-              <div style="margin-top:8px;display:flex;gap:8px;">
-                <span class="badge bg-green">진행중</span>
-              </div>
-            </div>
-            <div class="sc-acts" onclick="event.stopPropagation()">
-              <button class="btn btn-o btn-sm">수정</button>
-              <button class="btn btn-g btn-sm">삭제</button>
-              <button class="btn btn-g btn-sm tog-btn">▲ 접기</button>
-            </div>
-          </div>
-          <div class="sc-body open">
-            <div class="day-tabs">
-              <div class="dtab on" onclick="setDay(this)">DAY 1</div>
-              <div class="dtab" onclick="setDay(this)">DAY 2</div>
-            </div>
-            <div class="ci">
-              <div class="ci-icon" style="background:#eff6ff;">📋</div>
-              <div class="ci-info"><div class="ci-name">입사자 교육 자료 (슬라이드)</div><div class="ci-desc">Google Drive 링크</div></div>
-              <div class="ci-btns"><button class="btn btn-g btn-sm">링크 관리</button></div>
-            </div>
-            <div class="ci">
-              <div class="ci-icon" style="background:#f0fdf4;">🎭</div>
-              <div class="ci-info"><div class="ci-name">롤플레이 가이드</div><div class="ci-desc">v3 · 2026.06.10 업데이트</div></div>
-              <div class="ci-btns"><button class="btn btn-g btn-sm">버전 관리</button></div>
-            </div>
-            <div class="ci">
-              <div class="ci-icon" style="background:#fffbeb;">🗂</div>
-              <div class="ci-info"><div class="ci-name">플래시카드</div><div class="ci-desc">라로제 브랜드 세트 · 20장</div></div>
-              <div class="ci-btns">
-                <button class="btn btn-sm" style="background:var(--amber-bg);color:var(--amber);border:2px solid var(--amber);border-radius:8px;" onclick="openQR('flashcard')">QR 생성</button>
-                <button class="btn btn-g btn-sm">내용 관리</button>
-              </div>
-            </div>
-            <div class="ci">
-              <div class="ci-icon" style="background:#fef2f2;">✅</div>
-              <div class="ci-info"><div class="ci-name">퀴즈</div><div class="ci-desc">신규입사자 교육 퀴즈 · 20문항</div></div>
-              <div class="ci-btns">
-                <button class="btn btn-sm" style="background:var(--red-bg);color:var(--red);border:2px solid var(--red);border-radius:8px;" onclick="openQR('quiz')">QR 생성</button>
-                <button class="btn btn-g btn-sm">내용 관리</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="sc-card dim">
-          <div class="sc-hdr" onclick="toggleSc(this)">
-            <div class="sc-meta">
-              <h3>재교육 1차</h3>
-              <div style="margin-top:8px;display:flex;gap:8px;">
-                <span class="badge bg-muted">준비 중</span>
-                <span style="font-size:12px;color:var(--muted);align-self:center;">· 콘텐츠 0개</span>
-              </div>
-            </div>
-            <div class="sc-acts" onclick="event.stopPropagation()">
-              <button class="btn btn-o btn-sm">수정</button>
-              <button class="btn btn-g btn-sm">삭제</button>
-              <button class="btn btn-g btn-sm tog-btn">▼ 열기</button>
-            </div>
-          </div>
-          <div class="sc-body">
-            <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;">
-              등록된 콘텐츠가 없습니다.
-              <button class="btn btn-p btn-sm" style="margin-left:8px;">콘텐츠 추가</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="sc-card dim">
-          <div class="sc-hdr" onclick="toggleSc(this)">
-            <div class="sc-meta">
-              <h3>재교육 2차</h3>
-              <div style="margin-top:8px;display:flex;gap:8px;">
-                <span class="badge bg-muted">준비 중</span>
-                <span style="font-size:12px;color:var(--muted);align-self:center;">· 콘텐츠 0개</span>
-              </div>
-            </div>
-            <div class="sc-acts" onclick="event.stopPropagation()">
-              <button class="btn btn-o btn-sm">수정</button>
-              <button class="btn btn-g btn-sm">삭제</button>
-              <button class="btn btn-g btn-sm tog-btn">▼ 열기</button>
-            </div>
-          </div>
-          <div class="sc-body">
-            <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;">
-              등록된 콘텐츠가 없습니다.
-              <button class="btn btn-p btn-sm" style="margin-left:8px;">콘텐츠 추가</button>
-            </div>
-          </div>
-        </div>
+        <div style="color:var(--muted);font-size:13px;">불러오는 중...</div>
       </div>
     </div>
 
@@ -548,6 +454,97 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   </div>
 </div>
 
+<!-- ── Session Modal ── -->
+<div class="ov" id="sess-ov" onclick="closeOv('sess-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:500px;">
+    <div class="mh"><h2 id="sess-modal-title">세션 추가</h2><button class="mcl" onclick="closeOvD('sess-ov')">✕</button></div>
+    <div class="mb" style="padding:24px;">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세션 이름</label>
+        <input type="text" id="sess-name" placeholder="예: 신규입사자 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">아이콘 (이모지)</label>
+        <input type="text" id="sess-icon" placeholder="📚" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">상태</label>
+        <select id="sess-status" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <option value="active">진행중</option>
+          <option value="preparing">준비 중</option>
+        </select>
+      </div>
+      <div id="sess-days-section" style="margin-bottom:24px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <label style="font-size:12px;font-weight:700;color:var(--muted);">DAY 구성</label>
+          <button class="btn btn-g btn-sm" onclick="addDay()">＋ DAY 추가</button>
+        </div>
+        <div id="sess-days-list"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-g" onclick="closeOvD('sess-ov')">취소</button>
+        <button class="btn btn-p" onclick="saveSession()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Item Modal ── -->
+<div class="ov" id="item-ov" onclick="closeOv('item-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:520px;">
+    <div class="mh"><h2 id="item-modal-title">항목 추가</h2><button class="mcl" onclick="closeOvD('item-ov')">✕</button></div>
+    <div class="mb" style="padding:24px;">
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">항목 이름</label>
+        <input type="text" id="item-name" placeholder="예: 브랜드 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">유형</label>
+        <select id="item-type" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" onchange="updateItemFields()">
+          <option value="link">🔗 링크 (PPT/PDF)</option>
+          <option value="roleplay">🎭 롤플레이 (이미지 슬라이드)</option>
+          <option value="flashcard">🗂 플래시카드 QR 배포</option>
+          <option value="quiz">✅ 퀴즈 QR 배포</option>
+          <option value="lecture">🎓 플래시카드 강의 모드</option>
+        </select>
+      </div>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">설명 (선택)</label>
+        <input type="text" id="item-desc" placeholder="예: PPT, PDF, 구글드라이브" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <!-- 링크 -->
+      <div id="item-f-link" style="margin-bottom:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">링크 URL</label>
+        <input type="url" id="item-url" placeholder="https://drive.google.com/..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 링크를 그대로 붙여넣으면 자동 변환됩니다.</div>
+      </div>
+      <!-- 롤플레이 이미지 -->
+      <div id="item-f-roleplay" style="margin-bottom:14px;display:none;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">이미지 URL 목록 (한 줄에 하나씩)</label>
+        <textarea id="item-images" rows="5" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+      </div>
+      <!-- 플래시카드 ID -->
+      <div id="item-f-fc" style="margin-bottom:14px;display:none;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">플래시카드 세트 ID</label>
+        <select id="item-fcid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <option value="">-- 세트 선택 --</option>
+        </select>
+      </div>
+      <!-- 퀴즈 ID -->
+      <div id="item-f-quiz" style="margin-bottom:14px;display:none;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 ID</label>
+        <select id="item-quizid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+          <option value="">-- 퀴즈 선택 --</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
+        <button class="btn btn-g" onclick="closeOvD('item-ov')">취소</button>
+        <button class="btn btn-p" onclick="saveItem()">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ── QR Modal ── -->
 <div class="ov" id="qr-ov" onclick="closeOv('qr-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:420px;">
@@ -647,6 +644,7 @@ function renderAll() {
   renderQuizStatus();
   renderQuizList();
   renderFCList();
+  loadAdminSessions();
 }
 
 function buildCohortPills() {
@@ -1019,6 +1017,298 @@ function exportCSV() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = '라로제_응시결과_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
+}
+
+// ════════════════════════════════════════
+// ── SESSIONS CRUD ──
+// ════════════════════════════════════════
+let adminSessions = [];
+let editSessId = null;      // null = new, string = edit existing
+let editItemCtx = null;     // {sessId, dayIdx, itemIdx} null = new item
+let editDays = [];          // temp days array while editing session
+
+const DEFAULT_SESSIONS = [
+  { id:'new-hire', name:'신규입사자 교육', status:'active', icon:'📚', order:0,
+    days:[
+      { name:'DAY 1', items:[
+        {type:'link',name:'브랜드 교육',desc:'PPT',url:'',icon:'📋'},
+        {type:'link',name:'인센티브 교육',desc:'PPT',url:'',icon:'📋'},
+        {type:'link',name:'제품 교육',desc:'PDF',url:'',icon:'📄'},
+        {type:'link',name:'매뉴얼 교육',desc:'PPT',url:'',icon:'📋'},
+        {type:'link',name:'전산교육',desc:'PPT + 홈페이지',url:'',icon:'💻'}
+      ]},
+      { name:'DAY 2', items:[
+        {type:'roleplay',name:'롤플레이 가이드',desc:'슬라이드로 보기',images:[],icon:'🎭'},
+        {type:'link',name:'이의제기 교육',desc:'PPT',url:'',icon:'📋'},
+        {type:'flashcard',name:'이의제기 플래시카드 배포',desc:'QR 배포 후 핸드폰으로 연습',fcId:'',icon:'🗂'},
+        {type:'quiz',name:'마무리 퀴즈 배포',desc:'QR 배포 후 응시',quizId:'',icon:'✅'},
+        {type:'lecture',name:'마무리 강의',desc:'플래시카드 강의 모드',fcId:'',icon:'🎓'}
+      ]}
+    ]
+  },
+  { id:'retrain-1', name:'재교육 1차', status:'preparing', icon:'🔄', order:1, days:[] },
+  { id:'retrain-2', name:'재교육 2차', status:'preparing', icon:'🔄', order:2, days:[] }
+];
+
+async function loadAdminSessions() {
+  if (db) {
+    try {
+      const snap = await db.collection('sessions').orderBy('order').get();
+      if (!snap.empty) {
+        adminSessions = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        renderSessionsTab(); return;
+      }
+    } catch(e) { console.warn('Firebase sessions:', e); }
+  }
+  const saved = localStorage.getItem('lr_sessions');
+  if (saved) { try { adminSessions = JSON.parse(saved); renderSessionsTab(); return; } catch(e){} }
+  adminSessions = JSON.parse(JSON.stringify(DEFAULT_SESSIONS));
+  renderSessionsTab();
+}
+
+async function saveSessionsToStore() {
+  localStorage.setItem('lr_sessions', JSON.stringify(adminSessions));
+  if (!db) return;
+  // Save each session as a Firestore document
+  const batch = db.batch();
+  adminSessions.forEach((s, i) => {
+    s.order = i;
+    const ref = db.collection('sessions').doc(s.id);
+    batch.set(ref, s);
+  });
+  try { await batch.commit(); } catch(e) { console.warn('Firestore save:', e); }
+}
+
+const ICON_MAP = { link:'📋', roleplay:'🎭', flashcard:'🗂', quiz:'✅', lecture:'🎓' };
+const TYPE_LABEL = { link:'링크', roleplay:'롤플레이', flashcard:'FC QR', quiz:'퀴즈 QR', lecture:'강의 모드' };
+const ITEM_BG = { link:'#eff6ff', roleplay:'#f0fdf4', flashcard:'#fdf4ff', quiz:'#fef2f2', lecture:'#fffbeb' };
+
+function renderSessionsTab() {
+  const wrap = document.getElementById('sessions-list');
+  if (!adminSessions.length) {
+    wrap.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">등록된 세션이 없습니다.</div>';
+    return;
+  }
+  wrap.innerHTML = adminSessions.map((s, si) => {
+    const totalItems = (s.days||[]).reduce((a,d)=>a+(d.items||[]).length, 0);
+    const isOpen = si === 0;
+    return `
+    <div class="sc-card ${s.status!=='active'?'dim':''}" id="sc-${s.id}">
+      <div class="sc-hdr" onclick="toggleSc(this)">
+        <div class="sc-meta">
+          <h3>${s.icon||'📚'} ${s.name}</h3>
+          <p>${(s.days||[]).map(d=>d.name).join(' · ')} · 항목 ${totalItems}개</p>
+          <div style="margin-top:8px;display:flex;gap:8px;">
+            <span class="badge ${s.status==='active'?'bg-green':'bg-muted'}">${s.status==='active'?'진행중':'준비 중'}</span>
+          </div>
+        </div>
+        <div class="sc-acts" onclick="event.stopPropagation()">
+          <button class="btn btn-o btn-sm" onclick="openSessionModal('${s.id}')">수정</button>
+          <button class="btn btn-g btn-sm" onclick="deleteSess('${s.id}')">삭제</button>
+          <button class="btn btn-g btn-sm tog-btn">${isOpen?'▲ 접기':'▼ 열기'}</button>
+        </div>
+      </div>
+      <div class="sc-body ${isOpen?'open':''}">
+        ${renderDayTabs(s, si)}
+      </div>
+    </div>
+    `;
+  }).join('');
+
+  // init first tab of each session
+  adminSessions.forEach((s, si) => {
+    const firstDay = document.querySelector(`#sc-${s.id} .dtab`);
+    if (firstDay) firstDay.click();
+  });
+}
+
+function renderDayTabs(s, si) {
+  if (!s.days || !s.days.length) {
+    return `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;">
+      등록된 항목이 없습니다.
+      <button class="btn btn-p btn-sm" style="margin-left:8px;" onclick="openSessionModal('${s.id}')">DAY 추가</button>
+    </div>`;
+  }
+  const tabs = s.days.map((d,di) =>
+    `<div class="dtab ${di===0?'on':''}" onclick="setDayAdmin(this, '${s.id}', ${di})">${d.name}</div>`
+  ).join('');
+  const dayContents = s.days.map((d, di) =>
+    `<div class="day-content" id="day-${s.id}-${di}" style="${di===0?'':'display:none'}">
+      ${(d.items||[]).map((item, ii) => renderItemRow(s.id, di, ii, item)).join('')}
+      <div style="padding:12px 20px;">
+        <button class="btn btn-g btn-sm" onclick="openItemModal('${s.id}',${di})">＋ 항목 추가</button>
+      </div>
+    </div>`
+  ).join('');
+  return `<div class="day-tabs">${tabs}</div>${dayContents}`;
+}
+
+function renderItemRow(sessId, dayIdx, itemIdx, item) {
+  return `
+    <div class="ci">
+      <div class="ci-icon" style="background:${ITEM_BG[item.type]||'#f4f7fb'}">${item.icon||ICON_MAP[item.type]||'📋'}</div>
+      <div class="ci-info">
+        <div class="ci-name">${item.name}</div>
+        <div class="ci-desc">${TYPE_LABEL[item.type]||item.type}${item.desc?' · '+item.desc:''}</div>
+      </div>
+      <div class="ci-btns">
+        ${(item.type==='flashcard'||item.type==='quiz')?
+          `<button class="btn btn-sm" style="background:var(--blue-light);color:var(--blue);border:2px solid var(--blue);border-radius:8px;"
+            onclick="openQR('${item.type}-${item.fcId||item.quizId||''}')">QR 보기</button>` : ''}
+        <button class="btn btn-o btn-sm" onclick="openItemModal('${sessId}',${dayIdx},${itemIdx})">수정</button>
+        <button class="btn btn-g btn-sm" onclick="deleteItem('${sessId}',${dayIdx},${itemIdx})">삭제</button>
+      </div>
+    </div>
+  `;
+}
+
+function setDayAdmin(el, sessId, dayIdx) {
+  el.closest('.sc-body').querySelectorAll('.dtab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  el.closest('.sc-body').querySelectorAll('.day-content').forEach(c=>c.style.display='none');
+  const target = document.getElementById(`day-${sessId}-${dayIdx}`);
+  if (target) target.style.display = 'block';
+}
+
+// ── Session Modal ──
+function openSessionModal(sessId) {
+  editSessId = sessId || null;
+  let sess = sessId ? adminSessions.find(s=>s.id===sessId) : null;
+  editDays = sess ? JSON.parse(JSON.stringify(sess.days||[])) : [{name:'DAY 1', items:[]}];
+
+  document.getElementById('sess-modal-title').textContent = sessId ? '세션 수정' : '세션 추가';
+  document.getElementById('sess-name').value  = sess ? sess.name  : '';
+  document.getElementById('sess-icon').value  = sess ? (sess.icon||'📚') : '📚';
+  document.getElementById('sess-status').value = sess ? (sess.status||'preparing') : 'preparing';
+  renderEditDays();
+  document.getElementById('sess-ov').classList.add('open');
+}
+
+function renderEditDays() {
+  const wrap = document.getElementById('sess-days-list');
+  wrap.innerHTML = editDays.map((d, di) => `
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+      <input type="text" value="${d.name}" onchange="editDays[${di}].name=this.value"
+        style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+      <button class="btn btn-g btn-sm" onclick="removeDay(${di})" ${editDays.length<=1?'disabled':''}>✕</button>
+    </div>
+  `).join('');
+}
+
+function addDay() {
+  editDays.push({name:'DAY '+(editDays.length+1), items:[]});
+  renderEditDays();
+}
+
+function removeDay(di) {
+  if (editDays.length <= 1) return;
+  editDays.splice(di, 1);
+  renderEditDays();
+}
+
+async function saveSession() {
+  const name = document.getElementById('sess-name').value.trim();
+  if (!name) { alert('세션 이름을 입력해주세요.'); return; }
+  const icon   = document.getElementById('sess-icon').value.trim() || '📚';
+  const status = document.getElementById('sess-status').value;
+
+  if (editSessId) {
+    const s = adminSessions.find(s=>s.id===editSessId);
+    if (s) {
+      s.name = name; s.icon = icon; s.status = status;
+      // merge days (preserve existing items)
+      editDays.forEach((d, di) => {
+        if (!s.days[di]) s.days[di] = { name:d.name, items:[] };
+        else s.days[di].name = d.name;
+      });
+      s.days = s.days.slice(0, editDays.length);
+    }
+  } else {
+    const id = 'sess-' + Date.now();
+    adminSessions.push({ id, name, icon, status, order:adminSessions.length,
+      days: editDays.map(d=>({...d, items:[]})) });
+  }
+
+  await saveSessionsToStore();
+  closeOvD('sess-ov');
+  renderSessionsTab();
+}
+
+async function deleteSess(sessId) {
+  if (!confirm('이 세션을 삭제하시겠습니까? 포함된 항목도 모두 삭제됩니다.')) return;
+  adminSessions = adminSessions.filter(s=>s.id!==sessId);
+  if (db) { try { await db.collection('sessions').doc(sessId).delete(); } catch(e){} }
+  await saveSessionsToStore();
+  renderSessionsTab();
+}
+
+// ── Item Modal ──
+function openItemModal(sessId, dayIdx, itemIdx) {
+  editItemCtx = { sessId, dayIdx, itemIdx: itemIdx ?? null };
+  const s = adminSessions.find(s=>s.id===sessId);
+  const item = (itemIdx != null) ? s.days[dayIdx].items[itemIdx] : null;
+
+  document.getElementById('item-modal-title').textContent = item ? '항목 수정' : '항목 추가';
+  document.getElementById('item-name').value  = item ? item.name  : '';
+  document.getElementById('item-desc').value  = item ? (item.desc||'') : '';
+  document.getElementById('item-type').value  = item ? item.type  : 'link';
+  document.getElementById('item-url').value   = item ? (item.url||'')  : '';
+  document.getElementById('item-images').value = item ? (item.images||[]).join('\n') : '';
+
+  // populate FC and quiz selects
+  const fcSets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
+  const fcSel  = document.getElementById('item-fcid');
+  fcSel.innerHTML = '<option value="">-- 세트 선택 --</option>' +
+    fcSets.map(f=>`<option value="${f.id}" ${item&&item.fcId===f.id?'selected':''}>${f.name}</option>`).join('');
+
+  const qzSets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
+  const qzSel  = document.getElementById('item-quizid');
+  qzSel.innerHTML = '<option value="">-- 퀴즈 선택 --</option>' +
+    qzSets.map(q=>`<option value="${q.id}" ${item&&item.quizId===q.id?'selected':''}>${q.name}</option>`).join('');
+
+  updateItemFields();
+  document.getElementById('item-ov').classList.add('open');
+}
+
+function updateItemFields() {
+  const type = document.getElementById('item-type').value;
+  document.getElementById('item-f-link').style.display    = type==='link'     ? 'block' : 'none';
+  document.getElementById('item-f-roleplay').style.display= type==='roleplay' ? 'block' : 'none';
+  document.getElementById('item-f-fc').style.display      = (type==='flashcard'||type==='lecture') ? 'block' : 'none';
+  document.getElementById('item-f-quiz').style.display    = type==='quiz'     ? 'block' : 'none';
+}
+
+async function saveItem() {
+  const name = document.getElementById('item-name').value.trim();
+  if (!name) { alert('항목 이름을 입력해주세요.'); return; }
+  const type = document.getElementById('item-type').value;
+  const desc = document.getElementById('item-desc').value.trim();
+
+  const item = { type, name, desc, icon: ICON_MAP[type]||'📋' };
+  if (type==='link')      item.url     = document.getElementById('item-url').value.trim();
+  if (type==='roleplay')  item.images  = document.getElementById('item-images').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if (type==='flashcard'||type==='lecture') item.fcId = document.getElementById('item-fcid').value;
+  if (type==='quiz')      item.quizId  = document.getElementById('item-quizid').value;
+
+  const {sessId, dayIdx, itemIdx} = editItemCtx;
+  const s = adminSessions.find(s=>s.id===sessId);
+  if (!s) return;
+  if (!s.days[dayIdx].items) s.days[dayIdx].items = [];
+
+  if (itemIdx != null) s.days[dayIdx].items[itemIdx] = item;
+  else s.days[dayIdx].items.push(item);
+
+  await saveSessionsToStore();
+  closeOvD('item-ov');
+  renderSessionsTab();
+}
+
+async function deleteItem(sessId, dayIdx, itemIdx) {
+  if (!confirm('이 항목을 삭제하시겠습니까?')) return;
+  const s = adminSessions.find(s=>s.id===sessId);
+  if (s) s.days[dayIdx].items.splice(itemIdx, 1);
+  await saveSessionsToStore();
+  renderSessionsTab();
 }
 
 // ── Nav ──
