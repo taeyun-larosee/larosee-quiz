@@ -289,15 +289,16 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         </select>
       </div>
 
-      <!-- cohort pills -->
+      <!-- question pills -->
       <div class="pills" style="margin-bottom:20px;" id="cpills">
-        <div class="pill on" onclick="setCohort(this,'all')">전체</div>
+        <div class="pill on" onclick="setQuestion(this,'all')">전체</div>
       </div>
 
       <!-- stats -->
       <div class="stats-row" style="margin-bottom:16px;">
         <div class="sc"><div class="n" style="color:var(--blue);" id="st-tot">–</div><div class="l">총 응시자</div></div>
         <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">–</div><div class="l">평균 점수</div></div>
+        <div class="sc"><div class="n" style="color:#d97706;" id="st-time">–</div><div class="l">평균 응시시간</div></div>
         <div class="tier green" onclick="openTier('green')">
           <span class="tc">▾</span><div class="tn" id="st-g">–</div><div class="tl">90점↑ 우수합격</div>
         </div>
@@ -418,6 +419,27 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <span>응시 결과 내보내기 (CSV)</span>
         <button class="btn btn-o btn-sm" onclick="exportCSV()">다운로드</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Cohort Detail Modal ── -->
+<div class="ov" id="cohort-detail-ov" onclick="closeOv('cohort-detail-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:500px;">
+    <div class="mh">
+      <h2 id="cd-title">기수 상세</h2>
+      <button class="mcl" onclick="closeOvD('cohort-detail-ov')">✕</button>
+    </div>
+    <div style="display:flex;gap:16px;padding:12px 20px;background:var(--blue-light);border-bottom:1px solid var(--border);">
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--blue);" id="cd-stat-cnt">–</div><div style="font-size:11px;color:var(--muted);">참여자</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--green-mid);" id="cd-stat-avg">–</div><div style="font-size:11px;color:var(--muted);">평균 점수</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#d97706;" id="cd-stat-time">–</div><div style="font-size:11px;color:var(--muted);">평균 응시시간</div></div>
+    </div>
+    <div style="padding:16px 20px;overflow-y:auto;max-height:340px;">
+      <table class="mt" style="width:100%;">
+        <thead><tr><th>이름</th><th>점수</th><th>응시시간</th></tr></thead>
+        <tbody id="cd-tbody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -709,7 +731,7 @@ function showApp() {
 }
 
 // ── Data ──
-let allScores = [], filteredScores = [], currentCohort = 'all';
+let allScores = [], filteredScores = [], currentCohort = 'all', currentQuestion = 'all';
 let quizMap = {}, fcSets = [];
 let currentTier = 'green', currentTierTab = 'new';
 
@@ -753,6 +775,20 @@ function renderAll() {
 }
 
 function buildCohortPills() {
+  // 문제별 pills
+  const questions = [...new Set(allScores.flatMap(s=>(s.answers||[]).map(a=>a.q)).filter(Boolean))];
+  const wrap = document.getElementById('cpills');
+  wrap.innerHTML = '<div class="pill on" onclick="setQuestion(this,\'all\')">전체</div>';
+  questions.forEach((q, i) => {
+    const d = document.createElement('div');
+    d.className = 'pill';
+    d.textContent = '문제' + (i + 1);
+    d.title = q; // 툴팁으로 전체 문제 텍스트 표시
+    d.onclick = function(){ setQuestion(this, q); };
+    wrap.appendChild(d);
+  });
+}
+function _buildCohortPillsOld() {
   const cohorts = [...new Set(allScores.map(s => s.cohort).filter(Boolean))].sort();
   const wrap = document.getElementById('cpills');
   wrap.innerHTML = '<div class="pill on" onclick="setCohort(this,\'all\')">전체</div>';
@@ -787,6 +823,13 @@ function buildQuizSelector() {
   });
 }
 
+function setQuestion(el, q) {
+  document.querySelectorAll('#cpills .pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  currentQuestion = q;
+  applyFilters();
+}
+
 function setCohort(el, c) {
   document.querySelectorAll('#cpills .pill').forEach(p => p.classList.remove('on'));
   el.classList.add('on');
@@ -805,11 +848,19 @@ function applyFilters() {
   renderTop5();
 }
 
+function formatDur(sec) {
+  if (!sec) return '–';
+  const m = Math.floor(sec / 60), s = sec % 60;
+  return m > 0 ? m + '분 ' + s + '초' : s + '초';
+}
+
 function renderStats() {
   const fs = filteredScores;
   document.getElementById('st-tot').textContent = fs.length + '명';
   const avg = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.pct||s.score/s.total*100||0),0)/fs.length) : 0;
   document.getElementById('st-avg').textContent = avg + '점';
+  const avgDur = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.duration||0),0)/fs.length) : 0;
+  document.getElementById('st-time').textContent = formatDur(avgDur);
   const pct = s => s.pct ?? (s.score && s.total ? Math.round(s.score/s.total*100) : 0);
   document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= S_SCORE()).length + '명';
   document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= P_SCORE() && pct(s) < S_SCORE()).length + '명';
@@ -817,8 +868,9 @@ function renderStats() {
 }
 
 // cohortChart
-let myChart;
+let myChart, myChartData = [];
 function initChart(labels, data) {
+  myChartData = data;
   const ctx = document.getElementById('cohortChart').getContext('2d');
   if (myChart) myChart.destroy();
   myChart = new Chart(ctx, {
@@ -832,15 +884,40 @@ function initChart(labels, data) {
     },
     options: {
       responsive:true, maintainAspectRatio:false,
+      onClick(e) {
+        const pts = myChart.getElementsAtEventForMode(e,'nearest',{intersect:true},false);
+        if (!pts.length) return;
+        const idx = pts[0].index;
+        const label = myChart.data.labels[idx];
+        const d = myChartData[idx];
+        if (d) openCohortDetail(label, d);
+      },
       plugins:{ legend:{display:false},
         tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' 평균 '+c.raw+'점':' 응시 '+c.raw+'명' }}
       },
       scales:{
         y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'점',font:{size:11}} },
-        y2:{ position:'right', min:0, grid:{display:false}, ticks:{callback:v=>v+'명',font:{size:11},color:'#d97706'} }
+        y2:{ position:'right', min:0, grid:{display:false},
+          ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'명':'',font:{size:11},color:'#d97706'} }
       }
     }
   });
+}
+
+function openCohortDetail(label, d) {
+  document.getElementById('cd-title').textContent = label + ' 상세';
+  document.getElementById('cd-stat-cnt').textContent = d.cnt + '명';
+  document.getElementById('cd-stat-avg').textContent = d.avg + '점';
+  document.getElementById('cd-stat-time').textContent = formatDur(d.avgDur);
+  const tbody = document.getElementById('cd-tbody');
+  tbody.innerHTML = (d.rows || []).map(r => `
+    <tr>
+      <td>${r.name || '–'}</td>
+      <td>${r.pct ?? 0}점</td>
+      <td>${formatDur(r.duration || 0)}</td>
+    </tr>
+  `).join('');
+  document.getElementById('cohort-detail-ov').classList.add('open');
 }
 
 let chartQuizFilter = 'all';
@@ -853,14 +930,15 @@ function setChartTab(el, key) {
 
 function renderChart(quizFilter) {
   const src = allScores.filter(s =>
-    (currentCohort==='all' || s.cohort===currentCohort) &&
+    (currentQuestion==='all' || (s.answers||[]).some(a=>a.q===currentQuestion)) &&
     (quizFilter==='all' || s.quizName===quizFilter)
   );
   const cohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
   const data = cohorts.map(c => {
     const rows = src.filter(s=>s.cohort===c);
     const avg = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.pct||0),0)/rows.length) : 0;
-    return { avg, cnt: rows.length };
+    const avgDur = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.duration||0),0)/rows.length) : 0;
+    return { avg, cnt: rows.length, avgDur, rows };
   });
   initChart(cohorts, data);
 }
