@@ -304,19 +304,46 @@ let rpImages = [], rpIdx = 0;
 let fcCards = [], fcIdx = 0, fcFlipped = false;
 let extUrl = '';
 
+// ── URL 패치: 저장된 세션에 URL 없으면 DEFAULT_SESSIONS에서 채움 ──
+function patchUrlsFromDefault(loadedSessions) {
+  return loadedSessions.map(sess => {
+    const def = DEFAULT_SESSIONS.find(d => d.id === sess.id);
+    if (!def) return sess;
+    return {
+      ...sess,
+      days: (sess.days || []).map((day, di) => {
+        const defDay = (def.days || [])[di];
+        if (!defDay) return day;
+        return {
+          ...day,
+          items: (day.items || []).map((item, ii) => {
+            const defItem = (defDay.items || [])[ii];
+            if (!defItem) return item;
+            // link 타입이고 URL이 비어있거나 구글 링크면 OneDrive URL로 교체
+            if (item.type === 'link' && (!item.url || item.url.includes('drive.google.com') || item.url.includes('docs.google.com'))) {
+              return { ...item, url: defItem.url || item.url };
+            }
+            return item;
+          })
+        };
+      })
+    };
+  });
+}
+
 // ── Load ──
 async function loadSessions() {
   if (db) {
     try {
       const snap = await db.collection('sessions').orderBy('order').get();
       if (!snap.empty) {
-        sessions = snap.docs.map(d => ({id:d.id, ...d.data()}));
+        sessions = patchUrlsFromDefault(snap.docs.map(d => ({id:d.id, ...d.data()})));
         renderHome(); return;
       }
     } catch(e) { console.warn('Firebase:', e); }
   }
   const saved = localStorage.getItem('lr_sessions');
-  if (saved) { try { sessions = JSON.parse(saved); renderHome(); return; } catch(e){} }
+  if (saved) { try { sessions = patchUrlsFromDefault(JSON.parse(saved)); renderHome(); return; } catch(e){} }
   sessions = DEFAULT_SESSIONS;
   renderHome();
 }
