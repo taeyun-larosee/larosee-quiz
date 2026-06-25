@@ -487,11 +487,12 @@ function closeViewer() {
   document.getElementById('v-link-frame').src = '';
 }
 
-// LINK viewer — 새 탭으로만 열기 (오버레이 없음)
+// LINK viewer — 새 탭으로만 열고, 뷰어는 닫아서 세션으로 복귀
 function openLinkViewer(item) {
   extUrl = item.url || '';
   if (!extUrl) { showEmpty('🔗','링크가 설정되지 않았습니다','관리자 페이지에서 링크를 입력해주세요.'); return; }
   window.open(extUrl, '_blank');
+  closeViewer();
 }
 function openExt() { if(extUrl) window.open(extUrl, '_blank'); }
 

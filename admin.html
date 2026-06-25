@@ -280,6 +280,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div id="tab-dashboard" class="tab on">
       <div class="row" style="justify-content:space-between;margin-bottom:16px;">
         <div style="font-size:20px;font-weight:800;">대시보드</div>
+        <button id="dash-edit-btn" class="btn btn-o" onclick="toggleDashEdit()" style="font-size:13px;padding:7px 18px;">대시보드 수정</button>
       </div>
 
       <!-- quiz pills -->
@@ -926,16 +927,20 @@ function renderTop5() {
   const qMap = {};
   filteredScores.forEach(s => {
     (s.answers||[]).forEach(a => {
+      const key = a.question || a.q || '';
+      if (!key) return;
       if (!a.ok) {
-        if (!qMap[a.q]) qMap[a.q] = {wrong:0, chosen:{}, total:0};
-        qMap[a.q].wrong++;
+        if (!qMap[key]) qMap[key] = {wrong:0, chosen:{}, total:0};
+        qMap[key].wrong++;
       }
     });
     (s.answers||[]).forEach(a => {
-      if (!qMap[a.q]) qMap[a.q] = {wrong:0, chosen:{}, total:0};
-      qMap[a.q].total++;
+      const key = a.question || a.q || '';
+      if (!key) return;
+      if (!qMap[key]) qMap[key] = {wrong:0, chosen:{}, total:0};
+      qMap[key].total++;
       if (a.chosen != null) {
-        qMap[a.q].chosen[a.chosen] = (qMap[a.q].chosen[a.chosen]||0)+1;
+        qMap[key].chosen[a.chosen] = (qMap[key].chosen[a.chosen]||0)+1;
       }
     });
   });
@@ -957,6 +962,14 @@ function renderTop5() {
   window._top5data = top5;
 }
 
+let _dashEditMode = false;
+function toggleDashEdit() {
+  _dashEditMode = !_dashEditMode;
+  const btn = document.getElementById('dash-edit-btn');
+  if (btn) btn.textContent = _dashEditMode ? '수정 완료' : '대시보드 수정';
+  renderQuizStatus();
+}
+
 function renderQuizStatus() {
   const types = [...new Set(allScores.map(s=>s.quizName).filter(Boolean))];
   if (!types.length) {
@@ -966,17 +979,16 @@ function renderQuizStatus() {
   const pct = s => s.pct ?? 0;
   document.getElementById('quiz-status').innerHTML = types.map(t => {
     const rows = allScores.filter(s=>s.quizName===t);
-    const avg = rows.length ? Math.round(rows.reduce((a,s)=>a+pct(s),0)/rows.length) : 0;
     const g = rows.filter(s=>pct(s)>=S_SCORE()).length;
     const b = rows.filter(s=>pct(s)>=P_SCORE()&&pct(s)<S_SCORE()).length;
     const r = rows.filter(s=>pct(s)<P_SCORE()).length;
     const tEsc = t.replace(/'/g,"\\'");
     return `
       <div style="background:var(--blue-light);border-radius:10px;padding:14px 18px;position:relative;">
-        <button onclick="deleteQuizScores('${tEsc}')"
-          style="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:11px;border:1px solid #cdd9e8;border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">데이터 삭제</button>
-        <div style="font-size:13px;font-weight:700;color:var(--blue-dark);margin-right:60px;">${t}</div>
-        <div style="font-size:13px;color:var(--text);margin:6px 0;">응시 ${rows.length}명 · 평균 ${avg}점</div>
+        ${_dashEditMode ? `<button onclick="deleteQuizScores('${tEsc}')"
+          style="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:11px;border:1px solid #cdd9e8;border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">데이터 삭제</button>` : ''}
+        <div style="font-size:13px;font-weight:700;color:var(--blue-dark);${_dashEditMode?'margin-right:60px;':''}">${t}</div>
+        <div style="font-size:13px;color:var(--muted);margin:4px 0 8px;">응시 ${rows.length}명</div>
         <div style="display:flex;gap:8px;">
           <span class="badge bg-green">우수 ${g}명</span>
           <span class="badge bg-blue">합격 ${b}명</span>
@@ -1219,11 +1231,31 @@ function saveQuizEditor() {
   renderQuizList();
 }
 
-function deleteQuizSet(id) {
-  if (!confirm('이 퀴즈를 삭제하시겠습니까?')) return;
-  const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]').filter(s=>s.id!==id);
-  localStorage.setItem('lr_sets', JSON.stringify(sets));
+async function deleteQuizSet(id) {
+  const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
+  const quiz = sets.find(s=>s.id===id);
+  if (!quiz) return;
+  if (!confirm(`"${quiz.name||'이 퀴즈'}"를 삭제하시겠습니까?`)) return;
+
+  // 관련 응시 데이터 삭제 여부 확인
+  const relatedScores = allScores.filter(s=>s.quizName===quiz.name);
+  let deleteScores = false;
+  if (relatedScores.length > 0) {
+    deleteScores = confirm(`관련 응시 데이터 ${relatedScores.length}건도 함께 삭제할까요?\n\n[확인] 함께 삭제 / [취소] 퀴즈만 삭제`);
+  }
+
+  // 퀴즈 삭제
+  const newSets = sets.filter(s=>s.id!==id);
+  localStorage.setItem('lr_sets', JSON.stringify(newSets));
   renderQuizList();
+
+  // 점수 데이터도 삭제
+  if (deleteScores) {
+    await deleteQuizScores(quiz.name);
+  } else {
+    buildQuizPills();
+    applyFilters();
+  }
 }
 
 // ── 플래시카드 에디터 ──
