@@ -1,28 +1,22 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>라로제 관리자</title>
+<title>?쇰줈??愿由ъ옄</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="config.js"></script>
+<script src="auth.js" defer></script>
+<script src="present.js" defer></script>
+<link rel="stylesheet" href="common.css">
 <style>
-:root {
-  --blue:#0E94CD; --blue-dark:#0a78a8; --blue-light:#e8f4fb;
-  --white:#fff; --gray:#f4f7fb; --text:#1a2233; --muted:#6b7c93;
-  --border:#e2eaf4;
-  --green:#16a34a; --green-mid:#22c55e; --green-bg:#f0fdf4; --green-text:#166534;
-  --amber:#d97706; --amber-bg:#fffbeb; --amber-text:#92400e;
-  --red:#ef4444; --red-bg:#fef2f2; --red-text:#b91c1c;
-  --sw:200px; --hh:60px; --r:12px;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
-  background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
+:root { --sw:200px; --hh:60px; --r:12px; }
+body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 
-/* ── Login ── */
+/* ?? Login ?? */
 #login-screen{
   position:fixed;inset:0;background:var(--gray);
   display:flex;align-items:center;justify-content:center;z-index:999;
@@ -47,7 +41,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .login-box button:hover{background:var(--blue-dark);}
 .login-err{font-size:12px;color:var(--red);margin-top:8px;display:none;}
 
-/* ── Header ── */
+/* ?? Header ?? */
 #hdr{
   position:fixed;top:0;left:0;right:0;height:var(--hh);
   background:#fff;border-bottom:1px solid var(--border);
@@ -61,7 +55,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   background:#fff;color:var(--blue);font-size:13px;cursor:pointer;font-weight:500;transition:.15s;}
 .btn-normal:hover{background:var(--blue-light);}
 
-/* ── Sidebar ── */
+/* ?? Sidebar ?? */
 #sb{
   position:fixed;top:var(--hh);left:0;bottom:0;width:var(--sw);
   background:#fff;border-right:1px solid var(--border);padding-top:12px;z-index:90;
@@ -76,14 +70,14 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .ni.on{background:var(--blue-light);color:var(--blue);border-left-color:var(--blue);font-weight:700;}
 .ni .ic{font-size:17px;width:22px;text-align:center;}
 
-/* ── Main ── */
+/* ?? Main ?? */
 #main{
   margin-left:var(--sw);margin-top:var(--hh);
   height:calc(100vh - var(--hh));overflow-y:auto;padding:28px;
 }
 .tab{display:none;}.tab.on{display:block;}
 
-/* ── Components ── */
+/* ?? Components ?? */
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;}
 .card-t{font-size:14px;font-weight:700;margin-bottom:16px;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
@@ -106,7 +100,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .row{display:flex;gap:12px;align-items:center;}
 .sep{height:1px;background:var(--border);margin:20px 0;}
 
-/* ── Stats ── */
+/* ?? Stats ?? */
 .stats-row{display:flex;gap:14px;}
 .sc{flex:1;background:#fff;border-radius:var(--r);border:1px solid var(--border);padding:14px 18px;}
 .sc .n{font-size:28px;font-weight:800;}
@@ -121,12 +115,12 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .tier.blue{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
 .tier.red{background:var(--red-bg);border-color:var(--red);color:var(--red);}
 
-/* ── Chart tabs ── */
+/* ?? Chart tabs ?? */
 .ctab{padding:4px 12px;border-radius:14px;font-size:11px;cursor:pointer;
   border:1px solid var(--border);background:#fff;color:var(--muted);transition:.15s;}
 .ctab.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 
-/* ── Top5 ── */
+/* ?? Top5 ?? */
 .t5{display:flex;align-items:center;gap:12px;padding:8px 12px;
   border-radius:8px;background:var(--gray);cursor:pointer;transition:.12s;margin-bottom:6px;}
 .t5:hover{background:var(--blue-light);}
@@ -135,7 +129,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .t5q{flex:1;font-size:13px;}
 .t5p{font-size:13px;font-weight:700;color:var(--red);}
 
-/* ── Sessions ── */
+/* ?? Sessions ?? */
 .sc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   margin-bottom:12px;overflow:hidden;border-left:5px solid var(--blue);}
 .sc-card.dim{border-left-color:var(--muted);}
@@ -161,7 +155,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .ci-desc{font-size:12px;color:var(--muted);margin-top:3px;}
 .ci-btns{display:flex;gap:6px;flex-shrink:0;}
 
-/* ── Modals ── */
+/* ?? Modals ?? */
 .ov{display:none;position:fixed;inset:0;background:rgba(15,25,50,.5);
   z-index:200;align-items:center;justify-content:center;}
 .ov.open{display:flex;}
@@ -194,7 +188,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .mt tr:not(:last-child) td{border-bottom:1px solid #f3f5f9;}
 .mt tr:hover td{background:var(--gray);cursor:pointer;}
 
-/* ── Answer bars ── */
+/* ?? Answer bars ?? */
 .abar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .albl{width:28px;font-size:13px;font-weight:700;color:var(--muted);}
 .atrk{flex:1;height:32px;background:var(--gray);border-radius:8px;overflow:hidden;}
@@ -202,13 +196,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   padding:0 10px;font-size:12px;font-weight:600;color:#fff;transition:width .6s;}
 .apct{width:42px;text-align:right;font-size:13px;font-weight:700;}
 
-/* ── Quiz/FC list ── */
+/* ?? Quiz/FC list ?? */
 .qi{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;}
 .qn{width:40px;height:40px;border-radius:10px;background:var(--blue-light);
   color:var(--blue);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* ── Settings ── */
+/* ?? Settings ?? */
 .srow{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .toggle{width:44px;height:24px;border-radius:12px;background:var(--blue);position:relative;cursor:pointer;}
@@ -226,14 +220,11 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 #loading{position:fixed;inset:0;background:#fff;z-index:9999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 #loading img{height:52px;animation:pulse 1.4s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-
 #main::-webkit-scrollbar{width:6px;}
 #main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   PRESENT VIEW (교육 진행 화면 통합)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+/* ?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??   PRESENT VIEW (援먯쑁 吏꾪뻾 ?붾㈃ ?듯빀)
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??*/
 #present-view{display:none;position:fixed;inset:0;background:var(--gray);z-index:500;overflow-y:auto;}
 #p-loading{position:fixed;inset:0;background:#fff;z-index:9999;
   display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
@@ -339,7 +330,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 .p-rp-chk{width:22px;height:22px;border:2px solid #b0c8db;border-radius:5px;flex-shrink:0;
   margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s;}
 .p-rp-chk.checked{background:#0E94CD;border-color:#0E94CD;}
-.p-rp-chk.checked::after{content:'✓';color:#fff;font-size:14px;font-weight:700;}
+.p-rp-chk.checked::after{content:'??;color:#fff;font-size:14px;font-weight:700;}
 .p-rp-check-text{font-size:16px;line-height:1.5;color:#1a2233;}
 .p-rp-check-text.checked{color:#888;text-decoration:line-through;}
 .p-rp-script-block{margin-bottom:16px;}
@@ -386,80 +377,79 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 </head>
 <body>
 
-<!-- ── Loading ── -->
+<!-- ?? Loading ?? -->
 <div id="loading">
-  <img src="logo.png" alt="라로제">
-  <span style="font-size:13px;color:var(--muted);">불러오는 중...</span>
+  <img src="logo.png" alt="?쇰줈??>
+  <span style="font-size:13px;color:var(--muted);">遺덈윭?ㅻ뒗 以?..</span>
 </div>
 
-<!-- ── Login ── -->
+<!-- ?? Login ?? -->
 <div id="login-screen" style="display:none;">
   <div class="login-box">
-    <img src="logo.png" alt="라로제">
-    <h2>관리자 로그인</h2>
-    <p>라로제 관리자 전용 페이지입니다.</p>
-    <input type="password" id="login-pw" placeholder="비밀번호"
+    <img src="logo.png" alt="?쇰줈??>
+    <h2>愿由ъ옄 濡쒓렇??/h2>
+    <p>?쇰줈??愿由ъ옄 ?꾩슜 ?섏씠吏?낅땲??</p>
+    <input type="password" id="login-pw" placeholder="鍮꾨?踰덊샇"
       onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()">로그인</button>
-    <div class="login-err" id="login-err">비밀번호가 올바르지 않습니다.</div>
+    <button onclick="doLogin()">濡쒓렇??/button>
+    <div class="login-err" id="login-err">鍮꾨?踰덊샇媛 ?щ컮瑜댁? ?딆뒿?덈떎.</div>
   </div>
 </div>
 
-<!-- ── App ── -->
+<!-- ?? App ?? -->
 <div id="app" style="display:none;">
 
   <!-- Header -->
   <div id="hdr">
     <a class="logo-wrap" onclick="gotoTab('dashboard')">
-      <img src="logo.png" alt="라로제">
+      <img src="logo.png" alt="?쇰줈??>
     </a>
     <span style="font-size:12px;color:var(--muted);" id="last-updated"></span>
     <button onclick="openPresentView()" style="display:flex;align-items:center;gap:6px;padding:8px 18px;
       border:2px solid var(--blue);border-radius:9px;background:#fff;color:var(--blue);
       font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;"
       onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='#fff'">
-      📺 교육 진행 →
-    </button>
+      ?벟 援먯쑁 吏꾪뻾 ??    </button>
   </div>
 
   <!-- Sidebar -->
   <nav id="sb">
-    <div class="lbl">관리자모드</div>
-    <div class="ni on" onclick="gotoTab('dashboard')" data-tab="dashboard"><span class="ic">📊</span>대시보드</div>
-    <div class="ni" onclick="gotoTab('sessions')" data-tab="sessions"><span class="ic">📚</span>세션</div>
-    <div class="ni" onclick="gotoTab('quiz')" data-tab="quiz"><span class="ic">✅</span>퀴즈</div>
-    <div class="ni" onclick="gotoTab('flashcard')" data-tab="flashcard"><span class="ic">🗂</span>플래시카드</div>
-    <div class="ni" onclick="gotoTab('settings')" data-tab="settings"><span class="ic">⚙</span>설정</div>
+    <div class="lbl">愿由ъ옄紐⑤뱶</div>
+    <div class="ni on" onclick="gotoTab('dashboard')" data-tab="dashboard"><span class="ic">?뱤</span>??쒕낫??/div>
+    <div class="ni" onclick="gotoTab('sessions')" data-tab="sessions"><span class="ic">?뱴</span>?몄뀡</div>
+    <div class="ni" onclick="gotoTab('quiz')" data-tab="quiz"><span class="ic">??/span>?댁쫰</div>
+    <div class="ni" onclick="gotoTab('flashcard')" data-tab="flashcard"><span class="ic">?뾺</span>?뚮옒?쒖뭅??/div>
+    <div class="ni" onclick="gotoTab('settings')" data-tab="settings"><span class="ic">??/span>?ㅼ젙</div>
   </nav>
 
   <!-- Main -->
   <div id="main">
 
-    <!-- ━━ DASHBOARD ━━ -->
+    <!-- ?곣봺 DASHBOARD ?곣봺 -->
     <div id="tab-dashboard" class="tab on">
       <div class="row" style="justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:20px;font-weight:800;">대시보드</div>
-        <button id="dash-edit-btn" class="btn btn-o" onclick="toggleDashEdit()" style="font-size:13px;padding:7px 18px;">대시보드 수정</button>
+        <div style="font-size:20px;font-weight:800;">??쒕낫??/div>
+        <button id="dash-edit-btn" class="btn btn-o" onclick="toggleDashEdit()" style="font-size:13px;padding:7px 18px;">??쒕낫???섏젙</button>
       </div>
 
       <!-- quiz pills -->
       <div class="pills" style="margin-bottom:20px;" id="cpills">
-        <div class="pill on" onclick="setQuizPill(this,'all')">전체</div>
+        <div class="pill on" onclick="setQuizPill(this,'all')">?꾩껜</div>
       </div>
 
       <!-- stats -->
       <div class="stats-row" style="margin-bottom:16px;">
-        <div class="sc"><div class="n" style="color:var(--blue);" id="st-tot">–</div><div class="l">총 응시자</div></div>
-        <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">–</div><div class="l">평균 점수</div></div>
-        <div class="sc"><div class="n" style="color:#d97706;" id="st-time">–</div><div class="l">평균 응시시간</div></div>
+        <div class="sc"><div class="n" style="color:var(--blue);" id="st-tot">??/div><div class="l">珥??묒떆??/div></div>
+        <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">??/div><div class="l">?됯퇏 ?먯닔</div></div>
+        <div class="sc"><div class="n" style="color:#d97706;" id="st-time">??/div><div class="l">?됯퇏 ?묒떆?쒓컙</div></div>
         <div class="tier green" onclick="openTier('green')">
-          <span class="tc">▾</span><div class="tn" id="st-g">–</div><div class="tl" id="tl-g">90점↑ 우수합격</div>
+          <span class="tc">??/span><div class="tn" id="st-g">??/div><div class="tl" id="tl-g">90?먥넁 ?곗닔?⑷꺽</div>
         </div>
         <div class="tier blue" onclick="openTier('blue')">
-          <span class="tc">▾</span><div class="tn" id="st-b">–</div><div class="tl" id="tl-b">80~90점 합격</div>
+          <span class="tc">??/span><div class="tn" id="st-b">??/div><div class="tl" id="tl-b">80~90???⑷꺽</div>
         </div>
         <div class="tier red" onclick="openTier('red')">
-          <span class="tc">▾</span><div class="tn" id="st-r">–</div><div class="tl" id="tl-r">80점↓ 미달</div>
+          <span class="tc">??/span><div class="tn" id="st-r">??/div><div class="tl" id="tl-r">80?먥넃 誘몃떖</div>
         </div>
       </div>
 
@@ -467,144 +457,144 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
       <div class="grid2" style="margin-bottom:16px;">
         <div class="card">
           <div class="row" style="justify-content:space-between;margin-bottom:14px;">
-            <div class="card-t" style="margin:0;">기수별 평균 점수</div>
+            <div class="card-t" style="margin:0;">湲곗닔蹂??됯퇏 ?먯닔</div>
           </div>
           <div style="height:200px;"><canvas id="cohortChart"></canvas></div>
         </div>
         <div class="card">
           <div class="row" style="justify-content:space-between;margin-bottom:14px;">
-            <div class="card-t" style="margin:0;">오답률 TOP 5</div>
+            <div class="card-t" style="margin:0;">?ㅻ떟瑜?TOP 5</div>
             <span style="font-size:11px;color:var(--blue);background:var(--blue-light);padding:4px 10px;border-radius:6px;">
-              문항 클릭 시 답변 분포
+              臾명빆 ?대┃ ???듬? 遺꾪룷
             </span>
           </div>
-          <div id="top5-list"><div style="color:var(--muted);font-size:13px;padding:8px 0;">데이터 없음</div></div>
+          <div id="top5-list"><div style="color:var(--muted);font-size:13px;padding:8px 0;">?곗씠???놁쓬</div></div>
         </div>
       </div>
 
       <!-- quiz status -->
       <div class="card">
-        <div class="card-t">퀴즈 응시 현황</div>
+        <div class="card-t">?댁쫰 ?묒떆 ?꾪솴</div>
         <div class="grid2" id="quiz-status">
-          <div style="background:var(--gray);border-radius:10px;padding:14px 18px;color:var(--muted);font-size:13px;">로딩 중...</div>
+          <div style="background:var(--gray);border-radius:10px;padding:14px 18px;color:var(--muted);font-size:13px;">濡쒕뵫 以?..</div>
         </div>
       </div>
     </div>
 
-    <!-- ━━ SESSIONS ━━ -->
+    <!-- ?곣봺 SESSIONS ?곣봺 -->
     <div id="tab-sessions" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">세션 관리</div>
-        <button class="btn btn-p" onclick="openSessionModal()">＋ 세션 추가</button>
+        <div style="font-size:20px;font-weight:800;">?몄뀡 愿由?/div>
+        <button class="btn btn-p" onclick="openSessionModal()">竊??몄뀡 異붽?</button>
       </div>
       <div id="sessions-list">
-        <div style="color:var(--muted);font-size:13px;">불러오는 중...</div>
+        <div style="color:var(--muted);font-size:13px;">遺덈윭?ㅻ뒗 以?..</div>
       </div>
     </div>
 
-    <!-- ━━ QUIZ ━━ -->
+    <!-- ?곣봺 QUIZ ?곣봺 -->
     <div id="tab-quiz" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">퀴즈 관리</div>
-        <button class="btn btn-p" onclick="openQuizEditor(null)">＋ 퀴즈 추가</button>
+        <div style="font-size:20px;font-weight:800;">?댁쫰 愿由?/div>
+        <button class="btn btn-p" onclick="openQuizEditor(null)">竊??댁쫰 異붽?</button>
       </div>
       <div id="quiz-list-wrap">
-        <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
+        <div style="color:var(--muted);font-size:13px;">濡쒕뵫 以?..</div>
       </div>
     </div>
 
-    <!-- ━━ FLASHCARD ━━ -->
+    <!-- ?곣봺 FLASHCARD ?곣봺 -->
     <div id="tab-flashcard" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">플래시카드 관리</div>
-        <button class="btn btn-p" onclick="openFcEditor(null)">＋ 세트 추가</button>
+        <div style="font-size:20px;font-weight:800;">?뚮옒?쒖뭅??愿由?/div>
+        <button class="btn btn-p" onclick="openFcEditor(null)">竊??명듃 異붽?</button>
       </div>
       <div id="fc-list-wrap">
-        <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
+        <div style="color:var(--muted);font-size:13px;">濡쒕뵫 以?..</div>
       </div>
     </div>
 
-    <!-- ━━ SETTINGS ━━ -->
+    <!-- ?곣봺 SETTINGS ?곣봺 -->
     <div id="tab-settings" class="tab">
-      <div style="font-size:20px;font-weight:800;margin-bottom:24px;">설정</div>
+      <div style="font-size:20px;font-weight:800;margin-bottom:24px;">?ㅼ젙</div>
 
-      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">비밀번호 변경</div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">鍮꾨?踰덊샇 蹂寃?/div>
       <div class="srow" style="flex-direction:column;align-items:flex-start;gap:10px;">
-        <input type="password" id="pw-cur" placeholder="현재 비밀번호" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
-        <input type="password" id="pw-new" placeholder="새 비밀번호" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
-        <input type="password" id="pw-new2" placeholder="새 비밀번호 확인" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
+        <input type="password" id="pw-cur" placeholder="?꾩옱 鍮꾨?踰덊샇" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
+        <input type="password" id="pw-new" placeholder="??鍮꾨?踰덊샇" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
+        <input type="password" id="pw-new2" placeholder="??鍮꾨?踰덊샇 ?뺤씤" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
         <div id="pw-err" style="color:var(--red);font-size:12px;display:none;"></div>
-        <button class="btn btn-p" onclick="changePw()">비밀번호 변경</button>
+        <button class="btn btn-p" onclick="changePw()">鍮꾨?踰덊샇 蹂寃?/button>
       </div>
 
       <div class="sep"></div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">항목 유형 관리</div>
-        <button class="btn btn-o btn-sm" onclick="toggleTypePanel()">수정하기</button>
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">??ぉ ?좏삎 愿由?/div>
+        <button class="btn btn-o btn-sm" onclick="toggleTypePanel()">?섏젙?섍린</button>
       </div>
       <div id="type-panel" style="display:none;border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--gray);">
         <div id="type-list-wrap" style="margin-bottom:10px;"></div>
-        <button class="btn btn-g btn-sm" onclick="addItemType()">＋ 유형 추가</button>
+        <button class="btn btn-g btn-sm" onclick="addItemType()">竊??좏삎 異붽?</button>
       </div>
 
       <div class="sep"></div>
 
-      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">데이터</div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">?곗씠??/div>
       <div class="srow">
-        <span>응시 결과 내보내기 (CSV)</span>
-        <button class="btn btn-o btn-sm" onclick="exportCSV()">다운로드</button>
+        <span>?묒떆 寃곌낵 ?대낫?닿린 (CSV)</span>
+        <button class="btn btn-o btn-sm" onclick="exportCSV()">?ㅼ슫濡쒕뱶</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Cohort Detail Modal ── -->
+<!-- ?? Cohort Detail Modal ?? -->
 <div class="ov" id="cohort-detail-ov" onclick="closeOv('cohort-detail-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="max-width:500px;">
     <div class="mh">
-      <h2 id="cd-title">기수 상세</h2>
-      <button class="mcl" onclick="closeOvD('cohort-detail-ov')">✕</button>
+      <h2 id="cd-title">湲곗닔 ?곸꽭</h2>
+      <button class="mcl" onclick="closeOvD('cohort-detail-ov')">??/button>
     </div>
     <div style="display:flex;gap:16px;padding:12px 20px;background:var(--blue-light);border-bottom:1px solid var(--border);">
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--blue);" id="cd-stat-cnt">–</div><div style="font-size:11px;color:var(--muted);">참여자</div></div>
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--green-mid);" id="cd-stat-avg">–</div><div style="font-size:11px;color:var(--muted);">평균 점수</div></div>
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#d97706;" id="cd-stat-time">–</div><div style="font-size:11px;color:var(--muted);">평균 응시시간</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--blue);" id="cd-stat-cnt">??/div><div style="font-size:11px;color:var(--muted);">李몄뿬??/div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--green-mid);" id="cd-stat-avg">??/div><div style="font-size:11px;color:var(--muted);">?됯퇏 ?먯닔</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#d97706;" id="cd-stat-time">??/div><div style="font-size:11px;color:var(--muted);">?됯퇏 ?묒떆?쒓컙</div></div>
     </div>
     <div style="padding:16px 20px;overflow-y:auto;max-height:340px;">
       <table class="mt" style="width:100%;">
-        <thead><tr><th>이름</th><th>점수</th><th>응시시간</th></tr></thead>
+        <thead><tr><th>?대쫫</th><th>?먯닔</th><th>?묒떆?쒓컙</th></tr></thead>
         <tbody id="cd-tbody"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- ── Tier Modal ── -->
+<!-- ?? Tier Modal ?? -->
 <div class="ov" id="tier-ov" onclick="closeOv('tier-ov',event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="mh" id="tier-mh">
       <h2 id="tier-title"></h2>
-      <button class="mcl" onclick="closeOvD('tier-ov')">✕</button>
+      <button class="mcl" onclick="closeOvD('tier-ov')">??/button>
     </div>
     <div class="mtb">
-      <button class="mtab on" id="tt-new" onclick="setTierTab('new')">신규입사자</button>
-      <button class="mtab" id="tt-old" onclick="setTierTab('old')">기존직원</button>
+      <button class="mtab on" id="tt-new" onclick="setTierTab('new')">?좉퇋?낆궗??/button>
+      <button class="mtab" id="tt-old" onclick="setTierTab('old')">湲곗〈吏곸썝</button>
       <div class="msrch">
-        <span>🔍</span>
-        <input type="text" id="tier-srch" placeholder="직원 이름 검색..." oninput="renderTierTable()">
+        <span>?뵇</span>
+        <input type="text" id="tier-srch" placeholder="吏곸썝 ?대쫫 寃??.." oninput="renderTierTable()">
       </div>
     </div>
     <div class="mb">
       <table class="mt">
-        <thead><tr><th>이름</th><th>기수</th><th>세션</th><th>점수</th><th>오답</th><th></th></tr></thead>
+        <thead><tr><th>?대쫫</th><th>湲곗닔</th><th>?몄뀡</th><th>?먯닔</th><th>?ㅻ떟</th><th></th></tr></thead>
         <tbody id="tier-body"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- ── Answer Modal ── -->
+<!-- ?? Answer Modal ?? -->
 <div class="ov" id="ans-ov" onclick="closeOv('ans-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:560px;">
     <div class="mh">
@@ -612,247 +602,246 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <h2 id="ans-title"></h2>
         <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="ans-meta"></div>
       </div>
-      <button class="mcl" onclick="closeOvD('ans-ov')">✕</button>
+      <button class="mcl" onclick="closeOvD('ans-ov')">??/button>
     </div>
     <div class="mb" id="ans-body" style="padding:24px;"></div>
   </div>
 </div>
 
-<!-- ── Session Modal ── -->
+<!-- ?? Session Modal ?? -->
 <div class="ov" id="sess-ov" onclick="closeOv('sess-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:500px;">
-    <div class="mh"><h2 id="sess-modal-title">세션 추가</h2><button class="mcl" onclick="closeOvD('sess-ov')">✕</button></div>
+    <div class="mh"><h2 id="sess-modal-title">?몄뀡 異붽?</h2><button class="mcl" onclick="closeOvD('sess-ov')">??/button></div>
     <div class="mb" style="padding:24px;">
       <div style="margin-bottom:16px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세션 이름</label>
-        <input type="text" id="sess-name" placeholder="예: 신규입사자 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?몄뀡 ?대쫫</label>
+        <input type="text" id="sess-name" placeholder="?? ?좉퇋?낆궗??援먯쑁" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:16px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">아이콘 (이모지)</label>
-        <input type="text" id="sess-icon" placeholder="📚" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?꾩씠肄?(?대え吏)</label>
+        <input type="text" id="sess-icon" placeholder="?뱴" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:24px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">상태</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?곹깭</label>
         <select id="sess-status" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
-          <option value="active">진행중</option>
-          <option value="preparing">준비 중</option>
+          <option value="active">吏꾪뻾以?/option>
+          <option value="preparing">以鍮?以?/option>
         </select>
       </div>
       <div id="sess-days-section" style="margin-bottom:24px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-          <label style="font-size:12px;font-weight:700;color:var(--muted);">DAY 구성</label>
-          <button class="btn btn-g btn-sm" onclick="addDay()">＋ DAY 추가</button>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);">DAY 援ъ꽦</label>
+          <button class="btn btn-g btn-sm" onclick="addDay()">竊?DAY 異붽?</button>
         </div>
         <div id="sess-days-list"></div>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button class="btn btn-g" onclick="closeOvD('sess-ov')">취소</button>
-        <button class="btn btn-p" onclick="saveSession()">저장</button>
+        <button class="btn btn-g" onclick="closeOvD('sess-ov')">痍⑥냼</button>
+        <button class="btn btn-p" onclick="saveSession()">???/button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Item Modal ── -->
+<!-- ?? Item Modal ?? -->
 <div class="ov" id="item-ov" onclick="closeOv('item-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:520px;">
-    <div class="mh"><h2 id="item-modal-title">항목 추가</h2><button class="mcl" onclick="closeOvD('item-ov')">✕</button></div>
+    <div class="mh"><h2 id="item-modal-title">??ぉ 異붽?</h2><button class="mcl" onclick="closeOvD('item-ov')">??/button></div>
     <div class="mb" style="padding:24px;">
       <div style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">항목 이름</label>
-        <input type="text" id="item-name" placeholder="예: 브랜드 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">??ぉ ?대쫫</label>
+        <input type="text" id="item-name" placeholder="?? 釉뚮옖??援먯쑁" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">유형</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?좏삎</label>
         <select id="item-type" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" onchange="updateItemFields()">
-          <option value="link">🔗 링크 (PPT/PDF)</option>
-          <option value="roleplay">🎭 롤플레이 (카테고리·포인트·멘트)</option>
-          <option value="flashcard">🗂 플래시카드 QR 배포</option>
-          <option value="quiz">✅ 퀴즈 QR 배포</option>
-          <option value="lecture">🎓 플래시카드 강의 모드</option>
+          <option value="link">?뵕 留곹겕 (PPT/PDF)</option>
+          <option value="roleplay">?렚 濡ㅽ뵆?덉씠 (移댄뀒怨좊━쨌?ъ씤?맞룸찘??</option>
+          <option value="flashcard">?뾺 ?뚮옒?쒖뭅??QR 諛고룷</option>
+          <option value="quiz">???댁쫰 QR 諛고룷</option>
+          <option value="lecture">?럳 ?뚮옒?쒖뭅??媛뺤쓽 紐⑤뱶</option>
         </select>
       </div>
       <div style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">설명 (선택)</label>
-        <input type="text" id="item-desc" placeholder="예: PPT, PDF, 구글드라이브" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?ㅻ챸 (?좏깮)</label>
+        <input type="text" id="item-desc" placeholder="?? PPT, PDF, 援ш??쒕씪?대툕" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
-      <!-- 링크 -->
+      <!-- 留곹겕 -->
       <div id="item-f-link" style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">링크 URL</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">留곹겕 URL</label>
         <input type="url" id="item-url" placeholder="https://drive.google.com/..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 링크를 그대로 붙여넣으면 자동 변환됩니다.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 留곹겕瑜?洹몃?濡?遺숈뿬?ｌ쑝硫??먮룞 蹂?섎맗?덈떎.</div>
       </div>
-      <!-- 롤플레이 에디터 -->
+      <!-- 濡ㅽ뵆?덉씠 ?먮뵒??-->
       <div id="item-f-roleplay" style="margin-bottom:14px;display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blue-light);border-radius:10px;border:1px solid var(--border);">
           <div>
-            <div style="font-size:14px;font-weight:600;color:var(--blue);">롤플레이 내용 편집</div>
-            <div id="rp-edit-summary" style="font-size:12px;color:var(--muted);margin-top:2px;">카테고리 0개</div>
+            <div style="font-size:14px;font-weight:600;color:var(--blue);">濡ㅽ뵆?덉씠 ?댁슜 ?몄쭛</div>
+            <div id="rp-edit-summary" style="font-size:12px;color:var(--muted);margin-top:2px;">移댄뀒怨좊━ 0媛?/div>
           </div>
-          <button class="btn btn-p btn-sm" onclick="openRpEditor()">편집 열기 →</button>
+          <button class="btn btn-p btn-sm" onclick="openRpEditor()">?몄쭛 ?닿린 ??/button>
         </div>
       </div>
-      <!-- 플래시카드 ID -->
+      <!-- ?뚮옒?쒖뭅??ID -->
       <div id="item-f-fc" style="margin-bottom:14px;display:none;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">플래시카드 세트 ID</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?뚮옒?쒖뭅???명듃 ID</label>
         <select id="item-fcid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
-          <option value="">-- 세트 선택 --</option>
+          <option value="">-- ?명듃 ?좏깮 --</option>
         </select>
       </div>
-      <!-- 퀴즈 ID -->
+      <!-- ?댁쫰 ID -->
       <div id="item-f-quiz" style="margin-bottom:14px;display:none;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 ID</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?댁쫰 ?명듃 ID</label>
         <select id="item-quizid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
-          <option value="">-- 퀴즈 선택 --</option>
+          <option value="">-- ?댁쫰 ?좏깮 --</option>
         </select>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
-        <button class="btn btn-g" onclick="closeOvD('item-ov')">취소</button>
-        <button class="btn btn-p" onclick="saveItem()">저장</button>
+        <button class="btn btn-g" onclick="closeOvD('item-ov')">痍⑥냼</button>
+        <button class="btn btn-p" onclick="saveItem()">???/button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Quiz Editor Modal ── -->
+<!-- ?? Quiz Editor Modal ?? -->
 <div class="ov" id="quiz-editor-ov" onclick="closeOv('quiz-editor-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:680px;">
-    <div class="mh"><h2 id="qe-title">퀴즈 편집</h2><button class="mcl" onclick="closeOvD('quiz-editor-ov')">✕</button></div>
+    <div class="mh"><h2 id="qe-title">?댁쫰 ?몄쭛</h2><button class="mcl" onclick="closeOvD('quiz-editor-ov')">??/button></div>
     <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
       <div style="margin-bottom:16px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 이름</label>
-        <input type="text" id="qe-name" placeholder="예: 신규입사자 마무리 퀴즈" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?댁쫰 ?명듃 ?대쫫</label>
+        <input type="text" id="qe-name" placeholder="?? ?좉퇋?낆궗??留덈Т由??댁쫰" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">출제 문제 수 <span style="font-weight:400;">(0 = 전체)</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">異쒖젣 臾몄젣 ??<span style="font-weight:400;">(0 = ?꾩껜)</span></label>
           <input type="number" id="qe-quiz-cnt" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">타이머 <span style="font-weight:400;">(분, 0 = 미사용)</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">??대㉧ <span style="font-weight:400;">(遺? 0 = 誘몄궗??</span></label>
           <input type="number" id="qe-timer" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">우수합격 기준 <span style="font-weight:400;">(점)</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?곗닔?⑷꺽 湲곗? <span style="font-weight:400;">(??</span></label>
           <input type="number" id="qe-pass-s" min="0" max="100" value="90" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">합격 기준 <span style="font-weight:400;">(점)</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?⑷꺽 湲곗? <span style="font-weight:400;">(??</span></label>
           <input type="number" id="qe-pass-p" min="0" max="100" value="80" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">문항 목록</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">臾명빆 紐⑸줉</div>
       <div id="qe-question-list" style="margin-bottom:12px;"></div>
-      <!-- 문항 추가 폼 -->
+      <!-- 臾명빆 異붽? ??-->
       <div id="qe-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="qe-form-title">문항 추가</div>
-        <input type="text" id="qe-q-text" placeholder="질문 내용" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="qe-form-title">臾명빆 異붽?</div>
+        <input type="text" id="qe-q-text" placeholder="吏덈Ц ?댁슜" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <input type="text" id="qe-opt0" placeholder="① 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt1" placeholder="② 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt2" placeholder="③ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt3" placeholder="④ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt0" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt1" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt2" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt3" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
         </div>
         <div style="margin-bottom:12px;">
-          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">정답 <span style="font-size:11px;font-weight:400;">(복수 선택 가능)</span></label>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">?뺣떟 <span style="font-size:11px;font-weight:400;">(蹂듭닔 ?좏깮 媛??</span></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-0"> ① 번</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-1"> ② 번</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-2"> ③ 번</label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-3"> ④ 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-0"> ??踰?/label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-1"> ??踰?/label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-2"> ??踰?/label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-3"> ??踰?/label>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-g btn-sm" onclick="qeCloseForm()">취소</button>
-          <button class="btn btn-p btn-sm" onclick="qeSaveQuestion()">저장</button>
+          <button class="btn btn-g btn-sm" onclick="qeCloseForm()">痍⑥냼</button>
+          <button class="btn btn-p btn-sm" onclick="qeSaveQuestion()">???/button>
         </div>
       </div>
-      <button class="btn btn-g btn-sm" id="qe-add-btn" onclick="qeOpenForm()" style="margin-top:8px;">＋ 문항 추가</button>
+      <button class="btn btn-g btn-sm" id="qe-add-btn" onclick="qeOpenForm()" style="margin-top:8px;">竊?臾명빆 異붽?</button>
     </div>
     <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('quiz-editor-ov')">취소</button>
-      <button class="btn btn-p" onclick="saveQuizEditor()">저장</button>
+      <button class="btn btn-g" onclick="closeOvD('quiz-editor-ov')">痍⑥냼</button>
+      <button class="btn btn-p" onclick="saveQuizEditor()">???/button>
     </div>
   </div>
 </div>
 
-<!-- ── FC Editor Modal ── -->
+<!-- ?? FC Editor Modal ?? -->
 <div class="ov" id="fc-editor-ov" onclick="closeOv('fc-editor-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:600px;">
-    <div class="mh"><h2 id="fce-title">플래시카드 편집</h2><button class="mcl" onclick="closeOvD('fc-editor-ov')">✕</button></div>
+    <div class="mh"><h2 id="fce-title">?뚮옒?쒖뭅???몄쭛</h2><button class="mcl" onclick="closeOvD('fc-editor-ov')">??/button></div>
     <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
       <div style="margin-bottom:16px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세트 이름</label>
-        <input type="text" id="fce-name" placeholder="예: 이의제기 플래시카드" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?명듃 ?대쫫</label>
+        <input type="text" id="fce-name" placeholder="?? ?댁쓽?쒓린 ?뚮옒?쒖뭅?? style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">카드 목록</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">移대뱶 紐⑸줉</div>
       <div id="fce-card-list" style="margin-bottom:12px;"></div>
       <div id="fce-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="fce-form-title">카드 추가</div>
-        <input type="text" id="fce-front" placeholder="앞면 (질문)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
-        <input type="text" id="fce-back" placeholder="뒷면 (정답)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="fce-form-title">移대뱶 異붽?</div>
+        <input type="text" id="fce-front" placeholder="?욌㈃ (吏덈Ц)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <input type="text" id="fce-back" placeholder="?룸㈃ (?뺣떟)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;">
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-g btn-sm" onclick="fceCloseForm()">취소</button>
-          <button class="btn btn-p btn-sm" onclick="fceSaveCard()">저장</button>
+          <button class="btn btn-g btn-sm" onclick="fceCloseForm()">痍⑥냼</button>
+          <button class="btn btn-p btn-sm" onclick="fceSaveCard()">???/button>
         </div>
       </div>
-      <button class="btn btn-g btn-sm" id="fce-add-btn" onclick="fceOpenForm()" style="margin-top:8px;">＋ 카드 추가</button>
+      <button class="btn btn-g btn-sm" id="fce-add-btn" onclick="fceOpenForm()" style="margin-top:8px;">竊?移대뱶 異붽?</button>
     </div>
     <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('fc-editor-ov')">취소</button>
-      <button class="btn btn-p" onclick="saveFcEditor()">저장</button>
+      <button class="btn btn-g" onclick="closeOvD('fc-editor-ov')">痍⑥냼</button>
+      <button class="btn btn-p" onclick="saveFcEditor()">???/button>
     </div>
   </div>
 </div>
 
-<!-- ── Roleplay Editor Modal ── -->
+<!-- ?? Roleplay Editor Modal ?? -->
 <div class="ov" id="rp-ov" onclick="closeOv('rp-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:860px;max-width:96vw;">
-    <div class="mh"><h2>롤플레이 내용 편집</h2><button class="mcl" onclick="closeOvD('rp-ov')">✕</button></div>
+    <div class="mh"><h2>濡ㅽ뵆?덉씠 ?댁슜 ?몄쭛</h2><button class="mcl" onclick="closeOvD('rp-ov')">??/button></div>
     <div class="mb" style="padding:0;display:grid;grid-template-columns:220px 1fr;min-height:480px;max-height:72vh;">
-      <!-- 카테고리 사이드바 -->
+      <!-- 移댄뀒怨좊━ ?ъ씠?쒕컮 -->
       <div style="border-right:1px solid var(--border);padding:16px;overflow-y:auto;background:#f9fbfd;">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:10px;">카테고리</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:10px;">移댄뀒怨좊━</div>
         <div id="rpe-cat-list"></div>
-        <button class="btn btn-g btn-sm" style="width:100%;margin-top:10px;" onclick="rpeAddCat()">＋ 카테고리 추가</button>
+        <button class="btn btn-g btn-sm" style="width:100%;margin-top:10px;" onclick="rpeAddCat()">竊?移댄뀒怨좊━ 異붽?</button>
       </div>
-      <!-- 편집 패널 -->
+      <!-- ?몄쭛 ?⑤꼸 -->
       <div style="padding:20px;overflow-y:auto;" id="rpe-panel">
-        <p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 선택하세요.</p>
+        <p style="color:var(--muted);font-size:14px;">醫뚯륫?먯꽌 移댄뀒怨좊━瑜??좏깮?섏꽭??</p>
       </div>
     </div>
     <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('rp-ov')">취소</button>
-      <button class="btn btn-p" onclick="saveRpEditor()">저장</button>
+      <button class="btn btn-g" onclick="closeOvD('rp-ov')">痍⑥냼</button>
+      <button class="btn btn-p" onclick="saveRpEditor()">???/button>
     </div>
   </div>
 </div>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-     PRESENT VIEW (교육 진행 화면 통합)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- ?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??     PRESENT VIEW (援먯쑁 吏꾪뻾 ?붾㈃ ?듯빀)
+?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??-->
 <div id="present-view">
 
 <div id="p-loading" style="display:none;">
-  <img src="logo.png" alt="라로제">
-  <span style="font-size:13px;color:#6b7c93;">불러오는 중...</span>
+  <img src="logo.png" alt="?쇰줈??>
+  <span style="font-size:13px;color:#6b7c93;">遺덈윭?ㅻ뒗 以?..</span>
 </div>
 
 <!-- Header -->
 <div class="p-hdr" id="p-main-hdr">
-  <img src="logo.png" alt="라로제" onclick="pGoHome()">
+  <img src="logo.png" alt="?쇰줈?? onclick="pGoHome()">
   <div class="p-hdr-right" id="p-hdr-right">
-    <button class="p-back-btn" onclick="closePresentView()">← 관리자로 돌아가기</button>
+    <button class="p-back-btn" onclick="closePresentView()">??愿由ъ옄濡??뚯븘媛湲?/button>
   </div>
 </div>
 
 <!-- HOME -->
 <div class="p-screen on" id="p-s-home">
   <div id="p-home-inner">
-    <div class="p-home-title">📺 교육 진행</div>
-    <div class="p-home-sub">세션을 선택하여 교육을 시작하세요.</div>
+    <div class="p-home-title">?벟 援먯쑁 吏꾪뻾</div>
+    <div class="p-home-sub">?몄뀡???좏깮?섏뿬 援먯쑁???쒖옉?섏꽭??</div>
     <div class="p-session-grid" id="p-session-grid"></div>
   </div>
 </div>
@@ -869,7 +858,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div class="p-vhdr-title" id="p-vhdr-title"></div>
     <div class="p-vhdr-right">
       <div class="p-kbd-hints" id="p-kbd-hints"></div>
-      <button class="p-v-close-btn" onclick="pCloseViewer()">✕ 닫기 &nbsp;<span style="opacity:.5;font-size:11px;">(ESC)</span></button>
+      <button class="p-v-close-btn" onclick="pCloseViewer()">???リ린 &nbsp;<span style="opacity:.5;font-size:11px;">(ESC)</span></button>
     </div>
   </div>
   <div class="p-vbody" id="p-vbody">
@@ -878,10 +867,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div id="p-v-link">
       <iframe id="p-v-link-frame" allowfullscreen></iframe>
       <div id="p-v-link-ext">
-        <div class="p-ext-icon">📎</div>
-        <div class="p-ext-title" id="p-ext-title">외부 링크</div>
+        <div class="p-ext-icon">?뱨</div>
+        <div class="p-ext-title" id="p-ext-title">?몃? 留곹겕</div>
         <div class="p-ext-url" id="p-ext-url-text"></div>
-        <button class="p-ext-btn" onclick="pOpenExt()">↗ 새 탭으로 열기</button>
+        <button class="p-ext-btn" onclick="pOpenExt()">??????쑝濡??닿린</button>
       </div>
     </div>
 
@@ -899,36 +888,36 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
       <div class="p-fc-wrap" onclick="pFlipFC()">
         <div class="p-fc-inner" id="p-fc-inner">
           <div class="p-fc-face p-fc-front">
-            <div class="p-fc-label">질문</div>
+            <div class="p-fc-label">吏덈Ц</div>
             <div class="p-fc-text" id="p-fc-front-text"></div>
-            <div class="p-fc-hint">클릭하여 답 보기 ↩</div>
+            <div class="p-fc-hint">?대┃?섏뿬 ??蹂닿린 ??/div>
           </div>
           <div class="p-fc-face p-fc-back">
-            <div class="p-fc-label" style="color:var(--blue);">답변</div>
+            <div class="p-fc-label" style="color:var(--blue);">?듬?</div>
             <div class="p-fc-text" id="p-fc-back-text"></div>
           </div>
         </div>
       </div>
       <div class="p-fc-nav">
-        <button class="p-nav-btn" id="p-fc-prev" onclick="pFcNav(-1)">←</button>
+        <button class="p-nav-btn" id="p-fc-prev" onclick="pFcNav(-1)">??/button>
         <div class="p-fc-counter" id="p-fc-counter">1 / 1</div>
-        <button class="p-nav-btn" id="p-fc-next" onclick="pFcNav(1)">→</button>
+        <button class="p-nav-btn" id="p-fc-next" onclick="pFcNav(1)">??/button>
       </div>
     </div>
 
     <!-- QR -->
     <div id="p-v-qr">
       <div class="p-qr-title" id="p-qr-title"></div>
-      <div class="p-qr-sub" id="p-qr-sub">핸드폰 카메라로 QR을 스캔하세요</div>
+      <div class="p-qr-sub" id="p-qr-sub">?몃뱶??移대찓?쇰줈 QR???ㅼ틪?섏꽭??/div>
       <div class="p-qr-box"><div id="p-qr-canvas"></div></div>
       <div class="p-qr-url" id="p-qr-url"></div>
     </div>
 
     <!-- EMPTY -->
     <div id="p-v-empty">
-      <div class="p-empty-icon" id="p-empty-icon">🔗</div>
-      <div class="p-empty-h" id="p-empty-h">아직 설정되지 않았습니다</div>
-      <div class="p-empty-p" id="p-empty-p">관리자 페이지에서 이 항목을 설정해주세요.</div>
+      <div class="p-empty-icon" id="p-empty-icon">?뵕</div>
+      <div class="p-empty-h" id="p-empty-h">?꾩쭅 ?ㅼ젙?섏? ?딆븯?듬땲??/div>
+      <div class="p-empty-p" id="p-empty-p">愿由ъ옄 ?섏씠吏?먯꽌 ????ぉ???ㅼ젙?댁＜?몄슂.</div>
     </div>
 
   </div>
@@ -936,65 +925,29 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 
 </div><!-- #present-view -->
 
-<!-- ── QR Modal ── -->
+<!-- ?? QR Modal ?? -->
 <div class="ov" id="qr-ov" onclick="closeOv('qr-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:420px;">
-    <div class="mh"><h2>QR 코드</h2><button class="mcl" onclick="closeOvD('qr-ov')">✕</button></div>
+    <div class="mh"><h2>QR 肄붾뱶</h2><button class="mcl" onclick="closeOvD('qr-ov')">??/button></div>
     <div class="qrbox">
-      <div class="qrph">📱</div>
+      <div class="qrph">?벑</div>
       <div id="qr-lbl" style="font-size:13px;color:var(--muted);text-align:center;"></div>
       <div id="qr-url" style="font-size:12px;color:var(--blue);word-break:break-all;text-align:center;"></div>
       <div style="display:flex;gap:8px;">
-        <button class="btn btn-p" onclick="copyQR()">링크 복사</button>
+        <button class="btn btn-p" onclick="copyQR()">留곹겕 蹂듭궗</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-// ── Firebase ──
-const FC = {
-  apiKey:'AIzaSyCT3COLehsX7eHbrrKTem4ZZvPWSKAgjh8',
-  authDomain:'ra-rosee.firebaseapp.com',
-  projectId:'ra-rosee',
-  storageBucket:'ra-rosee.firebasestorage.app',
-  messagingSenderId:'121644280571',
-  appId:'1:121644280571:web:0535234c31d382c35c5e5e'
-};
+// ?? Firebase ??
 let db = null;
-try { firebase.initializeApp(FC); db = firebase.firestore(); } catch(e) {}
+try { firebase.initializeApp(FIREBASE_CONFIG); db = firebase.firestore(); } catch(e) {}
 
-// ── Auth ──
-function getPw() { return localStorage.getItem('lr_pw') || 'larosee1234'; }
-function savePwStore(p) { localStorage.setItem('lr_pw', p); }
-function isLoggedIn() { return sessionStorage.getItem('admin_auth') === '1'; }
+// auth.js 李몄“ (head??<script src="auth.js"> 濡?濡쒕뱶??
 
-function doLogin() {
-  const pw = document.getElementById('login-pw').value;
-  const err = document.getElementById('login-err');
-  if (pw === getPw()) {
-    sessionStorage.setItem('admin_auth','1');
-    err.style.display = 'none';
-    showApp();
-  } else {
-    err.style.display = 'block';
-    document.getElementById('login-pw').value = '';
-    document.getElementById('login-pw').focus();
-  }
-}
-function doLogout() {
-  sessionStorage.removeItem('admin_auth');
-  location.reload();
-}
-
-function showApp() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  loadAllData();
-  initChart([],[]);
-}
-
-// ── Data ──
+// ?? Data ??
 let allScores = [], filteredScores = [], currentQuiz = 'all';
 let quizMap = {}, fcSets = [];
 let currentTier = 'green', currentTierTab = 'new';
@@ -1018,7 +971,7 @@ async function loadAllData() {
     const snap = await db.collection('scores').orderBy('timestamp','desc').get();
     allScores = snap.docs.map(d => ({id: d.id, ...d.data()}));
     document.getElementById('last-updated').textContent =
-      '업데이트: ' + new Date().toLocaleTimeString('ko-KR');
+      '?낅뜲?댄듃: ' + new Date().toLocaleTimeString('ko-KR');
     renderAll();
   } catch(e) {
     console.error(e);
@@ -1027,7 +980,7 @@ async function loadAllData() {
 }
 
 function renderFromLocal() {
-  // localStorage 기반 fallback
+  // localStorage 湲곕컲 fallback
   try {
     const sets = JSON.parse(localStorage.getItem('lr_sets') || '[]');
     quizMap = {};
@@ -1050,7 +1003,7 @@ function renderAll() {
 function buildQuizPills() {
   const names = [...new Set(allScores.map(s => s.quizName).filter(Boolean))];
   const wrap = document.getElementById('cpills');
-  wrap.innerHTML = '<div class="pill on" onclick="setQuizPill(this,\'all\')">전체</div>';
+  wrap.innerHTML = '<div class="pill on" onclick="setQuizPill(this,\'all\')">?꾩껜</div>';
   if (names.length > 1) {
     names.forEach(n => {
       const d = document.createElement('div');
@@ -1077,26 +1030,26 @@ function applyFilters() {
 }
 
 function formatDur(sec) {
-  if (!sec) return '–';
+  if (!sec) return '??;
   const m = Math.floor(sec / 60), s = sec % 60;
-  return m > 0 ? m + '분 ' + s + '초' : s + '초';
+  return m > 0 ? m + '遺?' + s + '珥? : s + '珥?;
 }
 
 function renderStats() {
   const fs = filteredScores;
-  document.getElementById('st-tot').textContent = fs.length + '명';
+  document.getElementById('st-tot').textContent = fs.length + '紐?;
   const avg = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.pct||s.score/s.total*100||0),0)/fs.length) : 0;
-  document.getElementById('st-avg').textContent = avg + '점';
+  document.getElementById('st-avg').textContent = avg + '??;
   const avgDur = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.duration||0),0)/fs.length) : 0;
   document.getElementById('st-time').textContent = formatDur(avgDur);
   const pct = s => s.pct ?? (s.score && s.total ? Math.round(s.score/s.total*100) : 0);
   const ss = S_SCORE(), ps = P_SCORE();
-  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= ss).length + '명';
-  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= ps && pct(s) < ss).length + '명';
-  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < ps).length + '명';
-  document.getElementById('tl-g').textContent = ss + '점↑ 우수합격';
-  document.getElementById('tl-b').textContent = ps + '~' + ss + '점 합격';
-  document.getElementById('tl-r').textContent = ps + '점↓ 미달';
+  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= ss).length + '紐?;
+  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= ps && pct(s) < ss).length + '紐?;
+  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < ps).length + '紐?;
+  document.getElementById('tl-g').textContent = ss + '?먥넁 ?곗닔?⑷꺽';
+  document.getElementById('tl-b').textContent = ps + '~' + ss + '???⑷꺽';
+  document.getElementById('tl-r').textContent = ps + '?먥넃 誘몃떖';
 }
 
 // cohortChart
@@ -1116,7 +1069,7 @@ const barScorePlugin = {
         ctx.font = 'bold 11px -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText(val + '점', bar.x, bottomY);
+        ctx.fillText(val + '??, bar.x, bottomY);
         ctx.restore();
       });
     });
@@ -1128,10 +1081,10 @@ function initChart(labels, data) {
   if (myChart) myChart.destroy();
   myChart = new Chart(ctx, {
     data: {
-      labels: labels.length ? labels : ['데이터 없음'],
+      labels: labels.length ? labels : ['?곗씠???놁쓬'],
       datasets: [
-        { type:'bar', label:'평균점수', data: data.map(d=>d.avg), backgroundColor:'#0E94CD', borderRadius:6, yAxisID:'y', order:1 },
-        { type:'line', label:'응시인원', data: data.map(d=>d.cnt), borderColor:'#d97706', backgroundColor:'#fff',
+        { type:'bar', label:'?됯퇏?먯닔', data: data.map(d=>d.avg), backgroundColor:'#0E94CD', borderRadius:6, yAxisID:'y', order:1 },
+        { type:'line', label:'?묒떆?몄썝', data: data.map(d=>d.cnt), borderColor:'#d97706', backgroundColor:'#fff',
           pointBackgroundColor:'#fff', pointBorderColor:'#d97706', pointBorderWidth:2, pointRadius:6, tension:.3, yAxisID:'y2', order:0 }
       ]
     },
@@ -1147,12 +1100,12 @@ function initChart(labels, data) {
         if (d) openCohortDetail(label, d);
       },
       plugins:{ legend:{display:false},
-        tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' 평균 '+c.raw+'점':' 응시 '+c.raw+'명' }}
+        tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' ?됯퇏 '+c.raw+'??:' ?묒떆 '+c.raw+'紐? }}
       },
       scales:{
-        y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'점',font:{size:11}} },
+        y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'??,font:{size:11}} },
         y2:{ position:'right', min:0, grid:{display:false},
-          ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'명':'',font:{size:11},color:'#d97706'} }
+          ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'紐?:'',font:{size:11},color:'#d97706'} }
       }
     },
     plugins: [barScorePlugin]
@@ -1160,15 +1113,15 @@ function initChart(labels, data) {
 }
 
 function openCohortDetail(label, d) {
-  document.getElementById('cd-title').textContent = label + ' 상세';
-  document.getElementById('cd-stat-cnt').textContent = d.cnt + '명';
-  document.getElementById('cd-stat-avg').textContent = d.avg + '점';
+  document.getElementById('cd-title').textContent = label + ' ?곸꽭';
+  document.getElementById('cd-stat-cnt').textContent = d.cnt + '紐?;
+  document.getElementById('cd-stat-avg').textContent = d.avg + '??;
   document.getElementById('cd-stat-time').textContent = formatDur(d.avgDur);
   const tbody = document.getElementById('cd-tbody');
   tbody.innerHTML = (d.rows || []).map(r => `
     <tr>
-      <td>${r.name || '–'}</td>
-      <td>${r.pct ?? 0}점</td>
+      <td>${r.name || '??}</td>
+      <td>${r.pct ?? 0}??/td>
       <td>${formatDur(r.duration || 0)}</td>
     </tr>
   `).join('');
@@ -1178,7 +1131,7 @@ function openCohortDetail(label, d) {
 function renderChart() {
   const src = currentQuiz === 'all' ? allScores : allScores.filter(s => s.quizName === currentQuiz);
   const rawCohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
-  const labels = rawCohorts.map(c => /기$/.test(c) ? c : c + '기');
+  const labels = rawCohorts.map(c => /湲?/.test(c) ? c : c + '湲?);
   const data = rawCohorts.map(c => {
     const rows = src.filter(s=>s.cohort===c);
     const avg = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.pct||0),0)/rows.length) : 0;
@@ -1215,13 +1168,13 @@ function renderTop5() {
     .sort((a,b)=>b.pct-a.pct).slice(0,5);
 
   const wrap = document.getElementById('top5-list');
-  if (!top5.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0;">데이터 없음</div>'; return; }
+  if (!top5.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;padding:8px 0;">?곗씠???놁쓬</div>'; return; }
   wrap.innerHTML = top5.map((x,i) => `
     <div class="t5" onclick="openAnswer(${i})">
       <div class="t5rk">${i+1}</div>
       <div class="t5q">${x.q}</div>
       <div class="t5p">${x.pct}%</div>
-      <div style="color:var(--muted);font-size:14px;">›</div>
+      <div style="color:var(--muted);font-size:14px;">??/div>
     </div>
   `).join('');
   window._top5data = top5;
@@ -1231,14 +1184,14 @@ let _dashEditMode = false;
 function toggleDashEdit() {
   _dashEditMode = !_dashEditMode;
   const btn = document.getElementById('dash-edit-btn');
-  if (btn) btn.textContent = _dashEditMode ? '수정 완료' : '대시보드 수정';
+  if (btn) btn.textContent = _dashEditMode ? '?섏젙 ?꾨즺' : '??쒕낫???섏젙';
   renderQuizStatus();
 }
 
 function renderQuizStatus() {
   const types = [...new Set(allScores.map(s=>s.quizName).filter(Boolean))];
   if (!types.length) {
-    document.getElementById('quiz-status').innerHTML = '<div style="color:var(--muted);font-size:13px;">응시 데이터 없음</div>';
+    document.getElementById('quiz-status').innerHTML = '<div style="color:var(--muted);font-size:13px;">?묒떆 ?곗씠???놁쓬</div>';
     return;
   }
   const pct = s => s.pct ?? 0;
@@ -1251,13 +1204,13 @@ function renderQuizStatus() {
     return `
       <div style="background:var(--blue-light);border-radius:10px;padding:14px 18px;position:relative;">
         ${_dashEditMode ? `<button onclick="deleteQuizScores('${tEsc}')"
-          style="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:11px;border:1px solid #cdd9e8;border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">데이터 삭제</button>` : ''}
+          style="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:11px;border:1px solid #cdd9e8;border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">?곗씠????젣</button>` : ''}
         <div style="font-size:13px;font-weight:700;color:var(--blue-dark);${_dashEditMode?'margin-right:60px;':''}">${t}</div>
-        <div style="font-size:13px;color:var(--muted);margin:4px 0 8px;">응시 ${rows.length}명</div>
+        <div style="font-size:13px;color:var(--muted);margin:4px 0 8px;">?묒떆 ${rows.length}紐?/div>
         <div style="display:flex;gap:8px;">
-          <span class="badge bg-green">우수 ${g}명</span>
-          <span class="badge bg-blue">합격 ${b}명</span>
-          <span class="badge bg-red">미달 ${r}명</span>
+          <span class="badge bg-green">?곗닔 ${g}紐?/span>
+          <span class="badge bg-blue">?⑷꺽 ${b}紐?/span>
+          <span class="badge bg-red">誘몃떖 ${r}紐?/span>
         </div>
       </div>
     `;
@@ -1266,10 +1219,10 @@ function renderQuizStatus() {
 
 async function deleteQuizScores(quizName) {
   const cnt = allScores.filter(s=>s.quizName===quizName).length;
-  const msg = `"${quizName}" 퀴즈의 응시 데이터 ${cnt}건을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
+  const msg = `"${quizName}" ?댁쫰???묒떆 ?곗씠??${cnt}嫄댁쓣 ??젣?섏떆寃좎뒿?덇퉴?\n\n???묒뾽? ?섎룎由????놁뒿?덈떎.`;
   if (!confirm(msg)) return;
 
-  // Firebase에서 삭제
+  // Firebase?먯꽌 ??젣
   try {
     if (db) {
       const snap = await db.collection('scores').where('quizName','==',quizName).get();
@@ -1277,35 +1230,34 @@ async function deleteQuizScores(quizName) {
       snap.docs.forEach(d => batch.delete(d.ref));
       await batch.commit();
     }
-  } catch(e) { console.error('Firebase 삭제 오류:', e); }
+  } catch(e) { console.error('Firebase ??젣 ?ㅻ쪟:', e); }
 
-  // 메모리에서 제거 후 재렌더
-  allScores = allScores.filter(s => s.quizName !== quizName);
+  // 硫붾え由ъ뿉???쒓굅 ???щ젋??  allScores = allScores.filter(s => s.quizName !== quizName);
   if (currentQuiz === quizName) { currentQuiz = 'all'; }
   buildQuizPills();
   applyFilters();
   renderQuizStatus();
 }
 
-// ── Quiz / FC lists ──
+// ?? Quiz / FC lists ??
 function renderQuizList(sets) {
   const data = sets || JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const wrap = document.getElementById('quiz-list-wrap');
-  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">등록된 퀴즈 없음</div>'; return; }
+  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">?깅줉???댁쫰 ?놁쓬</div>'; return; }
   const colors = ['#eff6ff','#f0fdf4','#fffbeb'];
   const tcols = ['var(--blue)','var(--green)','var(--amber)'];
   wrap.innerHTML = data.map((s,i) => `
     <div class="qi">
       <div class="qn" style="background:${colors[i%3]};color:${tcols[i%3]};">${i+1}</div>
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;">${s.name||'퀴즈 '+(i+1)}</div>
-        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항${s.quizCount>0?' · 출제 '+s.quizCount+'문':''}${s.timerMin>0?' · '+s.timerMin+'분 타이머':''}</div>
+        <div style="font-size:15px;font-weight:700;">${s.name||'?댁쫰 '+(i+1)}</div>
+        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}臾명빆${s.quizCount>0?' 쨌 異쒖젣 '+s.quizCount+'臾?:''}${s.timerMin>0?' 쨌 '+s.timerMin+'遺???대㉧':''}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <span class="badge bg-green">활성</span>
-        <button class="btn btn-g btn-sm" onclick="openQR('quiz-'+s.id)">QR 보기</button>
-        <button class="btn btn-o btn-sm" onclick="openQuizEditor('${s.id}')">수정</button>
-        <button class="btn btn-g btn-sm" onclick="deleteQuizSet('${s.id}')" style="color:var(--red);">삭제</button>
+        <span class="badge bg-green">?쒖꽦</span>
+        <button class="btn btn-g btn-sm" onclick="openQR('quiz-'+s.id)">QR 蹂닿린</button>
+        <button class="btn btn-o btn-sm" onclick="openQuizEditor('${s.id}')">?섏젙</button>
+        <button class="btn btn-g btn-sm" onclick="deleteQuizSet('${s.id}')" style="color:var(--red);">??젣</button>
       </div>
     </div>
   `).join('');
@@ -1314,25 +1266,25 @@ function renderQuizList(sets) {
 function renderFCList() {
   const data = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
   const wrap = document.getElementById('fc-list-wrap');
-  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">등록된 플래시카드 없음</div>'; return; }
+  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">?깅줉???뚮옒?쒖뭅???놁쓬</div>'; return; }
   wrap.innerHTML = data.map((s,i) => `
     <div class="qi">
-      <div class="qn" style="background:#fdf4ff;color:#9333ea;font-size:20px;">🗂</div>
+      <div class="qn" style="background:#fdf4ff;color:#9333ea;font-size:20px;">?뾺</div>
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;">${s.name||'세트 '+(i+1)}</div>
-        <div style="font-size:12px;color:var(--muted);">${(s.cards||[]).length}장</div>
+        <div style="font-size:15px;font-weight:700;">${s.name||'?명듃 '+(i+1)}</div>
+        <div style="font-size:12px;color:var(--muted);">${(s.cards||[]).length}??/div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <span class="badge bg-green">활성</span>
-        <button class="btn btn-g btn-sm" onclick="openQR('fc-'+s.id)">QR 보기</button>
-        <button class="btn btn-o btn-sm" onclick="openFcEditor('${s.id}')">수정</button>
-        <button class="btn btn-g btn-sm" onclick="deleteFcSet('${s.id}')" style="color:var(--red);">삭제</button>
+        <span class="badge bg-green">?쒖꽦</span>
+        <button class="btn btn-g btn-sm" onclick="openQR('fc-'+s.id)">QR 蹂닿린</button>
+        <button class="btn btn-o btn-sm" onclick="openFcEditor('${s.id}')">?섏젙</button>
+        <button class="btn btn-g btn-sm" onclick="deleteFcSet('${s.id}')" style="color:var(--red);">??젣</button>
       </div>
     </div>
   `).join('');
 }
 
-// ── 퀴즈 에디터 ──
+// ?? ?댁쫰 ?먮뵒????
 let _qeId = null, _qeQuestions = [], _qeEditIdx = null, _qeInlineIdx = null;
 
 function openQuizEditor(id) {
@@ -1345,7 +1297,7 @@ function openQuizEditor(id) {
     correct: q.correct ?? q.answer
   })) : [];
   _qeEditIdx = null;
-  document.getElementById('qe-title').textContent = set ? '퀴즈 수정' : '퀴즈 추가';
+  document.getElementById('qe-title').textContent = set ? '?댁쫰 ?섏젙' : '?댁쫰 異붽?';
   document.getElementById('qe-name').value = set ? set.name : '';
   document.getElementById('qe-quiz-cnt').value = set ? (set.quizCount || 0) : 0;
   document.getElementById('qe-timer').value = set ? (set.timerMin || 0) : 0;
@@ -1358,9 +1310,9 @@ function openQuizEditor(id) {
 
 function renderQeList() {
   const wrap = document.getElementById('qe-question-list');
-  if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">문항 없음</div>'; return; }
+  if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">臾명빆 ?놁쓬</div>'; return; }
   wrap.innerHTML = _qeQuestions.map((q,i) => {
-    // 필드명 정규화 (question/correct 우선, q/answer 폴백)
+    // ?꾨뱶紐??뺢퇋??(question/correct ?곗꽑, q/answer ?대갚)
     const qText = q.question || q.q || '';
     const ansArr = Array.isArray(q.correct) ? q.correct.map(Number)
       : q.correct != null ? [Number(q.correct)]
@@ -1371,38 +1323,38 @@ function renderQeList() {
       const cbHtml = [0,1,2,3].map(j =>
         '<label style="display:flex;align-items:center;gap:5px;font-size:13px;padding:6px 8px;border:1px solid #e2eaf4;border-radius:7px;cursor:pointer;background:#fff;">' +
         '<input type="checkbox" id="qe-il-ans-'+j+'" '+(ansArr.includes(j)?'checked':'')+' style="width:14px;height:14px;accent-color:#0E94CD;"> ' +
-        '①②③④'[j]+' 번</label>'
+        '?졻몼?™몿'[j]+' 踰?/label>'
       ).join('');
       return `
         <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;margin-bottom:8px;background:#f4faff;">
-          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} 수정 중</div>
-          <input type="text" id="qe-il-q" value="${esc(qText)}" placeholder="질문 내용"
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} ?섏젙 以?/div>
+          <input type="text" id="qe-il-q" value="${esc(qText)}" placeholder="吏덈Ц ?댁슜"
             style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="① 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-1" value="${esc(q.options[1])}" placeholder="② 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="③ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="④ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-1" value="${esc(q.options[1])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
           </div>
           <div style="margin-bottom:10px;">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">정답 <span style="font-size:11px;">(복수 선택 가능)</span></div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">?뺣떟 <span style="font-size:11px;">(蹂듭닔 ?좏깮 媛??</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${cbHtml}</div>
           </div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">취소</button>
-            <button class="btn btn-p btn-sm" onclick="qeInlineSave(${i})">저장</button>
+            <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">痍⑥냼</button>
+            <button class="btn btn-p btn-sm" onclick="qeInlineSave(${i})">???/button>
           </div>
         </div>`;
     }
-    const ansLabel = ansArr.map(a=>(a+1)+'번').join(', ');
-    const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">복수</span>' : '';
+    const ansLabel = ansArr.map(a=>(a+1)+'踰?).join(', ');
+    const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">蹂듭닔</span>' : '';
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
         <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
         <span style="flex:1;font-size:13px;">${qText}</span>
-        <span style="font-size:11px;color:var(--muted);">정답:${ansLabel}${multiTag}</span>
-        <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">수정</button>
-        <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
+        <span style="font-size:11px;color:var(--muted);">?뺣떟:${ansLabel}${multiTag}</span>
+        <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">?섏젙</button>
+        <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">??젣</button>
       </div>`;
   }).join('');
 }
@@ -1410,11 +1362,11 @@ function renderQeList() {
 function qeOpenForm(editIdx) {
   _qeEditIdx = editIdx ?? null;
   const q = editIdx != null ? _qeQuestions[editIdx] : null;
-  document.getElementById('qe-form-title').textContent = q ? '문항 수정' : '문항 추가';
+  document.getElementById('qe-form-title').textContent = q ? '臾명빆 ?섏젙' : '臾명빆 異붽?';
   document.getElementById('qe-q-text').value = q ? (q.question || q.q || '') : '';
   const opts = q ? q.options : ['','','',''];
   [0,1,2,3].forEach(i => document.getElementById('qe-opt'+i).value = opts[i]||'');
-  // 정답 체크박스 설정
+  // ?뺣떟 泥댄겕諛뺤뒪 ?ㅼ젙
   const ansArr = q ? (Array.isArray(q.correct) ? q.correct.map(Number)
     : q.correct != null ? [Number(q.correct)]
     : Array.isArray(q.answer) ? q.answer.map(Number)
@@ -1428,14 +1380,14 @@ function qeCloseForm() {
   document.getElementById('qe-add-form').style.display = 'none';
   document.getElementById('qe-add-btn').style.display = 'inline-flex';
   _qeEditIdx = null;
-  // _qeInlineIdx는 여기서 초기화하지 않음 (qeInlineCancel에서만 초기화)
+  // _qeInlineIdx???ш린??珥덇린?뷀븯吏 ?딆쓬 (qeInlineCancel?먯꽌留?珥덇린??
 }
 
 function qeEditQuestion(i) { qeInlineEdit(i); }
 
 function qeInlineEdit(i) {
-  qeCloseForm(); // 하단 추가 폼 닫기 (qeInlineIdx 건드리지 않음)
-  _qeInlineIdx = i; // qeCloseForm 이후에 설정
+  qeCloseForm(); // ?섎떒 異붽? ???リ린 (qeInlineIdx 嫄대뱶由ъ? ?딆쓬)
+  _qeInlineIdx = i; // qeCloseForm ?댄썑???ㅼ젙
   renderQeList();
 }
 
@@ -1446,11 +1398,11 @@ function qeInlineCancel() {
 
 function qeInlineSave(i) {
   const qText = document.getElementById('qe-il-q').value.trim();
-  if (!qText) { alert('질문을 입력해주세요.'); return; }
+  if (!qText) { alert('吏덈Ц???낅젰?댁＜?몄슂.'); return; }
   const opts = [0,1,2,3].map(j => document.getElementById('qe-il-'+j).value.trim());
-  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
+  if (opts.some(o=>!o)) { alert('蹂닿린瑜?紐⑤몢 ?낅젰?댁＜?몄슂.'); return; }
   const checked = [0,1,2,3].filter(j => document.getElementById('qe-il-ans-'+j)?.checked);
-  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
+  if (!checked.length) { alert('?뺣떟???좏깮?댁＜?몄슂.'); return; }
   const correct = checked.length === 1 ? checked[0] : checked;
   _qeQuestions[i] = { id: _qeQuestions[i].id, question: qText, options: opts, correct };
   _qeInlineIdx = null;
@@ -1459,11 +1411,11 @@ function qeInlineSave(i) {
 
 function qeSaveQuestion() {
   const qText = document.getElementById('qe-q-text').value.trim();
-  if (!qText) { alert('질문을 입력해주세요.'); return; }
+  if (!qText) { alert('吏덈Ц???낅젰?댁＜?몄슂.'); return; }
   const opts = [0,1,2,3].map(i=>document.getElementById('qe-opt'+i).value.trim());
-  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
+  if (opts.some(o=>!o)) { alert('蹂닿린瑜?紐⑤몢 ?낅젰?댁＜?몄슂.'); return; }
   const checked = [0,1,2,3].filter(i => document.getElementById('qe-ans-'+i)?.checked);
-  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
+  if (!checked.length) { alert('?뺣떟???좏깮?댁＜?몄슂.'); return; }
   const correct = checked.length === 1 ? checked[0] : checked;
   const existId = _qeEditIdx != null ? _qeQuestions[_qeEditIdx].id : null;
   const item = { id: existId || 'q'+Date.now(), question: qText, options: opts, correct };
@@ -1473,13 +1425,13 @@ function qeSaveQuestion() {
 }
 
 function qeDeleteQuestion(i) {
-  if (!confirm('이 문항을 삭제하시겠습니까?')) return;
+  if (!confirm('??臾명빆????젣?섏떆寃좎뒿?덇퉴?')) return;
   _qeQuestions.splice(i,1); renderQeList();
 }
 
 function saveQuizEditor() {
   const name = document.getElementById('qe-name').value.trim();
-  if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
+  if (!name) { alert('?댁쫰 ?대쫫???낅젰?댁＜?몄슂.'); return; }
   const quizCount = parseInt(document.getElementById('qe-quiz-cnt').value) || 0;
   const timerMin = parseInt(document.getElementById('qe-timer').value) || 0;
   const passS = parseInt(document.getElementById('qe-pass-s').value) || 90;
@@ -1500,21 +1452,21 @@ async function deleteQuizSet(id) {
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const quiz = sets.find(s=>s.id===id);
   if (!quiz) return;
-  if (!confirm(`"${quiz.name||'이 퀴즈'}"를 삭제하시겠습니까?`)) return;
+  if (!confirm(`"${quiz.name||'???댁쫰'}"瑜???젣?섏떆寃좎뒿?덇퉴?`)) return;
 
-  // 관련 응시 데이터 삭제 여부 확인
+  // 愿???묒떆 ?곗씠????젣 ?щ? ?뺤씤
   const relatedScores = allScores.filter(s=>s.quizName===quiz.name);
   let deleteScores = false;
   if (relatedScores.length > 0) {
-    deleteScores = confirm(`관련 응시 데이터 ${relatedScores.length}건도 함께 삭제할까요?\n\n[확인] 함께 삭제 / [취소] 퀴즈만 삭제`);
+    deleteScores = confirm(`愿???묒떆 ?곗씠??${relatedScores.length}嫄대룄 ?④퍡 ??젣?좉퉴??\n\n[?뺤씤] ?④퍡 ??젣 / [痍⑥냼] ?댁쫰留???젣`);
   }
 
-  // 퀴즈 삭제
+  // ?댁쫰 ??젣
   const newSets = sets.filter(s=>s.id!==id);
   localStorage.setItem('lr_sets', JSON.stringify(newSets));
   renderQuizList();
 
-  // 점수 데이터도 삭제
+  // ?먯닔 ?곗씠?곕룄 ??젣
   if (deleteScores) {
     await deleteQuizScores(quiz.name);
   } else {
@@ -1523,7 +1475,7 @@ async function deleteQuizSet(id) {
   }
 }
 
-// ── 플래시카드 에디터 ──
+// ?? ?뚮옒?쒖뭅???먮뵒????
 let _fceId = null, _fceCards = [], _fceEditIdx = null;
 
 function openFcEditor(id) {
@@ -1532,7 +1484,7 @@ function openFcEditor(id) {
   _fceId = id;
   _fceCards = set ? JSON.parse(JSON.stringify(set.cards||[])) : [];
   _fceEditIdx = null;
-  document.getElementById('fce-title').textContent = set ? '플래시카드 수정' : '플래시카드 추가';
+  document.getElementById('fce-title').textContent = set ? '?뚮옒?쒖뭅???섏젙' : '?뚮옒?쒖뭅??異붽?';
   document.getElementById('fce-name').value = set ? set.name : '';
   fceCloseForm();
   renderFceList();
@@ -1541,15 +1493,15 @@ function openFcEditor(id) {
 
 function renderFceList() {
   const wrap = document.getElementById('fce-card-list');
-  if (!_fceCards.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">카드 없음</div>'; return; }
+  if (!_fceCards.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">移대뱶 ?놁쓬</div>'; return; }
   wrap.innerHTML = _fceCards.map((c,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
       <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-        <span style="font-size:13px;color:var(--text);">앞: ${c.front||c.q||''}</span>
-        <span style="font-size:13px;color:var(--muted);">뒤: ${c.back||c.a||''}</span>
+        <span style="font-size:13px;color:var(--text);">?? ${c.front||c.q||''}</span>
+        <span style="font-size:13px;color:var(--muted);">?? ${c.back||c.a||''}</span>
       </div>
-      <button class="btn btn-o btn-sm" onclick="fceEditCard(${i})">수정</button>
-      <button class="btn btn-g btn-sm" onclick="fceDeleteCard(${i})" style="color:var(--red);">삭제</button>
+      <button class="btn btn-o btn-sm" onclick="fceEditCard(${i})">?섏젙</button>
+      <button class="btn btn-g btn-sm" onclick="fceDeleteCard(${i})" style="color:var(--red);">??젣</button>
     </div>
   `).join('');
 }
@@ -1557,7 +1509,7 @@ function renderFceList() {
 function fceOpenForm(editIdx) {
   _fceEditIdx = editIdx ?? null;
   const c = editIdx != null ? _fceCards[editIdx] : null;
-  document.getElementById('fce-form-title').textContent = c ? '카드 수정' : '카드 추가';
+  document.getElementById('fce-form-title').textContent = c ? '移대뱶 ?섏젙' : '移대뱶 異붽?';
   document.getElementById('fce-front').value = c ? (c.front||c.q||'') : '';
   document.getElementById('fce-back').value  = c ? (c.back||c.a||'') : '';
   document.getElementById('fce-add-form').style.display = 'block';
@@ -1575,7 +1527,7 @@ function fceEditCard(i) { fceOpenForm(i); }
 function fceSaveCard() {
   const front = document.getElementById('fce-front').value.trim();
   const back  = document.getElementById('fce-back').value.trim();
-  if (!front||!back) { alert('앞면과 뒷면을 모두 입력해주세요.'); return; }
+  if (!front||!back) { alert('?욌㈃怨??룸㈃??紐⑤몢 ?낅젰?댁＜?몄슂.'); return; }
   const card = { id:'c'+(Date.now()), front, back };
   if (_fceEditIdx != null) _fceCards[_fceEditIdx] = card;
   else _fceCards.push(card);
@@ -1583,13 +1535,13 @@ function fceSaveCard() {
 }
 
 function fceDeleteCard(i) {
-  if (!confirm('이 카드를 삭제하시겠습니까?')) return;
+  if (!confirm('??移대뱶瑜???젣?섏떆寃좎뒿?덇퉴?')) return;
   _fceCards.splice(i,1); renderFceList();
 }
 
 function saveFcEditor() {
   const name = document.getElementById('fce-name').value.trim();
-  if (!name) { alert('세트 이름을 입력해주세요.'); return; }
+  if (!name) { alert('?명듃 ?대쫫???낅젰?댁＜?몄슂.'); return; }
   const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
   if (_fceId) {
     const idx = sets.findIndex(s=>s.id===_fceId);
@@ -1603,26 +1555,26 @@ function saveFcEditor() {
 }
 
 function deleteFcSet(id) {
-  if (!confirm('이 플래시카드 세트를 삭제하시겠습니까?')) return;
+  if (!confirm('???뚮옒?쒖뭅???명듃瑜???젣?섏떆寃좎뒿?덇퉴?')) return;
   const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]').filter(s=>s.id!==id);
   localStorage.setItem('lr_fcsets', JSON.stringify(sets));
   renderFCList();
 }
 
-// ── 유형 관리 ──
+// ?? ?좏삎 愿由???
 const DEFAULT_ITEM_TYPES = [
-  {id:'link',     icon:'📋', name:'링크 (PPT/PDF)',   order:0, active:true},
-  {id:'roleplay', icon:'🎭', name:'롤플레이',          order:1, active:true},
-  {id:'flashcard',icon:'🗂', name:'플래시카드 QR',     order:2, active:true},
-  {id:'quiz',     icon:'✅', name:'퀴즈 QR',          order:3, active:true},
-  {id:'lecture',  icon:'🎓', name:'강의 모드',         order:4, active:true}
+  {id:'link',     icon:'?뱥', name:'留곹겕 (PPT/PDF)',   order:0, active:true},
+  {id:'roleplay', icon:'?렚', name:'濡ㅽ뵆?덉씠',          order:1, active:true},
+  {id:'flashcard',icon:'?뾺', name:'?뚮옒?쒖뭅??QR',     order:2, active:true},
+  {id:'quiz',     icon:'??, name:'?댁쫰 QR',          order:3, active:true},
+  {id:'lecture',  icon:'?럳', name:'媛뺤쓽 紐⑤뱶',         order:4, active:true}
 ];
 
 function getItemTypes() {
   try {
     const saved = JSON.parse(localStorage.getItem('lr_item_types')||'null');
     if (!saved) return DEFAULT_ITEM_TYPES;
-    // 기존 데이터에 order/active 없으면 보완
+    // 湲곗〈 ?곗씠?곗뿉 order/active ?놁쑝硫?蹂댁셿
     return saved.map((t,i) => ({ order:i, active:true, ...t }));
   } catch(e) { return DEFAULT_ITEM_TYPES; }
 }
@@ -1633,7 +1585,7 @@ function toggleTypePanel() {
   const btn = event.target;
   const isOpen = panel.style.display !== 'none';
   panel.style.display = isOpen ? 'none' : 'block';
-  btn.textContent = isOpen ? '수정하기' : '닫기';
+  btn.textContent = isOpen ? '?섏젙?섍린' : '?リ린';
   if (!isOpen) renderTypeList();
 }
 
@@ -1645,20 +1597,20 @@ function renderTypeList() {
   wrap.innerHTML = types.map((t,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
       <div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick="moveTypeUp(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===0?'disabled style="opacity:.3;"':''}>▲</button>
-        <button onclick="moveTypeDown(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===types.length-1?'disabled style="opacity:.3;"':''}>▼</button>
+        <button onclick="moveTypeUp(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===0?'disabled style="opacity:.3;"':''}>??/button>
+        <button onclick="moveTypeDown(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===types.length-1?'disabled style="opacity:.3;"':''}>??/button>
       </div>
       <input type="text" value="${(t.name||'').replace(/"/g,'&quot;')}"
         onblur="renameItemType('${t.id}',this.value)"
         style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:600;">
       <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;">
         <input type="checkbox" ${t.active!==false?'checked':''} onchange="toggleTypeActive('${t.id}',this.checked)" style="cursor:pointer;width:14px;height:14px;">
-        활성
+        ?쒖꽦
       </label>
-      ${!isBuiltin(t.id)?`<button onclick="deleteItemType('${t.id}')" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">삭제</button>`:''}
+      ${!isBuiltin(t.id)?`<button onclick="deleteItemType('${t.id}')" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">??젣</button>`:''}
     </div>
   `).join('');
-  // 아이템 모달 select도 업데이트 (활성화된 것만)
+  // ?꾩씠??紐⑤떖 select???낅뜲?댄듃 (?쒖꽦?붾맂 寃껊쭔)
   const sel = document.getElementById('item-type');
   if (sel) sel.innerHTML = types.filter(t=>t.active!==false).map(t=>`<option value="${t.id}">${t.icon||''} ${t.name}</option>`).join('');
 }
@@ -1687,27 +1639,27 @@ function toggleTypeActive(id, active) {
   if (t) { t.active = active; saveItemTypes(types); renderTypeList(); }
 }
 function addItemType() {
-  const name = prompt('유형 이름:');
+  const name = prompt('?좏삎 ?대쫫:');
   if (!name) return;
   const types = getItemTypes();
   const maxOrder = types.reduce((m,t)=>Math.max(m,t.order||0), 0);
-  types.push({ id:'custom_'+Date.now(), icon:'📌', name, order:maxOrder+1, active:true });
+  types.push({ id:'custom_'+Date.now(), icon:'?뱦', name, order:maxOrder+1, active:true });
   saveItemTypes(types); renderTypeList();
 }
 function deleteItemType(id) {
-  if (!confirm('이 유형을 삭제하시겠습니까?')) return;
+  if (!confirm('???좏삎????젣?섏떆寃좎뒿?덇퉴?')) return;
   const types = getItemTypes().filter(t=>t.id!==id);
   saveItemTypes(types); renderTypeList();
 }
 
-// ── Tier modal ──
+// ?? Tier modal ??
 function openTier(tier) {
   currentTier = tier;
   currentTierTab = 'new';
   const cfg = {
-    green:{ title:'우수합격 · 90점↑ · 높은 점수 순', bg:'var(--green-bg)', col:'var(--green)' },
-    blue: { title:'합격 · 80~90점 · 높은 점수 순', bg:'var(--blue-light)', col:'var(--blue)' },
-    red:  { title:'미달 · 80점↓ · 낮은 점수 순', bg:'var(--red-bg)', col:'var(--red)' }
+    green:{ title:'?곗닔?⑷꺽 쨌 90?먥넁 쨌 ?믪? ?먯닔 ??, bg:'var(--green-bg)', col:'var(--green)' },
+    blue: { title:'?⑷꺽 쨌 80~90??쨌 ?믪? ?먯닔 ??, bg:'var(--blue-light)', col:'var(--blue)' },
+    red:  { title:'誘몃떖 쨌 80?먥넃 쨌 ??? ?먯닔 ??, bg:'var(--red-bg)', col:'var(--red)' }
   }[tier];
   const mh = document.getElementById('tier-mh');
   mh.style.background = cfg.bg;
@@ -1738,7 +1690,7 @@ function renderTierTable() {
     if (currentTier==='blue')  return p >= P_SCORE() && p < S_SCORE();
     return p < P_SCORE();
   });
-  // type filter (no type field yet → show all in "new" tab)
+  // type filter (no type field yet ??show all in "new" tab)
   if (currentTierTab === 'old') rows = [];
   if (q) rows = rows.filter(s => (s.name||'').toLowerCase().includes(q));
   rows.sort((a,b) => currentTier==='red' ? pct(a)-pct(b) : pct(b)-pct(a));
@@ -1747,18 +1699,18 @@ function renderTierTable() {
   const [sbg,sfg] = colMap[currentTier];
   const body = document.getElementById('tier-body');
   if (!rows.length) {
-    body.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">해당 데이터가 없습니다.</td></tr>`;
+    body.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">?대떦 ?곗씠?곌? ?놁뒿?덈떎.</td></tr>`;
     return;
   }
   const errs = s => (s.wrongQuestions||[]).length || (s.answers||[]).filter(a=>!a.ok).length;
   body.innerHTML = rows.map(r => `
     <tr onclick="openWrongQ(${JSON.stringify(r.id).replace(/"/g,"'")})">
-      <td style="font-weight:600;">${r.name||'–'}</td>
-      <td><span class="badge bg-blue">${r.cohort||'–'}</span></td>
-      <td style="color:var(--muted);font-size:12px;">${r.quizName||'–'}</td>
-      <td><span style="display:inline-flex;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${sbg};color:${sfg};">${pct(r)}점</span></td>
-      <td style="color:var(--muted);">${errs(r)}개</td>
-      <td><button class="btn btn-g btn-sm" style="font-size:11px;">틀린 문항 ›</button></td>
+      <td style="font-weight:600;">${r.name||'??}</td>
+      <td><span class="badge bg-blue">${r.cohort||'??}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${r.quizName||'??}</td>
+      <td><span style="display:inline-flex;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${sbg};color:${sfg};">${pct(r)}??/span></td>
+      <td style="color:var(--muted);">${errs(r)}媛?/td>
+      <td><button class="btn btn-g btn-sm" style="font-size:11px;">?由?臾명빆 ??/button></td>
     </tr>
   `).join('');
 }
@@ -1767,25 +1719,25 @@ function openWrongQ(id) {
   const s = allScores.find(x => x.id===id);
   if (!s) return;
   const wrong = (s.answers||[]).filter(a=>!a.ok);
-  if (!wrong.length) { alert(s.name+'님은 모두 정답입니다!'); return; }
-  document.getElementById('ans-title').textContent = s.name + '님 오답 목록';
-  document.getElementById('ans-meta').textContent = s.quizName + ' · ' + (s.pct||0) + '점';
+  if (!wrong.length) { alert(s.name+'?섏? 紐⑤몢 ?뺣떟?낅땲??'); return; }
+  document.getElementById('ans-title').textContent = s.name + '???ㅻ떟 紐⑸줉';
+  document.getElementById('ans-meta').textContent = s.quizName + ' 쨌 ' + (s.pct||0) + '??;
   document.getElementById('ans-body').innerHTML = wrong.map(a => `
     <div style="background:var(--gray);border-radius:8px;padding:12px 16px;margin-bottom:10px;">
       <div style="font-size:13px;font-weight:700;margin-bottom:6px;">${a.q}</div>
-      <div style="font-size:12px;color:var(--red);">선택: ${a.chosen??'–'}</div>
-      <div style="font-size:12px;color:var(--green);">정답: ${a.correct??'–'}</div>
+      <div style="font-size:12px;color:var(--red);">?좏깮: ${a.chosen??'??}</div>
+      <div style="font-size:12px;color:var(--green);">?뺣떟: ${a.correct??'??}</div>
     </div>
   `).join('');
   document.getElementById('ans-ov').classList.add('open');
 }
 
-// ── Answer distribution ──
+// ?? Answer distribution ??
 function openAnswer(idx) {
   const x = (window._top5data||[])[idx];
   if (!x) return;
   document.getElementById('ans-title').textContent = x.q;
-  document.getElementById('ans-meta').textContent = '오답률 ' + x.pct + '%';
+  document.getElementById('ans-meta').textContent = '?ㅻ떟瑜?' + x.pct + '%';
   const chosen = x.data.chosen;
   const total = Object.values(chosen).reduce((a,b)=>a+b,0)||1;
   const entries = Object.entries(chosen).sort((a,b)=>b[1]-a[1]);
@@ -1800,11 +1752,11 @@ function openAnswer(idx) {
         </div>
         <div class="apct">${p}%</div>
       </div>`;
-  }).join('') : '<div style="color:var(--muted);font-size:13px;">답변 데이터 없음</div>';
+  }).join('') : '<div style="color:var(--muted);font-size:13px;">?듬? ?곗씠???놁쓬</div>';
   document.getElementById('ans-ov').classList.add('open');
 }
 
-// ── QR ──
+// ?? QR ??
 let _qrTarget = '';
 function openQR(target) {
   _qrTarget = target;
@@ -1820,71 +1772,71 @@ function openQR(target) {
 }
 function copyQR() {
   const url = document.getElementById('qr-url').textContent;
-  navigator.clipboard.writeText(url).then(() => alert('링크가 복사되었습니다!'));
+  navigator.clipboard.writeText(url).then(() => alert('留곹겕媛 蹂듭궗?섏뿀?듬땲??'));
 }
 
-// ── Settings ──
+// ?? Settings ??
 function changePw() {
   const cur = document.getElementById('pw-cur').value;
   const nw = document.getElementById('pw-new').value;
   const nw2 = document.getElementById('pw-new2').value;
   const err = document.getElementById('pw-err');
-  if (cur !== getPw()) { err.textContent='현재 비밀번호가 올바르지 않습니다.'; err.style.display='block'; return; }
-  if (!nw) { err.textContent='새 비밀번호를 입력해주세요.'; err.style.display='block'; return; }
-  if (nw !== nw2) { err.textContent='비밀번호가 일치하지 않습니다.'; err.style.display='block'; return; }
+  if (cur !== getPw()) { err.textContent='?꾩옱 鍮꾨?踰덊샇媛 ?щ컮瑜댁? ?딆뒿?덈떎.'; err.style.display='block'; return; }
+  if (!nw) { err.textContent='??鍮꾨?踰덊샇瑜??낅젰?댁＜?몄슂.'; err.style.display='block'; return; }
+  if (nw !== nw2) { err.textContent='鍮꾨?踰덊샇媛 ?쇱튂?섏? ?딆뒿?덈떎.'; err.style.display='block'; return; }
   savePwStore(nw);
   err.style.display='none';
   ['pw-cur','pw-new','pw-new2'].forEach(id => document.getElementById(id).value='');
-  alert('비밀번호가 변경되었습니다.');
+  alert('鍮꾨?踰덊샇媛 蹂寃쎈릺?덉뒿?덈떎.');
 }
 function exportCSV() {
-  if (!allScores.length) { alert('내보낼 데이터가 없습니다.'); return; }
-  const hdr = ['이름','기수','퀴즈','점수(%)','점수','총문항','날짜'];
+  if (!allScores.length) { alert('?대낫???곗씠?곌? ?놁뒿?덈떎.'); return; }
+  const hdr = ['?대쫫','湲곗닔','?댁쫰','?먯닔(%)','?먯닔','珥앸Ц??,'?좎쭨'];
   const rows = allScores.map(s => [s.name,s.cohort,s.quizName,s.pct,s.score,s.total,s.date].join(','));
-  const csv = '﻿' + [hdr.join(','), ...rows].join('\n');
+  const csv = '癤? + [hdr.join(','), ...rows].join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-  a.download = '라로제_응시결과_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.download = '?쇰줈???묒떆寃곌낵_' + new Date().toISOString().slice(0,10) + '.csv';
   a.click();
 }
 
-// ════════════════════════════════════════
-// ── SESSIONS CRUD ──
-// ════════════════════════════════════════
+// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
+// ?? SESSIONS CRUD ??
+// ?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧?먥븧
 let adminSessions = [];
 let editSessId = null;      // null = new, string = edit existing
 let editItemCtx = null;     // {sessId, dayIdx, itemIdx} null = new item
 let editDays = [];          // temp days array while editing session
 
 const DEFAULT_SESSIONS = [
-  { id:'new-hire', name:'신규입사자 교육', status:'active', icon:'📚', order:0,
+  { id:'new-hire', name:'?좉퇋?낆궗??援먯쑁', status:'active', icon:'?뱴', order:0,
     days:[
       { name:'DAY 1', items:[
-        {type:'link',name:'브랜드 교육',desc:'PPT',url:'',icon:'📋'},
-        {type:'link',name:'인센티브 교육',desc:'PPT',url:'',icon:'📋'},
-        {type:'link',name:'제품 교육',desc:'PDF',url:'',icon:'📄'},
-        {type:'link',name:'매뉴얼 교육',desc:'PPT',url:'',icon:'📋'},
-        {type:'link',name:'전산교육',desc:'PPT + 홈페이지',url:'',icon:'💻'}
+        {type:'link',name:'釉뚮옖??援먯쑁',desc:'PPT',url:'',icon:'?뱥'},
+        {type:'link',name:'?몄꽱?곕툕 援먯쑁',desc:'PPT',url:'',icon:'?뱥'},
+        {type:'link',name:'?쒗뭹 援먯쑁',desc:'PDF',url:'',icon:'?뱞'},
+        {type:'link',name:'留ㅻ돱??援먯쑁',desc:'PPT',url:'',icon:'?뱥'},
+        {type:'link',name:'?꾩궛援먯쑁',desc:'PPT + ?덊럹?댁?',url:'',icon:'?뮲'}
       ]},
       { name:'DAY 2', items:[
-        {type:'roleplay',name:'롤플레이 가이드',desc:'카테고리별 핵심포인트·멘트',icon:'🎭',categories:[
-          {name:'핸드빌 기본',checkpoints:['고객 동선을 막지 않음','3걸음 전 눈 맞춤 및 인사','한걸음 다가가기 · 고개 약 15도','손을 뻗어 손등 위치에 테스트 진행'],scripts:[{label:'기본 멘트',text:'안녕하세요, 촉촉한 바디로션 발라드릴게요~'},{label:'대안 멘트',text:'안녕하세요, 프랑스 바디로션 발라드릴게요~'}]},
-          {name:'빠른 고객',checkpoints:[],scripts:[]},
-          {name:'느린 고객',checkpoints:[],scripts:[]},
-          {name:'수분스틱',checkpoints:[],scripts:[]},
-          {name:'세럼',checkpoints:[],scripts:[]},
-          {name:'머드스틱',checkpoints:[],scripts:[]},
-          {name:'사워오일',checkpoints:[],scripts:[]}
+        {type:'roleplay',name:'濡ㅽ뵆?덉씠 媛?대뱶',desc:'移댄뀒怨좊━蹂??듭떖?ъ씤?맞룸찘??,icon:'?렚',categories:[
+          {name:'?몃뱶鍮?湲곕낯',checkpoints:['怨좉컼 ?숈꽑??留됱? ?딆쓬','3嫄몄쓬 ????留욎땄 諛??몄궗','?쒓구???ㅺ?媛湲?쨌 怨좉컻 ??15??,'?먯쓣 六쀬뼱 ?먮벑 ?꾩튂???뚯뒪??吏꾪뻾'],scripts:[{label:'湲곕낯 硫섑듃',text:'?덈뀞?섏꽭?? 珥됱큺??諛붾뵒濡쒖뀡 諛쒕씪?쒕┫寃뚯슂~'},{label:'???硫섑듃',text:'?덈뀞?섏꽭?? ?꾨옉??諛붾뵒濡쒖뀡 諛쒕씪?쒕┫寃뚯슂~'}]},
+          {name:'鍮좊Ⅸ 怨좉컼',checkpoints:[],scripts:[]},
+          {name:'?먮┛ 怨좉컼',checkpoints:[],scripts:[]},
+          {name:'?섎텇?ㅽ떛',checkpoints:[],scripts:[]},
+          {name:'?몃읆',checkpoints:[],scripts:[]},
+          {name:'癒몃뱶?ㅽ떛',checkpoints:[],scripts:[]},
+          {name:'?ъ썙?ㅼ씪',checkpoints:[],scripts:[]}
         ]},
-        {type:'link',name:'이의제기 교육',desc:'PPT',url:'',icon:'📋'},
-        {type:'flashcard',name:'이의제기 플래시카드 배포',desc:'QR 배포 후 핸드폰으로 연습',fcId:'',icon:'🗂'},
-        {type:'quiz',name:'마무리 퀴즈 배포',desc:'QR 배포 후 응시',quizId:'',icon:'✅'},
-        {type:'lecture',name:'마무리 강의',desc:'플래시카드 강의 모드',fcId:'',icon:'🎓'}
+        {type:'link',name:'?댁쓽?쒓린 援먯쑁',desc:'PPT',url:'',icon:'?뱥'},
+        {type:'flashcard',name:'?댁쓽?쒓린 ?뚮옒?쒖뭅??諛고룷',desc:'QR 諛고룷 ???몃뱶?곗쑝濡??곗뒿',fcId:'',icon:'?뾺'},
+        {type:'quiz',name:'留덈Т由??댁쫰 諛고룷',desc:'QR 諛고룷 ???묒떆',quizId:'',icon:'??},
+        {type:'lecture',name:'留덈Т由?媛뺤쓽',desc:'?뚮옒?쒖뭅??媛뺤쓽 紐⑤뱶',fcId:'',icon:'?럳'}
       ]}
     ]
   },
-  { id:'retrain-1', name:'재교육 1차', status:'preparing', icon:'🔄', order:1, days:[] },
-  { id:'retrain-2', name:'재교육 2차', status:'preparing', icon:'🔄', order:2, days:[] }
+  { id:'retrain-1', name:'?ш탳??1李?, status:'preparing', icon:'?봽', order:1, days:[] },
+  { id:'retrain-2', name:'?ш탳??2李?, status:'preparing', icon:'?봽', order:2, days:[] }
 ];
 
 async function loadAdminSessions() {
@@ -1916,14 +1868,14 @@ async function saveSessionsToStore() {
   try { await batch.commit(); } catch(e) { console.warn('Firestore save:', e); }
 }
 
-const ICON_MAP = { link:'📋', roleplay:'🎭', flashcard:'🗂', quiz:'✅', lecture:'🎓' };
-const TYPE_LABEL = { link:'링크', roleplay:'롤플레이', flashcard:'FC QR', quiz:'퀴즈 QR', lecture:'강의 모드' };
+const ICON_MAP = { link:'?뱥', roleplay:'?렚', flashcard:'?뾺', quiz:'??, lecture:'?럳' };
+const TYPE_LABEL = { link:'留곹겕', roleplay:'濡ㅽ뵆?덉씠', flashcard:'FC QR', quiz:'?댁쫰 QR', lecture:'媛뺤쓽 紐⑤뱶' };
 const ITEM_BG = { link:'#eff6ff', roleplay:'#f0fdf4', flashcard:'#fdf4ff', quiz:'#fef2f2', lecture:'#fffbeb' };
 
 function renderSessionsTab() {
   const wrap = document.getElementById('sessions-list');
   if (!adminSessions.length) {
-    wrap.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">등록된 세션이 없습니다.</div>';
+    wrap.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0;">?깅줉???몄뀡???놁뒿?덈떎.</div>';
     return;
   }
   wrap.innerHTML = adminSessions.map((s, si) => {
@@ -1933,16 +1885,16 @@ function renderSessionsTab() {
     <div class="sc-card ${s.status!=='active'?'dim':''}" id="sc-${s.id}">
       <div class="sc-hdr" onclick="toggleSc(this)">
         <div class="sc-meta">
-          <h3>${s.icon||'📚'} ${s.name}</h3>
-          <p>${(s.days||[]).map(d=>d.name).join(' · ')} · 항목 ${totalItems}개</p>
+          <h3>${s.icon||'?뱴'} ${s.name}</h3>
+          <p>${(s.days||[]).map(d=>d.name).join(' 쨌 ')} 쨌 ??ぉ ${totalItems}媛?/p>
           <div style="margin-top:8px;display:flex;gap:8px;">
-            <span class="badge ${s.status==='active'?'bg-green':'bg-muted'}">${s.status==='active'?'진행중':'준비 중'}</span>
+            <span class="badge ${s.status==='active'?'bg-green':'bg-muted'}">${s.status==='active'?'吏꾪뻾以?:'以鍮?以?}</span>
           </div>
         </div>
         <div class="sc-acts" onclick="event.stopPropagation()">
-          <button class="btn btn-o btn-sm" onclick="openSessionModal('${s.id}')">수정</button>
-          <button class="btn btn-g btn-sm" onclick="deleteSess('${s.id}')">삭제</button>
-          <button class="btn btn-g btn-sm tog-btn">${isOpen?'▲ 접기':'▼ 열기'}</button>
+          <button class="btn btn-o btn-sm" onclick="openSessionModal('${s.id}')">?섏젙</button>
+          <button class="btn btn-g btn-sm" onclick="deleteSess('${s.id}')">??젣</button>
+          <button class="btn btn-g btn-sm tog-btn">${isOpen?'???묎린':'???닿린'}</button>
         </div>
       </div>
       <div class="sc-body ${isOpen?'open':''}">
@@ -1962,8 +1914,8 @@ function renderSessionsTab() {
 function renderDayTabs(s, si) {
   if (!s.days || !s.days.length) {
     return `<div style="padding:24px;text-align:center;color:var(--muted);font-size:13px;">
-      등록된 항목이 없습니다.
-      <button class="btn btn-p btn-sm" style="margin-left:8px;" onclick="openSessionModal('${s.id}')">DAY 추가</button>
+      ?깅줉????ぉ???놁뒿?덈떎.
+      <button class="btn btn-p btn-sm" style="margin-left:8px;" onclick="openSessionModal('${s.id}')">DAY 異붽?</button>
     </div>`;
   }
   const tabs = s.days.map((d,di) =>
@@ -1973,7 +1925,7 @@ function renderDayTabs(s, si) {
     `<div class="day-content" id="day-${s.id}-${di}" style="${di===0?'':'display:none'}">
       ${(d.items||[]).map((item, ii) => renderItemRow(s.id, di, ii, item)).join('')}
       <div style="padding:12px 20px;">
-        <button class="btn btn-g btn-sm" onclick="openItemModal('${s.id}',${di})">＋ 항목 추가</button>
+        <button class="btn btn-g btn-sm" onclick="openItemModal('${s.id}',${di})">竊???ぉ 異붽?</button>
       </div>
     </div>`
   ).join('');
@@ -1988,18 +1940,18 @@ function renderItemRow(sessId, dayIdx, itemIdx, item) {
       ondragover="onItemDragOver(event)"
       ondrop="onItemDrop(event)"
       ondragend="onItemDragEnd(event)">
-      <div class="ci-drag" title="드래그하여 순서 변경">⠿</div>
-      <div class="ci-icon" style="background:${ITEM_BG[item.type]||'#f4f7fb'}">${item.icon||ICON_MAP[item.type]||'📋'}</div>
+      <div class="ci-drag" title="?쒕옒洹명븯???쒖꽌 蹂寃?>??/div>
+      <div class="ci-icon" style="background:${ITEM_BG[item.type]||'#f4f7fb'}">${item.icon||ICON_MAP[item.type]||'?뱥'}</div>
       <div class="ci-info">
         <div class="ci-name">${item.name}</div>
-        <div class="ci-desc">${TYPE_LABEL[item.type]||item.type}${item.desc?' · '+item.desc:''}</div>
+        <div class="ci-desc">${TYPE_LABEL[item.type]||item.type}${item.desc?' 쨌 '+item.desc:''}</div>
       </div>
       <div class="ci-btns">
         ${(item.type==='flashcard'||item.type==='quiz')?
           `<button class="btn btn-sm" style="background:var(--blue-light);color:var(--blue);border:2px solid var(--blue);border-radius:8px;"
-            onclick="openQR('${item.type}-${item.fcId||item.quizId||''}')">QR 보기</button>` : ''}
-        <button class="btn btn-o btn-sm" onclick="openItemModal('${sessId}',${dayIdx},${itemIdx})">수정</button>
-        <button class="btn btn-g btn-sm" onclick="deleteItem('${sessId}',${dayIdx},${itemIdx})">삭제</button>
+            onclick="openQR('${item.type}-${item.fcId||item.quizId||''}')">QR 蹂닿린</button>` : ''}
+        <button class="btn btn-o btn-sm" onclick="openItemModal('${sessId}',${dayIdx},${itemIdx})">?섏젙</button>
+        <button class="btn btn-g btn-sm" onclick="deleteItem('${sessId}',${dayIdx},${itemIdx})">??젣</button>
       </div>
     </div>
   `;
@@ -2048,15 +2000,15 @@ function setDayAdmin(el, sessId, dayIdx) {
   if (target) target.style.display = 'block';
 }
 
-// ── Session Modal ──
+// ?? Session Modal ??
 function openSessionModal(sessId) {
   editSessId = sessId || null;
   let sess = sessId ? adminSessions.find(s=>s.id===sessId) : null;
   editDays = sess ? JSON.parse(JSON.stringify(sess.days||[])) : [{name:'DAY 1', items:[]}];
 
-  document.getElementById('sess-modal-title').textContent = sessId ? '세션 수정' : '세션 추가';
+  document.getElementById('sess-modal-title').textContent = sessId ? '?몄뀡 ?섏젙' : '?몄뀡 異붽?';
   document.getElementById('sess-name').value  = sess ? sess.name  : '';
-  document.getElementById('sess-icon').value  = sess ? (sess.icon||'📚') : '📚';
+  document.getElementById('sess-icon').value  = sess ? (sess.icon||'?뱴') : '?뱴';
   document.getElementById('sess-status').value = sess ? (sess.status||'preparing') : 'preparing';
   renderEditDays();
   document.getElementById('sess-ov').classList.add('open');
@@ -2068,7 +2020,7 @@ function renderEditDays() {
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
       <input type="text" value="${d.name}" onchange="editDays[${di}].name=this.value"
         style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-      <button class="btn btn-g btn-sm" onclick="removeDay(${di})" ${editDays.length<=1?'disabled':''}>✕</button>
+      <button class="btn btn-g btn-sm" onclick="removeDay(${di})" ${editDays.length<=1?'disabled':''}>??/button>
     </div>
   `).join('');
 }
@@ -2086,8 +2038,8 @@ function removeDay(di) {
 
 async function saveSession() {
   const name = document.getElementById('sess-name').value.trim();
-  if (!name) { alert('세션 이름을 입력해주세요.'); return; }
-  const icon   = document.getElementById('sess-icon').value.trim() || '📚';
+  if (!name) { alert('?몄뀡 ?대쫫???낅젰?댁＜?몄슂.'); return; }
+  const icon   = document.getElementById('sess-icon').value.trim() || '?뱴';
   const status = document.getElementById('sess-status').value;
 
   if (editSessId) {
@@ -2113,37 +2065,37 @@ async function saveSession() {
 }
 
 async function deleteSess(sessId) {
-  if (!confirm('이 세션을 삭제하시겠습니까? 포함된 항목도 모두 삭제됩니다.')) return;
+  if (!confirm('???몄뀡????젣?섏떆寃좎뒿?덇퉴? ?ы븿????ぉ??紐⑤몢 ??젣?⑸땲??')) return;
   adminSessions = adminSessions.filter(s=>s.id!==sessId);
   if (db) { try { await db.collection('sessions').doc(sessId).delete(); } catch(e){} }
   await saveSessionsToStore();
   renderSessionsTab();
 }
 
-// ── Item Modal ──
+// ?? Item Modal ??
 function openItemModal(sessId, dayIdx, itemIdx) {
   editItemCtx = { sessId, dayIdx, itemIdx: itemIdx ?? null };
   const s = adminSessions.find(s=>s.id===sessId);
   const item = (itemIdx != null) ? s.days[dayIdx].items[itemIdx] : null;
 
-  document.getElementById('item-modal-title').textContent = item ? '항목 수정' : '항목 추가';
+  document.getElementById('item-modal-title').textContent = item ? '??ぉ ?섏젙' : '??ぉ 異붽?';
   document.getElementById('item-name').value  = item ? item.name  : '';
   document.getElementById('item-desc').value  = item ? (item.desc||'') : '';
   document.getElementById('item-type').value  = item ? item.type  : 'link';
   document.getElementById('item-url').value   = item ? (item.url||'')  : '';
-  // 롤플레이 카테고리 로드
+  // 濡ㅽ뵆?덉씠 移댄뀒怨좊━ 濡쒕뱶
   window._rpEditorCats = item && item.type==='roleplay' ? JSON.parse(JSON.stringify(item.categories||[])) : [];
   updateRpSummary();
 
   // populate FC and quiz selects
   const fcSets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
   const fcSel  = document.getElementById('item-fcid');
-  fcSel.innerHTML = '<option value="">-- 세트 선택 --</option>' +
+  fcSel.innerHTML = '<option value="">-- ?명듃 ?좏깮 --</option>' +
     fcSets.map(f=>`<option value="${f.id}" ${item&&item.fcId===f.id?'selected':''}>${f.name}</option>`).join('');
 
   const qzSets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const qzSel  = document.getElementById('item-quizid');
-  qzSel.innerHTML = '<option value="">-- 퀴즈 선택 --</option>' +
+  qzSel.innerHTML = '<option value="">-- ?댁쫰 ?좏깮 --</option>' +
     qzSets.map(q=>`<option value="${q.id}" ${item&&item.quizId===q.id?'selected':''}>${q.name}</option>`).join('');
 
   updateItemFields();
@@ -2160,11 +2112,11 @@ function updateItemFields() {
 
 async function saveItem() {
   const name = document.getElementById('item-name').value.trim();
-  if (!name) { alert('항목 이름을 입력해주세요.'); return; }
+  if (!name) { alert('??ぉ ?대쫫???낅젰?댁＜?몄슂.'); return; }
   const type = document.getElementById('item-type').value;
   const desc = document.getElementById('item-desc').value.trim();
 
-  const item = { type, name, desc, icon: ICON_MAP[type]||'📋' };
+  const item = { type, name, desc, icon: ICON_MAP[type]||'?뱥' };
   if (type==='link')      item.url        = document.getElementById('item-url').value.trim();
   if (type==='roleplay')  item.categories = JSON.parse(JSON.stringify(window._rpEditorCats||[]));
   if (type==='flashcard'||type==='lecture') item.fcId = document.getElementById('item-fcid').value;
@@ -2183,12 +2135,12 @@ async function saveItem() {
   renderSessionsTab();
 }
 
-// ── Roleplay Editor ──
+// ?? Roleplay Editor ??
 let _rpCatIdx = 0;
 
 function updateRpSummary() {
   const cats = window._rpEditorCats || [];
-  document.getElementById('rp-edit-summary').textContent = `카테고리 ${cats.length}개`;
+  document.getElementById('rp-edit-summary').textContent = `移댄뀒怨좊━ ${cats.length}媛?;
 }
 
 function openRpEditor() {
@@ -2211,7 +2163,7 @@ function renderRpeCatList() {
       background:${i===_rpCatIdx?'#e8f4fb':'#fff'};border:1px solid ${i===_rpCatIdx?'#0E94CD':'var(--border)'};"
       onclick="rpeSelectCat(${i})">
       <span style="flex:1;font-size:13px;font-weight:${i===_rpCatIdx?'600':'400'};color:${i===_rpCatIdx?'#0a78a8':'var(--text)'};">${c.name}</span>
-      <button onclick="event.stopPropagation();rpeDeleteCat(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;">✕</button>
+      <button onclick="event.stopPropagation();rpeDeleteCat(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;">??/button>
     </div>
   `).join('');
 }
@@ -2219,7 +2171,7 @@ function renderRpeCatList() {
 function renderRpePanel() {
   const cats = window._rpEditorCats || [];
   const panel = document.getElementById('rpe-panel');
-  if (!cats.length) { panel.innerHTML = '<p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 추가하세요.</p>'; return; }
+  if (!cats.length) { panel.innerHTML = '<p style="color:var(--muted);font-size:14px;">醫뚯륫?먯꽌 移댄뀒怨좊━瑜?異붽??섏꽭??</p>'; return; }
   const cat = cats[_rpCatIdx];
   if (!cat) return;
 
@@ -2228,35 +2180,35 @@ function renderRpePanel() {
 
   panel.innerHTML = `
     <div style="margin-bottom:20px;">
-      <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">카테고리 이름</label>
+      <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">移댄뀒怨좊━ ?대쫫</label>
       <input type="text" value="${cat.name}" oninput="rpeCatName(this.value)"
         style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div>
-        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">핵심 포인트</div>
+        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">?듭떖 ?ъ씤??/div>
         ${pts.map((p,i) => `
           <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:0.5px solid var(--border);">
             <span style="flex:1;font-size:13px;">${p}</span>
-            <button onclick="rpePtEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✏️</button>
-            <button onclick="rpePtDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✕</button>
+            <button onclick="rpePtEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">?륅툘</button>
+            <button onclick="rpePtDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">??/button>
           </div>`).join('')}
-        <button class="btn btn-g btn-sm" style="margin-top:8px;width:100%;" onclick="rpePtAdd()">＋ 포인트 추가</button>
+        <button class="btn btn-g btn-sm" style="margin-top:8px;width:100%;" onclick="rpePtAdd()">竊??ъ씤??異붽?</button>
       </div>
       <div>
-        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">멘트</div>
+        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">硫섑듃</div>
         ${scripts.map((s,i) => `
           <div style="margin-bottom:10px;padding:10px;background:#f9fbfd;border-radius:8px;border:1px solid var(--border);">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
-              <span style="font-size:11px;font-weight:700;color:var(--muted);">${s.label||'멘트'}</span>
+              <span style="font-size:11px;font-weight:700;color:var(--muted);">${s.label||'硫섑듃'}</span>
               <div style="display:flex;gap:4px;">
-                <button onclick="rpeScriptEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✏️</button>
-                <button onclick="rpeScriptDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✕</button>
+                <button onclick="rpeScriptEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">?륅툘</button>
+                <button onclick="rpeScriptDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">??/button>
               </div>
             </div>
             <div style="font-size:13px;color:var(--text);font-style:italic;">"${s.text||''}"</div>
           </div>`).join('')}
-        <button class="btn btn-g btn-sm" style="width:100%;" onclick="rpeScriptAdd()">＋ 멘트 추가</button>
+        <button class="btn btn-g btn-sm" style="width:100%;" onclick="rpeScriptAdd()">竊?硫섑듃 異붽?</button>
       </div>
     </div>
   `;
@@ -2265,7 +2217,7 @@ function renderRpePanel() {
 function rpeSelectCat(i) { _rpCatIdx = i; renderRpeCatList(); renderRpePanel(); }
 
 function rpeAddCat() {
-  const name = prompt('카테고리 이름을 입력하세요:');
+  const name = prompt('移댄뀒怨좊━ ?대쫫???낅젰?섏꽭??');
   if (!name) return;
   window._rpEditorCats.push({ name, checkpoints:[], scripts:[] });
   _rpCatIdx = window._rpEditorCats.length - 1;
@@ -2273,7 +2225,7 @@ function rpeAddCat() {
 }
 
 function rpeDeleteCat(i) {
-  if (!confirm('이 카테고리를 삭제하시겠습니까?')) return;
+  if (!confirm('??移댄뀒怨좊━瑜???젣?섏떆寃좎뒿?덇퉴?')) return;
   window._rpEditorCats.splice(i, 1);
   _rpCatIdx = Math.min(_rpCatIdx, window._rpEditorCats.length - 1);
   renderRpeCatList(); renderRpePanel();
@@ -2285,14 +2237,14 @@ function rpeCatName(val) {
 }
 
 function rpePtAdd() {
-  const val = prompt('핵심 포인트를 입력하세요:');
+  const val = prompt('?듭떖 ?ъ씤?몃? ?낅젰?섏꽭??');
   if (!val) return;
   window._rpEditorCats[_rpCatIdx].checkpoints.push(val);
   renderRpePanel();
 }
 function rpePtEdit(i) {
   const cur = window._rpEditorCats[_rpCatIdx].checkpoints[i];
-  const val = prompt('수정:', cur);
+  const val = prompt('?섏젙:', cur);
   if (val === null) return;
   window._rpEditorCats[_rpCatIdx].checkpoints[i] = val;
   renderRpePanel();
@@ -2303,16 +2255,16 @@ function rpePtDelete(i) {
 }
 
 function rpeScriptAdd() {
-  const label = prompt('멘트 라벨 (예: 기본 멘트, 대안 멘트):') || '멘트';
-  const text  = prompt('멘트 내용:');
+  const label = prompt('硫섑듃 ?쇰꺼 (?? 湲곕낯 硫섑듃, ???硫섑듃):') || '硫섑듃';
+  const text  = prompt('硫섑듃 ?댁슜:');
   if (!text) return;
   window._rpEditorCats[_rpCatIdx].scripts.push({ label, text });
   renderRpePanel();
 }
 function rpeScriptEdit(i) {
   const s = window._rpEditorCats[_rpCatIdx].scripts[i];
-  const label = prompt('라벨:', s.label) ?? s.label;
-  const text  = prompt('멘트 내용:', s.text);
+  const label = prompt('?쇰꺼:', s.label) ?? s.label;
+  const text  = prompt('硫섑듃 ?댁슜:', s.text);
   if (text === null) return;
   window._rpEditorCats[_rpCatIdx].scripts[i] = { label, text };
   renderRpePanel();
@@ -2323,14 +2275,14 @@ function rpeScriptDelete(i) {
 }
 
 async function deleteItem(sessId, dayIdx, itemIdx) {
-  if (!confirm('이 항목을 삭제하시겠습니까?')) return;
+  if (!confirm('????ぉ????젣?섏떆寃좎뒿?덇퉴?')) return;
   const s = adminSessions.find(s=>s.id===sessId);
   if (s) s.days[dayIdx].items.splice(itemIdx, 1);
   await saveSessionsToStore();
   renderSessionsTab();
 }
 
-// ── Nav ──
+// ?? Nav ??
 function gotoTab(id) {
   document.querySelectorAll('.tab').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -2339,379 +2291,28 @@ function gotoTab(id) {
   if (id==='settings') renderTypeList();
 }
 
-// ── Modal helpers ──
+// ?? Modal helpers ??
 function closeOv(id, e) { if(e.target===document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
 function closeOvD(id) { document.getElementById(id).classList.remove('open'); }
 
-// ── Session accordion ──
+// ?? Session accordion ??
 function toggleSc(hdr) {
   const body = hdr.nextElementSibling;
   const btn = hdr.querySelector('.tog-btn');
   const open = body.classList.contains('open');
   body.classList.toggle('open');
-  btn.textContent = open ? '▼ 열기' : '▲ 접기';
+  btn.textContent = open ? '???닿린' : '???묎린';
 }
 function setDay(el) {
   el.closest('.day-tabs').querySelectorAll('.dtab').forEach(t=>t.classList.remove('on'));
   el.classList.add('on');
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PRESENT VIEW JS (교육 진행 화면 통합)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+// present.js 李몄“ (head??<script src="present.js"> 濡?濡쒕뱶??
+/* === present.js 濡??대룞 ===
 const P_DEFAULT_SESSIONS = [
   {
-    id:'new-hire', name:'신규입사자 교육', status:'active', icon:'📚', order:0,
-    days:[
-      { name:'DAY 1', items:[
-        {type:'link',name:'브랜드 교육',desc:'PPT',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7B4593676f-e99d-48ea-ba15-1e4f83469b5d%7D&action=default',icon:'📋'},
-        {type:'link',name:'인센티브 교육',desc:'PPT',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7Bf0e7cde8-f819-4aed-83ff-51c289c1d069%7D&action=default',icon:'📋'},
-        {type:'link',name:'제품 교육',desc:'PDF',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7Bfa4bb4ec-ec9b-4376-9fb8-e2138eb5f016%7D&action=default',icon:'📄'},
-        {type:'link',name:'매뉴얼 교육',desc:'PPT',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7Bb6deec2d-0ab1-4944-b8bc-0c8fbbbd2c1d%7D&action=default',icon:'📋'},
-        {type:'link',name:'전산교육',desc:'트위닛 가이드',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7B711bde55-c5ec-4223-ad52-0a09e43a7a05%7D&action=default',icon:'💻'}
-      ]},
-      { name:'DAY 2', items:[
-        {type:'roleplay',name:'롤플레이 가이드',desc:'카테고리별 핵심포인트·멘트',icon:'🎭',categories:[
-          {name:'핸드빌 기본',checkpoints:['고객 동선을 막지 않음','3걸음 전 눈 맞춤 및 인사','한걸음 다가가기 · 고개 약 15도','손을 뻗어 손등 위치에 테스트 진행'],scripts:[{label:'기본 멘트',text:'안녕하세요, 촉촉한 바디로션 발라드릴게요~'},{label:'대안 멘트',text:'안녕하세요, 프랑스 바디로션 발라드릴게요~'}]},
-          {name:'빠른 고객',checkpoints:[],scripts:[]},
-          {name:'느린 고객',checkpoints:[],scripts:[]},
-          {name:'수분스틱',checkpoints:[],scripts:[]},
-          {name:'세럼',checkpoints:[],scripts:[]},
-          {name:'머드스틱',checkpoints:[],scripts:[]},
-          {name:'사워오일',checkpoints:[],scripts:[]}
-        ]},
-        {type:'link',name:'이의제기 교육',desc:'PPT',url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7Bc5354b74-e3d6-4425-b7d1-6bd5f23e9d1c%7D&action=default',icon:'📋'},
-        {type:'flashcard',name:'이의제기 플래시카드 배포',desc:'QR 배포 후 핸드폰으로 연습',fcId:'',icon:'🗂'},
-        {type:'quiz',name:'마무리 퀴즈 배포',desc:'QR 배포 후 응시',quizId:'',icon:'✅'},
-        {type:'lecture',name:'마무리 강의',desc:'플래시카드 강의 모드',fcId:'',icon:'🎓'}
-      ]}
-    ]
-  },
-  {id:'retrain-1',name:'재교육 1차',status:'preparing',icon:'🔄',order:1,days:[]},
-  {id:'retrain-2',name:'재교육 2차',status:'preparing',icon:'🔄',order:2,days:[]}
-];
-
-let pSessions = [];
-let pCurSession = null, pCurDayIdx = 0;
-let pFcCards = [], pFcIdx = 0, pFcFlipped = false;
-let pExtUrl = '';
-let pRpCategories = [], pRpCatIdx = 0, pRpChecked = {};
-
-function pPatchUrlsFromDefault(loaded) {
-  return loaded.map(sess => {
-    const def = P_DEFAULT_SESSIONS.find(d => d.id === sess.id);
-    if (!def) return sess;
-    return {
-      ...sess,
-      days: (sess.days || []).map((day, di) => {
-        const defDay = (def.days || [])[di];
-        if (!defDay) return day;
-        return {
-          ...day,
-          items: (day.items || []).map((item, ii) => {
-            const defItem = (defDay.items || [])[ii];
-            if (!defItem) return item;
-            if (item.type === 'link' && (!item.url || item.url.includes('drive.google.com') || item.url.includes('docs.google.com'))) {
-              return { ...item, url: defItem.url || item.url };
-            }
-            return item;
-          })
-        };
-      })
-    };
-  });
-}
-
-async function presentLoadSessions() {
-  const pLoad = document.getElementById('p-loading');
-  pLoad.style.display = 'flex';
-  if (db) {
-    try {
-      const snap = await db.collection('sessions').orderBy('order').get();
-      if (!snap.empty) {
-        pSessions = pPatchUrlsFromDefault(snap.docs.map(d => ({id:d.id,...d.data()})));
-        pRenderHome(); pLoad.style.display = 'none'; return;
-      }
-    } catch(e) { console.warn('Firebase:', e); }
-  }
-  const saved = localStorage.getItem('lr_sessions');
-  if (saved) { try { pSessions = pPatchUrlsFromDefault(JSON.parse(saved)); pRenderHome(); pLoad.style.display = 'none'; return; } catch(e){} }
-  pSessions = P_DEFAULT_SESSIONS;
-  pRenderHome();
-  pLoad.style.display = 'none';
-}
-
-function openPresentView() {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('present-view').style.display = 'block';
-  pShowScreen('p-s-home');
-  document.getElementById('p-hdr-right').innerHTML = `
-    <button class="p-back-btn" onclick="closePresentView()">← 관리자로 돌아가기</button>
-  `;
-  presentLoadSessions();
-}
-
-function closePresentView() {
-  document.getElementById('present-view').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-}
-
-function pRenderHome() {
-  const grid = document.getElementById('p-session-grid');
-  if (!pSessions.length) {
-    grid.innerHTML = '<div style="color:var(--muted);font-size:15px;">등록된 세션이 없습니다.</div>';
-    return;
-  }
-  grid.innerHTML = pSessions.map((s, i) => `
-    <div class="p-session-card ${s.status!=='active'?'dim':''}" onclick="pOpenSession(${i})">
-      <div class="p-sc-icon">${s.icon||'📚'}</div>
-      <div class="p-sc-name">${s.name}</div>
-      <div class="p-sc-meta">${s.days&&s.days.length ? s.days.map(d=>d.name).join(' · ') : '콘텐츠 없음'}</div>
-      <span class="p-status-badge ${s.status==='active'?'p-badge-active':'p-badge-dim'}">
-        ${s.status==='active'?'✓ 진행중':'준비 중'}
-      </span>
-    </div>
-  `).join('');
-}
-
-function pGoHome() {
-  pCurSession = null;
-  pShowScreen('p-s-home');
-  document.getElementById('p-hdr-right').innerHTML = `
-    <button class="p-back-btn" onclick="closePresentView()">← 관리자로 돌아가기</button>
-  `;
-}
-
-function pOpenSession(idx) {
-  pCurSession = pSessions[idx];
-  if (!pCurSession.days || !pCurSession.days.length) {
-    alert('이 세션은 아직 준비 중입니다.\n관리자 페이지에서 콘텐츠를 추가해주세요.');
-    return;
-  }
-  pCurDayIdx = 0;
-  pRenderSession();
-  pShowScreen('p-s-session');
-  document.getElementById('p-hdr-right').innerHTML = `
-    <button class="p-back-btn" onclick="pGoHome()">← 세션 목록</button>
-    <span class="p-hdr-session-name">${pCurSession.name}</span>
-  `;
-}
-
-function pRenderSession() {
-  const dayBar = document.getElementById('p-day-bar');
-  dayBar.innerHTML = pCurSession.days.map((d,i) =>
-    `<div class="p-day-tab ${i===pCurDayIdx?'on':''}" onclick="presentSetDay(${i})">${d.name}</div>`
-  ).join('');
-  pRenderItems();
-}
-
-function presentSetDay(idx) {
-  pCurDayIdx = idx;
-  pRenderSession();
-}
-
-const P_TYPE_META = {
-  link:      {label:'자료 열기', cls:'p-tb-link'},
-  roleplay:  {label:'롤플레이',  cls:'p-tb-roleplay'},
-  flashcard: {label:'QR 배포',  cls:'p-tb-flashcard'},
-  quiz:      {label:'QR 배포',  cls:'p-tb-quiz'},
-  lecture:   {label:'강의 모드', cls:'p-tb-lecture'}
-};
-const P_ICON_BG = {
-  link:'#eff6ff', roleplay:'#f0fdf4', flashcard:'#fdf4ff', quiz:'#fef2f2', lecture:'#fffbeb'
-};
-
-function pRenderItems() {
-  const day = pCurSession.days[pCurDayIdx];
-  const wrap = document.getElementById('p-items-list');
-  if (!day || !day.items || !day.items.length) {
-    wrap.innerHTML = '<div style="text-align:center;padding:60px 24px;color:var(--muted);font-size:15px;">이 DAY에 등록된 항목이 없습니다.</div>';
-    return;
-  }
-  wrap.innerHTML = day.items.map((item, i) => {
-    const tm = P_TYPE_META[item.type] || {label:item.type, cls:'p-tb-link'};
-    return `
-      <div class="p-item-card" onclick="pOpenItem(${i})">
-        <div class="p-item-icon" style="background:${P_ICON_BG[item.type]||'#f4f7fb'}">${item.icon||'📋'}</div>
-        <div style="flex:1;">
-          <div class="p-item-name">${item.name}</div>
-          <div class="p-item-desc">${item.desc||''}</div>
-        </div>
-        <span class="p-type-badge ${tm.cls}">${tm.label}</span>
-        <span style="color:var(--muted);font-size:20px;">›</span>
-      </div>
-    `;
-  }).join('');
-}
-
-function pOpenItem(idx) {
-  const item = pCurSession.days[pCurDayIdx].items[idx];
-  document.getElementById('p-vhdr-title').textContent = item.name;
-  ['p-v-link','p-v-roleplay','p-v-lecture','p-v-qr','p-v-empty'].forEach(id => {
-    const el = document.getElementById(id);
-    el.style.display = 'none';
-  });
-  document.getElementById('p-kbd-hints').innerHTML = '';
-
-  if      (item.type === 'link')      pOpenLinkViewer(item);
-  else if (item.type === 'roleplay')  pOpenRoleplay(item);
-  else if (item.type === 'flashcard') presentOpenQR(item, 'flashcard');
-  else if (item.type === 'quiz')      presentOpenQR(item, 'quiz');
-  else if (item.type === 'lecture')   pOpenLecture(item);
-
-  document.getElementById('p-s-viewer').classList.add('on');
-}
-
-function pCloseViewer() {
-  document.getElementById('p-s-viewer').classList.remove('on');
-  document.getElementById('p-v-link-frame').src = '';
-}
-
-function pOpenLinkViewer(item) {
-  pExtUrl = item.url || '';
-  if (!pExtUrl) { pShowEmpty('🔗','링크가 설정되지 않았습니다','관리자 페이지에서 링크를 입력해주세요.'); return; }
-  window.open(pExtUrl, '_blank');
-  pCloseViewer();
-}
-function pOpenExt() { if(pExtUrl) window.open(pExtUrl, '_blank'); }
-
-function pOpenRoleplay(item) {
-  pRpCategories = item.categories || [];
-  if (!pRpCategories.length) { pShowEmpty('🎭','내용이 없습니다','관리자 페이지에서 롤플레이 내용을 추가해주세요.'); return; }
-  pRpCatIdx = 0; pRpChecked = {};
-  const el = document.getElementById('p-v-roleplay');
-  el.style.display = 'flex';
-  el.style.flexDirection = 'column';
-  pRenderRP();
-  pSetKbd([['←→','카테고리 이동'],['ESC','닫기']]);
-}
-function pRenderRP() {
-  const cats = pRpCategories;
-  const cat = cats[pRpCatIdx];
-  document.getElementById('p-rp-tabs').innerHTML = cats.map((c,i)=>
-    `<button class="p-rp-tab ${i===pRpCatIdx?'on':'off'}" onclick="pRpSetCat(${i})">${c.name}</button>`
-  ).join('');
-  const left = document.getElementById('p-rp-left');
-  const pts = cat.checkpoints || [];
-  left.innerHTML = `<div class="p-rp-panel-title">핵심 포인트</div>` +
-    (pts.length ? pts.map((p,i)=>{
-      const key = pRpCatIdx+'_'+i;
-      const ck = pRpChecked[key];
-      return `<div class="p-rp-check-item" onclick="pRpToggle(${i})">
-        <div class="p-rp-chk ${ck?'checked':''}"></div>
-        <span class="p-rp-check-text ${ck?'checked':''}">${p}</span>
-      </div>`;
-    }).join('') : '<p style="color:#999;font-size:14px;">항목 없음</p>');
-  const right = document.getElementById('p-rp-right');
-  const scripts = cat.scripts || [];
-  right.innerHTML = `<div class="p-rp-panel-title">멘트</div>` +
-    (scripts.length ? scripts.map(s=>
-      `<div class="p-rp-script-block">
-        <div class="p-rp-script-label">${s.label||''}</div>
-        <div class="p-rp-script-text">${s.text||''}</div>
-      </div>`
-    ).join('') : '<p style="color:#999;font-size:14px;">멘트 없음</p>');
-}
-function pRpSetCat(i) { pRpCatIdx = i; pRenderRP(); }
-function pRpToggle(i) {
-  const key = pRpCatIdx+'_'+i;
-  pRpChecked[key] = !pRpChecked[key];
-  pRenderRP();
-}
-
-function pOpenLecture(item) {
-  const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
-  const set = sets.find(s=>s.id===item.fcId) || sets[0];
-  if (!set || !(set.cards||[]).length) {
-    pShowEmpty('🎓','플래시카드가 없습니다','관리자 페이지에서 플래시카드 세트를 먼저 만들어주세요.');
-    return;
-  }
-  pFcCards = set.cards;
-  pFcIdx = 0; pFcFlipped = false;
-  const el = document.getElementById('p-v-lecture');
-  el.style.display = 'flex';
-  el.style.flexDirection = 'column';
-  pRenderFC();
-  pSetKbd([['Space','뒤집기'],['←','이전'],['→','다음'],['ESC','닫기']]);
-}
-function pRenderFC() {
-  const c = pFcCards[pFcIdx];
-  document.getElementById('p-fc-front-text').textContent = c.front || c.q || '';
-  document.getElementById('p-fc-back-text').textContent  = c.back  || c.a || '';
-  document.getElementById('p-fc-counter').textContent = (pFcIdx+1)+' / '+pFcCards.length;
-  document.getElementById('p-fc-inner').classList.remove('flipped');
-  pFcFlipped = false;
-  document.getElementById('p-fc-prev').disabled = pFcIdx === 0;
-  document.getElementById('p-fc-next').disabled = pFcIdx === pFcCards.length-1;
-}
-function pFlipFC() {
-  pFcFlipped = !pFcFlipped;
-  document.getElementById('p-fc-inner').classList.toggle('flipped', pFcFlipped);
-}
-function pFcNav(d) { pFcIdx = Math.max(0, Math.min(pFcCards.length-1, pFcIdx+d)); pRenderFC(); }
-
-function presentOpenQR(item, type) {
-  const base = 'https://taeyun-larosee.github.io/larosee-quiz/';
-  let url = base;
-  if (type==='flashcard') url += '?fc=' + (item.fcId || 'larosee');
-  else if (type==='quiz') url += '?quiz=' + (item.quizId || 'larosee');
-
-  document.getElementById('p-qr-title').textContent = item.name;
-  document.getElementById('p-qr-url').textContent = url;
-
-  const canvas = document.getElementById('p-qr-canvas');
-  canvas.innerHTML = '';
-  new QRCode(canvas, { text:url, width:260, height:260, correctLevel:QRCode.CorrectLevel.H });
-
-  const el = document.getElementById('p-v-qr');
-  el.style.display = 'flex';
-  el.style.flexDirection = 'column';
-  pSetKbd([['ESC','닫기']]);
-}
-
-function pShowEmpty(icon, h, p) {
-  document.getElementById('p-empty-icon').textContent = icon;
-  document.getElementById('p-empty-h').textContent = h;
-  document.getElementById('p-empty-p').textContent = p;
-  const el = document.getElementById('p-v-empty');
-  el.style.display = 'flex';
-  el.style.flexDirection = 'column';
-}
-
-function pSetKbd(hints) {
-  document.getElementById('p-kbd-hints').innerHTML = hints.map(([k,l]) =>
-    `<span class="p-kbd"><span class="p-key">${k}</span> ${l}</span>`
-  ).join('');
-}
-
-function pShowScreen(id) {
-  document.querySelectorAll('.p-screen').forEach(s=>s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
-
-document.addEventListener('keydown', e => {
-  const viewer = document.getElementById('p-s-viewer');
-  if (!viewer || !viewer.classList.contains('on')) return;
-  if (e.key==='Escape') { pCloseViewer(); return; }
-
-  const rpOn = document.getElementById('p-v-roleplay').style.display !== 'none';
-  const fcOn = document.getElementById('p-v-lecture').style.display  !== 'none';
-
-  if (rpOn) {
-    if (e.key==='ArrowLeft')  pRpSetCat(Math.max(0, pRpCatIdx-1));
-    if (e.key==='ArrowRight') pRpSetCat(Math.min(pRpCategories.length-1, pRpCatIdx+1));
-  }
-  if (fcOn) {
-    if (e.key===' ') { e.preventDefault(); pFlipFC(); }
-    if (e.key==='ArrowLeft')  pFcNav(-1);
-    if (e.key==='ArrowRight') pFcNav(1);
-  }
-});
-
-// ── Init ──
-window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(() => {
+    id:'new-hire', name:'?좉퇋?낆궗??援먯쑁', status:'active', icon:'?뱴', order:0,
     document.getElementById('loading').style.display = 'none';
     if (isLoggedIn()) {
       showApp();
