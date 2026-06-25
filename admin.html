@@ -54,7 +54,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   padding:0 24px;z-index:100;
 }
 .logo-wrap{display:flex;align-items:center;gap:6px;cursor:pointer;text-decoration:none;}
-.logo-wrap img{height:52px;}
+.logo-wrap img{height:36px;}
 .logo-hint{font-size:10px;color:var(--muted);}
 .btn-normal{padding:7px 16px;border:2px solid var(--blue);border-radius:8px;
   background:#fff;color:var(--blue);font-size:13px;cursor:pointer;font-weight:500;transition:.15s;}
@@ -258,11 +258,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <a class="logo-wrap" onclick="gotoTab('dashboard')">
       <img src="logo.png" alt="라로제">
     </a>
-    <div class="row" style="gap:12px;">
-      <span style="font-size:12px;color:var(--muted);" id="last-updated"></span>
-      <button class="btn-normal" onclick="loadAllData()">🔄 새로고침</button>
-      <button class="btn-normal" onclick="doLogout()">로그아웃</button>
-    </div>
+    <span style="font-size:12px;color:var(--muted);" id="last-updated"></span>
   </div>
 
   <!-- Sidebar -->
@@ -295,13 +291,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">–</div><div class="l">평균 점수</div></div>
         <div class="sc"><div class="n" style="color:#d97706;" id="st-time">–</div><div class="l">평균 응시시간</div></div>
         <div class="tier green" onclick="openTier('green')">
-          <span class="tc">▾</span><div class="tn" id="st-g">–</div><div class="tl">90점↑ 우수합격</div>
+          <span class="tc">▾</span><div class="tn" id="st-g">–</div><div class="tl" id="tl-g">90점↑ 우수합격</div>
         </div>
         <div class="tier blue" onclick="openTier('blue')">
-          <span class="tc">▾</span><div class="tn" id="st-b">–</div><div class="tl">80~90점 합격</div>
+          <span class="tc">▾</span><div class="tn" id="st-b">–</div><div class="tl" id="tl-b">80~90점 합격</div>
         </div>
         <div class="tier red" onclick="openTier('red')">
-          <span class="tc">▾</span><div class="tn" id="st-r">–</div><div class="tl">80점↓ 미달</div>
+          <span class="tc">▾</span><div class="tn" id="st-r">–</div><div class="tl" id="tl-r">80점↓ 미달</div>
         </div>
       </div>
 
@@ -369,25 +365,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <!-- ━━ SETTINGS ━━ -->
     <div id="tab-settings" class="tab">
       <div style="font-size:20px;font-weight:800;margin-bottom:24px;">설정</div>
-
-      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">합격 기준</div>
-      <div class="srow">
-        <span>우수합격 기준</span>
-        <div class="row">
-          <input type="number" id="pass-s" value="90" style="width:70px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);font-size:14px;text-align:center;">
-          <span style="font-size:13px;color:var(--muted);">점 이상</span>
-        </div>
-      </div>
-      <div class="srow">
-        <span>합격 기준</span>
-        <div class="row">
-          <input type="number" id="pass-p" value="80" style="width:70px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);font-size:14px;text-align:center;">
-          <span style="font-size:13px;color:var(--muted);">점 이상</span>
-        </div>
-      </div>
-      <button class="btn btn-p" style="margin-top:8px;" onclick="savePassCriteria()">저장</button>
-
-      <div class="sep"></div>
 
       <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">비밀번호 변경</div>
       <div class="srow" style="flex-direction:column;align-items:flex-start;gap:10px;">
@@ -589,6 +566,16 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
           <input type="number" id="qe-timer" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">우수합격 기준 <span style="font-weight:400;">(점)</span></label>
+          <input type="number" id="qe-pass-s" min="0" max="100" value="90" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">합격 기준 <span style="font-weight:400;">(점)</span></label>
+          <input type="number" id="qe-pass-p" min="0" max="100" value="80" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+      </div>
       <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">문항 목록</div>
       <div id="qe-question-list" style="margin-bottom:12px;"></div>
       <!-- 문항 추가 폼 -->
@@ -737,8 +724,18 @@ let allScores = [], filteredScores = [], currentQuiz = 'all';
 let quizMap = {}, fcSets = [];
 let currentTier = 'green', currentTierTab = 'new';
 
-const S_SCORE = () => parseInt(document.getElementById('pass-s').value) || 90;
-const P_SCORE = () => parseInt(document.getElementById('pass-p').value) || 80;
+function getPassCriteria() {
+  if (currentQuiz !== 'all') {
+    try {
+      const sets = JSON.parse(localStorage.getItem('lr_sets') || '[]');
+      const quiz = sets.find(s => s.name === currentQuiz);
+      if (quiz) return { s: quiz.passS || 90, p: quiz.passP || 80 };
+    } catch(e) {}
+  }
+  return { s: 90, p: 80 };
+}
+const S_SCORE = () => getPassCriteria().s;
+const P_SCORE = () => getPassCriteria().p;
 
 async function loadAllData() {
   if (!db) { renderFromLocal(); return; }
@@ -779,14 +776,15 @@ function buildQuizPills() {
   const names = [...new Set(allScores.map(s => s.quizName).filter(Boolean))];
   const wrap = document.getElementById('cpills');
   wrap.innerHTML = '<div class="pill on" onclick="setQuizPill(this,\'all\')">전체</div>';
-  names.forEach((n, i) => {
-    const d = document.createElement('div');
-    d.className = 'pill';
-    d.textContent = '퀴즈' + (i + 1);
-    d.title = n;
-    d.onclick = function(){ setQuizPill(this, n); };
-    wrap.appendChild(d);
-  });
+  if (names.length > 1) {
+    names.forEach(n => {
+      const d = document.createElement('div');
+      d.className = 'pill';
+      d.textContent = n;
+      d.onclick = function(){ setQuizPill(this, n); };
+      wrap.appendChild(d);
+    });
+  }
 }
 
 function setQuizPill(el, quiz) {
@@ -817,13 +815,37 @@ function renderStats() {
   const avgDur = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.duration||0),0)/fs.length) : 0;
   document.getElementById('st-time').textContent = formatDur(avgDur);
   const pct = s => s.pct ?? (s.score && s.total ? Math.round(s.score/s.total*100) : 0);
-  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= S_SCORE()).length + '명';
-  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= P_SCORE() && pct(s) < S_SCORE()).length + '명';
-  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < P_SCORE()).length + '명';
+  const ss = S_SCORE(), ps = P_SCORE();
+  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= ss).length + '명';
+  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= ps && pct(s) < ss).length + '명';
+  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < ps).length + '명';
+  document.getElementById('tl-g').textContent = ss + '점↑ 우수합격';
+  document.getElementById('tl-b').textContent = ps + '~' + ss + '점 합격';
+  document.getElementById('tl-r').textContent = ps + '점↓ 미달';
 }
 
 // cohortChart
 let myChart, myChartData = [];
+const barScorePlugin = {
+  id: 'barScore',
+  afterDatasetsDraw(chart) {
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((dataset, i) => {
+      if (dataset.type !== 'bar') return;
+      chart.getDatasetMeta(i).data.forEach((bar, j) => {
+        const val = dataset.data[j];
+        if (!val) return;
+        ctx.save();
+        ctx.fillStyle = '#1a2233';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'bottom';
+        ctx.fillText(val + '점', bar.x, bar.y - 2);
+        ctx.restore();
+      });
+    });
+  }
+};
 function initChart(labels, data) {
   myChartData = data;
   const ctx = document.getElementById('cohortChart').getContext('2d');
@@ -839,6 +861,7 @@ function initChart(labels, data) {
     },
     options: {
       responsive:true, maintainAspectRatio:false,
+      layout: { padding: { top: 18 } },
       onClick(e) {
         const pts = myChart.getElementsAtEventForMode(e,'nearest',{intersect:true},false);
         if (!pts.length) return;
@@ -855,7 +878,8 @@ function initChart(labels, data) {
         y2:{ position:'right', min:0, grid:{display:false},
           ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'명':'',font:{size:11},color:'#d97706'} }
       }
-    }
+    },
+    plugins: [barScorePlugin]
   });
 }
 
@@ -877,14 +901,15 @@ function openCohortDetail(label, d) {
 
 function renderChart() {
   const src = currentQuiz === 'all' ? allScores : allScores.filter(s => s.quizName === currentQuiz);
-  const cohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
-  const data = cohorts.map(c => {
+  const rawCohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
+  const labels = rawCohorts.map(c => /기$/.test(c) ? c : c + '기');
+  const data = rawCohorts.map(c => {
     const rows = src.filter(s=>s.cohort===c);
     const avg = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.pct||0),0)/rows.length) : 0;
     const avgDur = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.duration||0),0)/rows.length) : 0;
     return { avg, cnt: rows.length, avgDur, rows };
   });
-  initChart(cohorts, data);
+  initChart(labels, data);
 }
 
 function renderTop5() {
@@ -1007,6 +1032,8 @@ function openQuizEditor(id) {
   document.getElementById('qe-name').value = set ? set.name : '';
   document.getElementById('qe-quiz-cnt').value = set ? (set.quizCount || 0) : 0;
   document.getElementById('qe-timer').value = set ? (set.timerMin || 0) : 0;
+  document.getElementById('qe-pass-s').value = set ? (set.passS || 90) : 90;
+  document.getElementById('qe-pass-p').value = set ? (set.passP || 80) : 80;
   qeCloseForm();
   renderQeList();
   document.getElementById('quiz-editor-ov').classList.add('open');
@@ -1071,14 +1098,14 @@ function qeCloseForm() {
   document.getElementById('qe-add-form').style.display = 'none';
   document.getElementById('qe-add-btn').style.display = 'inline-flex';
   _qeEditIdx = null;
-  _qeInlineIdx = null;
+  // _qeInlineIdx는 여기서 초기화하지 않음 (qeInlineCancel에서만 초기화)
 }
 
 function qeEditQuestion(i) { qeInlineEdit(i); }
 
 function qeInlineEdit(i) {
-  _qeInlineIdx = i;
-  qeCloseForm(); // 하단 추가 폼 닫기
+  qeCloseForm(); // 하단 추가 폼 닫기 (qeInlineIdx 건드리지 않음)
+  _qeInlineIdx = i; // qeCloseForm 이후에 설정
   renderQeList();
 }
 
@@ -1120,12 +1147,14 @@ function saveQuizEditor() {
   if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
   const quizCount = parseInt(document.getElementById('qe-quiz-cnt').value) || 0;
   const timerMin = parseInt(document.getElementById('qe-timer').value) || 0;
+  const passS = parseInt(document.getElementById('qe-pass-s').value) || 90;
+  const passP = parseInt(document.getElementById('qe-pass-p').value) || 80;
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   if (_qeId) {
     const idx = sets.findIndex(s=>s.id===_qeId);
-    if (idx>=0) sets[idx] = { ...sets[idx], name, questions:_qeQuestions, quizCount, timerMin };
+    if (idx>=0) sets[idx] = { ...sets[idx], name, questions:_qeQuestions, quizCount, timerMin, passS, passP };
   } else {
-    sets.push({ id:'quiz_'+Date.now(), name, questions:_qeQuestions, quizCount, timerMin });
+    sets.push({ id:'quiz_'+Date.now(), name, questions:_qeQuestions, quizCount, timerMin, passS, passP });
   }
   localStorage.setItem('lr_sets', JSON.stringify(sets));
   closeOvD('quiz-editor-ov');
@@ -1227,57 +1256,83 @@ function deleteFcSet(id) {
 
 // ── 유형 관리 ──
 const DEFAULT_ITEM_TYPES = [
-  {id:'link',     icon:'📋', name:'링크 (PPT/PDF)'},
-  {id:'roleplay', icon:'🎭', name:'롤플레이'},
-  {id:'flashcard',icon:'🗂', name:'플래시카드 QR'},
-  {id:'quiz',     icon:'✅', name:'퀴즈 QR'},
-  {id:'lecture',  icon:'🎓', name:'강의 모드'}
+  {id:'link',     icon:'📋', name:'링크 (PPT/PDF)',   order:0, active:true},
+  {id:'roleplay', icon:'🎭', name:'롤플레이',          order:1, active:true},
+  {id:'flashcard',icon:'🗂', name:'플래시카드 QR',     order:2, active:true},
+  {id:'quiz',     icon:'✅', name:'퀴즈 QR',          order:3, active:true},
+  {id:'lecture',  icon:'🎓', name:'강의 모드',         order:4, active:true}
 ];
 
 function getItemTypes() {
-  try { return JSON.parse(localStorage.getItem('lr_item_types')||'null') || DEFAULT_ITEM_TYPES; } catch(e) { return DEFAULT_ITEM_TYPES; }
+  try {
+    const saved = JSON.parse(localStorage.getItem('lr_item_types')||'null');
+    if (!saved) return DEFAULT_ITEM_TYPES;
+    // 기존 데이터에 order/active 없으면 보완
+    return saved.map((t,i) => ({ order:i, active:true, ...t }));
+  } catch(e) { return DEFAULT_ITEM_TYPES; }
 }
 function saveItemTypes(types) { localStorage.setItem('lr_item_types', JSON.stringify(types)); }
 
 function renderTypeList() {
   const wrap = document.getElementById('type-list-wrap');
   if (!wrap) return;
-  const types = getItemTypes();
+  const types = getItemTypes().slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  const isBuiltin = id => ['link','roleplay','flashcard','quiz','lecture'].includes(id);
   wrap.innerHTML = types.map((t,i)=>`
-    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
-      <span style="font-size:18px;">${t.icon}</span>
-      <span style="flex:1;font-size:13px;font-weight:600;">${t.name}</span>
-      <button class="btn btn-o btn-sm" onclick="editItemType(${i})">이모지 변경</button>
-      ${!['link','roleplay','flashcard','quiz','lecture'].includes(t.id)?`<button class="btn btn-g btn-sm" onclick="deleteItemType(${i})" style="color:var(--red);">삭제</button>`:''}
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <button onclick="moveTypeUp(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===0?'disabled style="opacity:.3;"':''}>▲</button>
+        <button onclick="moveTypeDown(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===types.length-1?'disabled style="opacity:.3;"':''}>▼</button>
+      </div>
+      <input type="text" value="${(t.name||'').replace(/"/g,'&quot;')}"
+        onblur="renameItemType('${t.id}',this.value)"
+        style="flex:1;padding:7px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-weight:600;">
+      <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;">
+        <input type="checkbox" ${t.active!==false?'checked':''} onchange="toggleTypeActive('${t.id}',this.checked)" style="cursor:pointer;width:14px;height:14px;">
+        활성
+      </label>
+      ${!isBuiltin(t.id)?`<button onclick="deleteItemType('${t.id}')" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">삭제</button>`:''}
     </div>
   `).join('');
-  // 아이템 모달 select도 업데이트
+  // 아이템 모달 select도 업데이트 (활성화된 것만)
   const sel = document.getElementById('item-type');
-  if (sel) sel.innerHTML = types.map(t=>`<option value="${t.id}">${t.icon} ${t.name}</option>`).join('');
+  if (sel) sel.innerHTML = types.filter(t=>t.active!==false).map(t=>`<option value="${t.id}">${t.icon||''} ${t.name}</option>`).join('');
 }
 
-function editItemType(i) {
-  const types = getItemTypes();
-  const t = types[i];
-  const icon = prompt('이모지를 변경하세요:', t.icon);
-  if (icon === null) return;
-  types[i] = { ...t, icon: icon.trim() || t.icon };
+function moveTypeUp(i) {
+  const types = getItemTypes().slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  if (i === 0) return;
+  const tmp = types[i-1].order; types[i-1].order = types[i].order; types[i].order = tmp;
   saveItemTypes(types); renderTypeList();
 }
-
+function moveTypeDown(i) {
+  const types = getItemTypes().slice().sort((a,b)=>(a.order||0)-(b.order||0));
+  if (i >= types.length - 1) return;
+  const tmp = types[i+1].order; types[i+1].order = types[i].order; types[i].order = tmp;
+  saveItemTypes(types); renderTypeList();
+}
+function renameItemType(id, newName) {
+  if (!newName.trim()) return;
+  const types = getItemTypes();
+  const t = types.find(x=>x.id===id);
+  if (t) { t.name = newName.trim(); saveItemTypes(types); }
+}
+function toggleTypeActive(id, active) {
+  const types = getItemTypes();
+  const t = types.find(x=>x.id===id);
+  if (t) { t.active = active; saveItemTypes(types); renderTypeList(); }
+}
 function addItemType() {
-  const icon = prompt('아이콘 (이모지):') || '📌';
   const name = prompt('유형 이름:');
   if (!name) return;
   const types = getItemTypes();
-  types.push({ id:'custom_'+Date.now(), icon, name });
+  const maxOrder = types.reduce((m,t)=>Math.max(m,t.order||0), 0);
+  types.push({ id:'custom_'+Date.now(), icon:'📌', name, order:maxOrder+1, active:true });
   saveItemTypes(types); renderTypeList();
 }
-
-function deleteItemType(i) {
+function deleteItemType(id) {
   if (!confirm('이 유형을 삭제하시겠습니까?')) return;
-  const types = getItemTypes();
-  types.splice(i,1);
+  const types = getItemTypes().filter(t=>t.id!==id);
   saveItemTypes(types); renderTypeList();
 }
 
@@ -1405,12 +1460,6 @@ function copyQR() {
 }
 
 // ── Settings ──
-function savePassCriteria() {
-  localStorage.setItem('admin_pass_s', document.getElementById('pass-s').value);
-  localStorage.setItem('admin_pass_p', document.getElementById('pass-p').value);
-  alert('저장되었습니다.');
-  renderStats();
-}
 function changePw() {
   const cur = document.getElementById('pw-cur').value;
   const nw = document.getElementById('pw-new').value;
@@ -1904,10 +1953,6 @@ function setDay(el) {
 
 // ── Init ──
 window.addEventListener('DOMContentLoaded', () => {
-  // load saved pass criteria
-  const ps = localStorage.getItem('admin_pass_s'); if(ps) document.getElementById('pass-s').value = ps;
-  const pp = localStorage.getItem('admin_pass_p'); if(pp) document.getElementById('pass-p').value = pp;
-
   setTimeout(() => {
     document.getElementById('loading').style.display = 'none';
     if (isLoggedIn()) {
