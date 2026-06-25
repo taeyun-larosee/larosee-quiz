@@ -377,9 +377,14 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 
       <div class="sep"></div>
 
-      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">항목 유형 관리</div>
-      <div id="type-list-wrap" style="margin-bottom:10px;"></div>
-      <button class="btn btn-g btn-sm" onclick="addItemType()">＋ 유형 추가</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">항목 유형 관리</div>
+        <button class="btn btn-o btn-sm" onclick="toggleTypePanel()">수정하기</button>
+      </div>
+      <div id="type-panel" style="display:none;border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--gray);">
+        <div id="type-list-wrap" style="margin-bottom:10px;"></div>
+        <button class="btn btn-g btn-sm" onclick="addItemType()">＋ 유형 추가</button>
+      </div>
 
       <div class="sep"></div>
 
@@ -588,12 +593,14 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
           <input type="text" id="qe-opt2" placeholder="③ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
           <input type="text" id="qe-opt3" placeholder="④ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
         </div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
-          <label style="font-size:13px;color:var(--muted);">정답:</label>
-          <select id="qe-answer" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <option value="0">① 번</option><option value="1">② 번</option>
-            <option value="2">③ 번</option><option value="3">④ 번</option>
-          </select>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">정답 <span style="font-size:11px;font-weight:400;">(복수 선택 가능)</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-0"> ① 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-1"> ② 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-2"> ③ 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-3"> ④ 번</label>
+          </div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-g btn-sm" onclick="qeCloseForm()">취소</button>
@@ -830,17 +837,18 @@ const barScorePlugin = {
   id: 'barScore',
   afterDatasetsDraw(chart) {
     const ctx = chart.ctx;
+    const bottomY = chart.chartArea.bottom - 7;
     chart.data.datasets.forEach((dataset, i) => {
       if (dataset.type !== 'bar') return;
       chart.getDatasetMeta(i).data.forEach((bar, j) => {
         const val = dataset.data[j];
         if (!val) return;
         ctx.save();
-        ctx.fillStyle = '#1a2233';
+        ctx.fillStyle = '#fff';
         ctx.font = 'bold 11px -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText(val + '점', bar.x, bar.y - 2);
+        ctx.fillText(val + '점', bar.x, bottomY);
         ctx.restore();
       });
     });
@@ -854,9 +862,9 @@ function initChart(labels, data) {
     data: {
       labels: labels.length ? labels : ['데이터 없음'],
       datasets: [
-        { type:'bar', label:'평균점수', data: data.map(d=>d.avg), backgroundColor:'#0E94CD', borderRadius:6, yAxisID:'y' },
+        { type:'bar', label:'평균점수', data: data.map(d=>d.avg), backgroundColor:'#0E94CD', borderRadius:6, yAxisID:'y', order:1 },
         { type:'line', label:'응시인원', data: data.map(d=>d.cnt), borderColor:'#d97706', backgroundColor:'#fff',
-          pointBackgroundColor:'#fff', pointBorderColor:'#d97706', pointBorderWidth:2, pointRadius:6, tension:.3, yAxisID:'y2' }
+          pointBackgroundColor:'#fff', pointBorderColor:'#d97706', pointBorderWidth:2, pointRadius:6, tension:.3, yAxisID:'y2', order:0 }
       ]
     },
     options: {
@@ -1026,7 +1034,11 @@ function openQuizEditor(id) {
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const set = id ? sets.find(s=>s.id===id) : null;
   _qeId = id;
-  _qeQuestions = set ? JSON.parse(JSON.stringify(set.questions||[])) : [];
+  _qeQuestions = set ? JSON.parse(JSON.stringify(set.questions||[])).map(q => ({
+    ...q,
+    question: q.question || q.q || '',
+    correct: q.correct ?? q.answer
+  })) : [];
   _qeEditIdx = null;
   document.getElementById('qe-title').textContent = set ? '퀴즈 수정' : '퀴즈 추가';
   document.getElementById('qe-name').value = set ? set.name : '';
@@ -1043,12 +1055,23 @@ function renderQeList() {
   const wrap = document.getElementById('qe-question-list');
   if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">문항 없음</div>'; return; }
   wrap.innerHTML = _qeQuestions.map((q,i) => {
+    // 필드명 정규화 (question/correct 우선, q/answer 폴백)
+    const qText = q.question || q.q || '';
+    const ansArr = Array.isArray(q.correct) ? q.correct.map(Number)
+      : q.correct != null ? [Number(q.correct)]
+      : Array.isArray(q.answer) ? q.answer.map(Number)
+      : q.answer != null ? [Number(q.answer)] : [0];
     if (_qeInlineIdx === i) {
       const esc = s => (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      const cbHtml = [0,1,2,3].map(j =>
+        '<label style="display:flex;align-items:center;gap:5px;font-size:13px;padding:6px 8px;border:1px solid #e2eaf4;border-radius:7px;cursor:pointer;background:#fff;">' +
+        '<input type="checkbox" id="qe-il-ans-'+j+'" '+(ansArr.includes(j)?'checked':'')+' style="width:14px;height:14px;accent-color:#0E94CD;"> ' +
+        '①②③④'[j]+' 번</label>'
+      ).join('');
       return `
         <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;margin-bottom:8px;background:#f4faff;">
           <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} 수정 중</div>
-          <input type="text" id="qe-il-q" value="${esc(q.q)}" placeholder="질문 내용"
+          <input type="text" id="qe-il-q" value="${esc(qText)}" placeholder="질문 내용"
             style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
             <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="① 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
@@ -1056,14 +1079,9 @@ function renderQeList() {
             <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="③ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
             <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="④ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
           </div>
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-            <span style="font-size:13px;color:var(--muted);">정답:</span>
-            <select id="qe-il-ans" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-              <option value="0" ${q.answer==0?'selected':''}>① 번</option>
-              <option value="1" ${q.answer==1?'selected':''}>② 번</option>
-              <option value="2" ${q.answer==2?'selected':''}>③ 번</option>
-              <option value="3" ${q.answer==3?'selected':''}>④ 번</option>
-            </select>
+          <div style="margin-bottom:10px;">
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">정답 <span style="font-size:11px;">(복수 선택 가능)</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${cbHtml}</div>
           </div>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">취소</button>
@@ -1071,11 +1089,13 @@ function renderQeList() {
           </div>
         </div>`;
     }
+    const ansLabel = ansArr.map(a=>(a+1)+'번').join(', ');
+    const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">복수</span>' : '';
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
         <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
-        <span style="flex:1;font-size:13px;">${q.q}</span>
-        <span style="font-size:11px;color:var(--muted);">정답:${Number(q.answer)+1}번</span>
+        <span style="flex:1;font-size:13px;">${qText}</span>
+        <span style="font-size:11px;color:var(--muted);">정답:${ansLabel}${multiTag}</span>
         <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">수정</button>
         <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
       </div>`;
@@ -1086,10 +1106,15 @@ function qeOpenForm(editIdx) {
   _qeEditIdx = editIdx ?? null;
   const q = editIdx != null ? _qeQuestions[editIdx] : null;
   document.getElementById('qe-form-title').textContent = q ? '문항 수정' : '문항 추가';
-  document.getElementById('qe-q-text').value = q ? q.q : '';
+  document.getElementById('qe-q-text').value = q ? (q.question || q.q || '') : '';
   const opts = q ? q.options : ['','','',''];
   [0,1,2,3].forEach(i => document.getElementById('qe-opt'+i).value = opts[i]||'');
-  document.getElementById('qe-answer').value = q ? q.answer : 0;
+  // 정답 체크박스 설정
+  const ansArr = q ? (Array.isArray(q.correct) ? q.correct.map(Number)
+    : q.correct != null ? [Number(q.correct)]
+    : Array.isArray(q.answer) ? q.answer.map(Number)
+    : q.answer != null ? [Number(q.answer)] : [0]) : [];
+  [0,1,2,3].forEach(i => { const cb = document.getElementById('qe-ans-'+i); if(cb) cb.checked = ansArr.includes(i); });
   document.getElementById('qe-add-form').style.display = 'block';
   document.getElementById('qe-add-btn').style.display = 'none';
 }
@@ -1115,23 +1140,28 @@ function qeInlineCancel() {
 }
 
 function qeInlineSave(i) {
-  const q = document.getElementById('qe-il-q').value.trim();
-  if (!q) { alert('질문을 입력해주세요.'); return; }
+  const qText = document.getElementById('qe-il-q').value.trim();
+  if (!qText) { alert('질문을 입력해주세요.'); return; }
   const opts = [0,1,2,3].map(j => document.getElementById('qe-il-'+j).value.trim());
   if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
-  const ans = Number(document.getElementById('qe-il-ans').value);
-  _qeQuestions[i] = { ...(_qeQuestions[i]), q, options:opts, answer:ans };
+  const checked = [0,1,2,3].filter(j => document.getElementById('qe-il-ans-'+j)?.checked);
+  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
+  const correct = checked.length === 1 ? checked[0] : checked;
+  _qeQuestions[i] = { id: _qeQuestions[i].id, question: qText, options: opts, correct };
   _qeInlineIdx = null;
   renderQeList();
 }
 
 function qeSaveQuestion() {
-  const q = document.getElementById('qe-q-text').value.trim();
-  if (!q) { alert('질문을 입력해주세요.'); return; }
+  const qText = document.getElementById('qe-q-text').value.trim();
+  if (!qText) { alert('질문을 입력해주세요.'); return; }
   const opts = [0,1,2,3].map(i=>document.getElementById('qe-opt'+i).value.trim());
   if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
-  const ans = Number(document.getElementById('qe-answer').value);
-  const item = { id:'q'+(Date.now()), q, options:opts, answer:ans };
+  const checked = [0,1,2,3].filter(i => document.getElementById('qe-ans-'+i)?.checked);
+  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
+  const correct = checked.length === 1 ? checked[0] : checked;
+  const existId = _qeEditIdx != null ? _qeQuestions[_qeEditIdx].id : null;
+  const item = { id: existId || 'q'+Date.now(), question: qText, options: opts, correct };
   if (_qeEditIdx != null) _qeQuestions[_qeEditIdx] = item;
   else _qeQuestions.push(item);
   qeCloseForm(); renderQeList();
@@ -1272,6 +1302,15 @@ function getItemTypes() {
   } catch(e) { return DEFAULT_ITEM_TYPES; }
 }
 function saveItemTypes(types) { localStorage.setItem('lr_item_types', JSON.stringify(types)); }
+
+function toggleTypePanel() {
+  const panel = document.getElementById('type-panel');
+  const btn = event.target;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? '수정하기' : '닫기';
+  if (!isOpen) renderTypeList();
+}
 
 function renderTypeList() {
   const wrap = document.getElementById('type-list-wrap');

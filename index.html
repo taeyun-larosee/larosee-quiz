@@ -177,6 +177,7 @@
     .q-option.correct { border-color: var(--success); background: var(--success-bg); color: var(--success-text); }
     .q-option.wrong { border-color: var(--error); background: var(--error-bg); color: var(--error-text); }
     .q-option:disabled { cursor: default; }
+    .q-option.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); font-weight: 600; }
     .q-feedback { margin-top: 16px; padding: 14px 18px; border-radius: 12px; font-size: 15px; font-weight: 600; text-align: center; display: none; }
     .q-feedback.correct { background: var(--success-bg); color: var(--success-text); display: block; }
     .q-feedback.wrong { background: var(--error-bg); color: var(--error-text); display: block; }
@@ -469,6 +470,9 @@
     <p class="q-text" id="q-text"></p>
     <div class="q-options" id="q-options"></div>
     <div class="q-feedback" id="q-feedback"></div>
+    <div class="q-next-wrap" id="q-confirm-wrap" style="display:none;">
+      <button class="btn btn-primary btn-block" onclick="confirmMultiAnswer()">확인</button>
+    </div>
     <div class="q-next-wrap" id="q-next-wrap">
       <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
     </div>
@@ -1202,7 +1206,11 @@ function startQuiz() {
   if (!set) { alert('퀴즈를 찾을 수 없습니다.'); return; }
   student = name;
   studentCohort = cohort;
-  let pool = [...set.questions];
+  let pool = set.questions.map(q => ({
+    ...q,
+    question: q.question || q.q || '',
+    correct: q.correct ?? q.answer
+  }));
   const cnt = set.quizCount || 0;
   if (cnt > 0 && cnt < pool.length) pool = pool.sort(() => Math.random() - 0.5).slice(0, cnt);
   qs = pool;
@@ -1236,6 +1244,7 @@ function renderQuestion() {
     fb.style.opacity = '';
   }
   document.getElementById('q-next-wrap').style.display = 'none';
+  document.getElementById('q-confirm-wrap').style.display = isMulti ? 'block' : 'none';
 }
 
 function selectAnswer(idx) {
@@ -1246,39 +1255,20 @@ function selectAnswer(idx) {
   const fb = document.getElementById('q-feedback');
 
   if (isMulti) {
-    if (opts[idx].disabled || opts[idx].classList.contains('correct')) return;
-    if (correctArr.includes(idx)) {
-      // 정답 선택
-      _selectedOptions.add(idx);
-      opts[idx].classList.add('correct');
-      opts[idx].style.opacity = '0.75';
-      const remaining = correctArr.length - _selectedOptions.size;
-      if (remaining === 0) {
-        // 모두 선택 완료
-        opts.forEach(btn => btn.disabled = true);
-        answers.push({ q, ok: true, chosen: [..._selectedOptions], correct: q.correct });
-        fb.textContent = '잘 기억하고 있네요!';
-        fb.className = 'q-feedback correct';
-        fb.style.opacity = '';
-        document.getElementById('q-next-wrap').style.display = 'block';
-      } else {
-        fb.textContent = '※ ' + remaining + '개 더 선택하세요';
-        fb.className = 'q-feedback';
-        fb.style.opacity = '0.6';
-      }
+    if (opts[idx].disabled) return;
+    // 토글 선택/해제
+    if (_selectedOptions.has(idx)) {
+      _selectedOptions.delete(idx);
+      opts[idx].classList.remove('selected');
     } else {
-      // 오답 선택 → 즉시 종료
-      opts.forEach((btn, i) => {
-        btn.disabled = true;
-        if (correctArr.includes(i)) btn.classList.add('correct');
-        else if (i === idx) btn.classList.add('wrong');
-      });
-      answers.push({ q, ok: false, chosen: [..._selectedOptions, idx], correct: q.correct });
-      fb.textContent = '이 부분은 함께 다시 살펴볼까요?';
-      fb.className = 'q-feedback wrong';
-      fb.style.opacity = '';
-      document.getElementById('q-next-wrap').style.display = 'block';
+      _selectedOptions.add(idx);
+      opts[idx].classList.add('selected');
     }
+    const cnt = _selectedOptions.size;
+    fb.textContent = cnt > 0 ? cnt + '개 선택됨 · 원하는 만큼 선택 후 확인을 누르세요' : '※ 정답을 선택하세요 (복수 선택 가능)';
+    fb.className = 'q-feedback';
+    fb.style.display = 'block';
+    fb.style.opacity = '0.7';
   } else {
     // 단일 정답 (기존 로직)
     const ok = correctArr.includes(idx);
@@ -1293,6 +1283,32 @@ function selectAnswer(idx) {
     fb.style.opacity = '';
     document.getElementById('q-next-wrap').style.display = 'block';
   }
+}
+
+function confirmMultiAnswer() {
+  const q = qs[qi];
+  const correctArr = Array.isArray(q.correct) ? q.correct.map(Number) : [Number(q.correct)];
+  const selected = [..._selectedOptions].map(Number);
+  const opts = document.querySelectorAll('.q-option');
+  const fb = document.getElementById('q-feedback');
+
+  // 정답 여부: 선택한 것과 정답 집합이 동일해야 정답
+  const ok = selected.length === correctArr.length && selected.every(i => correctArr.includes(i));
+
+  opts.forEach((btn, i) => {
+    btn.disabled = true;
+    btn.classList.remove('selected');
+    if (correctArr.includes(i)) btn.classList.add('correct');
+    else if (selected.includes(i)) btn.classList.add('wrong');
+  });
+
+  if (ok) { fb.textContent = '잘 기억하고 있네요!'; fb.className = 'q-feedback correct'; }
+  else { fb.textContent = '이 부분은 함께 다시 살펴볼까요?'; fb.className = 'q-feedback wrong'; }
+  fb.style.opacity = '';
+
+  answers.push({ q, ok, chosen: selected, correct: q.correct });
+  document.getElementById('q-confirm-wrap').style.display = 'none';
+  document.getElementById('q-next-wrap').style.display = 'block';
 }
 
 function nextQuestion() {
