@@ -149,8 +149,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   border:1px solid var(--border);background:#fff;color:var(--muted);transition:.15s;}
 .dtab.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 .ci{display:flex;align-items:center;gap:14px;padding:14px 20px;
-  border-bottom:1px solid #f0f4f8;}
+  border-bottom:1px solid #f0f4f8;cursor:grab;transition:background .15s;}
 .ci:last-child{border-bottom:none;}
+.ci.drag-over{background:#eff6ff;border:2px dashed var(--blue);}
+.ci-drag{font-size:18px;color:#c8d3e0;flex-shrink:0;cursor:grab;user-select:none;line-height:1;}
 .ci-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;
   justify-content:center;font-size:19px;flex-shrink:0;}
 .ci-info{flex:1;}
@@ -968,9 +970,12 @@ function renderQuizStatus() {
     const g = rows.filter(s=>pct(s)>=S_SCORE()).length;
     const b = rows.filter(s=>pct(s)>=P_SCORE()&&pct(s)<S_SCORE()).length;
     const r = rows.filter(s=>pct(s)<P_SCORE()).length;
+    const tEsc = t.replace(/'/g,"\\'");
     return `
-      <div style="background:var(--blue-light);border-radius:10px;padding:14px 18px;">
-        <div style="font-size:13px;font-weight:700;color:var(--blue-dark);">${t}</div>
+      <div style="background:var(--blue-light);border-radius:10px;padding:14px 18px;position:relative;">
+        <button onclick="deleteQuizScores('${tEsc}')"
+          style="position:absolute;top:10px;right:10px;padding:4px 10px;font-size:11px;border:1px solid #cdd9e8;border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">데이터 삭제</button>
+        <div style="font-size:13px;font-weight:700;color:var(--blue-dark);margin-right:60px;">${t}</div>
         <div style="font-size:13px;color:var(--text);margin:6px 0;">응시 ${rows.length}명 · 평균 ${avg}점</div>
         <div style="display:flex;gap:8px;">
           <span class="badge bg-green">우수 ${g}명</span>
@@ -980,6 +985,29 @@ function renderQuizStatus() {
       </div>
     `;
   }).join('');
+}
+
+async function deleteQuizScores(quizName) {
+  const cnt = allScores.filter(s=>s.quizName===quizName).length;
+  const msg = `"${quizName}" 퀴즈의 응시 데이터 ${cnt}건을 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.`;
+  if (!confirm(msg)) return;
+
+  // Firebase에서 삭제
+  try {
+    if (db) {
+      const snap = await db.collection('scores').where('quizName','==',quizName).get();
+      const batch = db.batch();
+      snap.docs.forEach(d => batch.delete(d.ref));
+      await batch.commit();
+    }
+  } catch(e) { console.error('Firebase 삭제 오류:', e); }
+
+  // 메모리에서 제거 후 재렌더
+  allScores = allScores.filter(s => s.quizName !== quizName);
+  if (currentQuiz === quizName) { currentQuiz = 'all'; }
+  buildQuizPills();
+  applyFilters();
+  renderQuizStatus();
 }
 
 // ── Quiz / FC lists ──
@@ -1657,7 +1685,13 @@ function renderDayTabs(s, si) {
 
 function renderItemRow(sessId, dayIdx, itemIdx, item) {
   return `
-    <div class="ci">
+    <div class="ci" draggable="true"
+      data-sess="${sessId}" data-day="${dayIdx}" data-idx="${itemIdx}"
+      ondragstart="onItemDragStart(event)"
+      ondragover="onItemDragOver(event)"
+      ondrop="onItemDrop(event)"
+      ondragend="onItemDragEnd(event)">
+      <div class="ci-drag" title="드래그하여 순서 변경">⠿</div>
       <div class="ci-icon" style="background:${ITEM_BG[item.type]||'#f4f7fb'}">${item.icon||ICON_MAP[item.type]||'📋'}</div>
       <div class="ci-info">
         <div class="ci-name">${item.name}</div>
@@ -1672,6 +1706,41 @@ function renderItemRow(sessId, dayIdx, itemIdx, item) {
       </div>
     </div>
   `;
+}
+
+let _dragSrc = null;
+function onItemDragStart(e) {
+  _dragSrc = e.currentTarget;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => { if (_dragSrc) _dragSrc.style.opacity = '0.4'; }, 0);
+}
+function onItemDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+function onItemDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  if (!_dragSrc || _dragSrc === e.currentTarget) return;
+  const fromIdx = parseInt(_dragSrc.dataset.idx);
+  const toIdx   = parseInt(e.currentTarget.dataset.idx);
+  const sessId  = _dragSrc.dataset.sess;
+  const dayIdx  = parseInt(_dragSrc.dataset.day);
+  // only reorder within same day
+  if (e.currentTarget.dataset.sess !== sessId || parseInt(e.currentTarget.dataset.day) !== dayIdx) return;
+  const sess = adminSessions.find(s=>s.id===sessId);
+  if (!sess) return;
+  const items = sess.days[dayIdx].items;
+  const [moved] = items.splice(fromIdx, 1);
+  items.splice(toIdx, 0, moved);
+  saveSessionsToStore();
+  renderSessionsTab();
+}
+function onItemDragEnd(e) {
+  if (_dragSrc) _dragSrc.style.opacity = '';
+  document.querySelectorAll('.ci.drag-over').forEach(el=>el.classList.remove('drag-over'));
+  _dragSrc = null;
 }
 
 function setDayAdmin(el, sessId, dayIdx) {

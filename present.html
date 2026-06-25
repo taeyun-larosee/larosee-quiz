@@ -487,23 +487,11 @@ function closeViewer() {
   document.getElementById('v-link-frame').src = '';
 }
 
-// LINK viewer — 새 탭으로 바로 열기
+// LINK viewer — 새 탭으로만 열기 (오버레이 없음)
 function openLinkViewer(item) {
   extUrl = item.url || '';
-
   if (!extUrl) { showEmpty('🔗','링크가 설정되지 않았습니다','관리자 페이지에서 링크를 입력해주세요.'); return; }
-
-  // 바로 새 탭으로 열고 뷰어도 안내 화면으로 표시
   window.open(extUrl, '_blank');
-
-  const ext = document.getElementById('v-link-ext');
-  const frame = document.getElementById('v-link-frame');
-  frame.style.display = 'none';
-  ext.style.display = 'flex';
-  document.getElementById('v-link').style.display = 'block';
-  document.getElementById('ext-title').textContent = item.name + ' — 새 탭에서 열렸습니다';
-  document.getElementById('ext-url-text').textContent = extUrl;
-  setKbd([['ESC','닫기']]);
 }
 function openExt() { if(extUrl) window.open(extUrl, '_blank'); }
 
