@@ -105,13 +105,31 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
 .ext-btn:hover{background:var(--blue-dark);}
 
 /* ROLEPLAY */
-#v-roleplay{position:absolute;inset:0;display:none;flex-direction:column;
-  align-items:center;justify-content:center;background:#000;}
-.rp-img-wrap{flex:1;display:flex;align-items:center;justify-content:center;
-  width:100%;padding:20px;overflow:hidden;}
-.rp-img-wrap img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px;}
-.rp-nav{display:flex;align-items:center;gap:24px;padding:16px 32px;
-  background:rgba(0,0,0,.55);border-radius:40px;margin-bottom:24px;}
+#v-roleplay{position:absolute;inset:0;display:none;flex-direction:column;background:#f4f7fb;overflow:hidden;}
+.rp-tabs{display:flex;gap:8px;padding:16px 24px 0;background:#0a1628;overflow-x:auto;flex-shrink:0;}
+.rp-tab{padding:10px 20px;border-radius:10px 10px 0 0;font-size:15px;font-weight:600;cursor:pointer;
+  white-space:nowrap;border:none;font-family:inherit;transition:.15s;}
+.rp-tab.on{background:#0E94CD;color:#fff;}
+.rp-tab.off{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
+.rp-tab.off:hover{background:rgba(255,255,255,.18);}
+.rp-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 24px;overflow:hidden;}
+.rp-panel{background:#fff;border-radius:14px;padding:20px 24px;overflow-y:auto;
+  border:0.5px solid #e2eaf4;}
+.rp-panel-title{font-size:13px;font-weight:700;color:#0E94CD;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #e8f4fb;}
+.rp-check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;
+  border-bottom:0.5px solid #f0f4f8;cursor:pointer;user-select:none;}
+.rp-check-item:last-child{border-bottom:none;}
+.rp-chk{width:22px;height:22px;border:2px solid #b0c8db;border-radius:5px;flex-shrink:0;
+  margin-top:1px;display:flex;align-items:center;justify-content:center;transition:.15s;}
+.rp-chk.checked{background:#0E94CD;border-color:#0E94CD;}
+.rp-chk.checked::after{content:'✓';color:#fff;font-size:14px;font-weight:700;}
+.rp-check-text{font-size:16px;line-height:1.5;color:#1a2233;}
+.rp-check-text.checked{color:#888;text-decoration:line-through;}
+.rp-script-block{margin-bottom:16px;}
+.rp-script-label{font-size:12px;font-weight:700;color:#6b7c93;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.rp-script-text{background:#e8f4fb;border-left:4px solid #0E94CD;border-radius:0 10px 10px 0;
+  padding:14px 16px;font-size:17px;line-height:1.6;color:#1a2233;font-style:italic;}
 .nav-btn{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.12);
   border:2px solid rgba(255,255,255,.25);color:#fff;font-size:22px;cursor:pointer;
   transition:.15s;display:flex;align-items:center;justify-content:center;font-family:inherit;}
@@ -211,11 +229,10 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;b
 
     <!-- ROLEPLAY -->
     <div id="v-roleplay">
-      <div class="rp-img-wrap"><img id="rp-img" src="" alt="롤플레이"></div>
-      <div class="rp-nav">
-        <button class="nav-btn" id="rp-prev" onclick="rpNav(-1)">←</button>
-        <div class="nav-counter" id="rp-counter">1 / 1</div>
-        <button class="nav-btn" id="rp-next" onclick="rpNav(1)">→</button>
+      <div class="rp-tabs" id="rp-tabs"></div>
+      <div class="rp-body">
+        <div class="rp-panel" id="rp-left"></div>
+        <div class="rp-panel" id="rp-right"></div>
       </div>
     </div>
 
@@ -285,7 +302,15 @@ const DEFAULT_SESSIONS = [
         {type:'link',     name:'전산교육',          desc:'트위닛 가이드',    url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7B711bde55-c5ec-4223-ad52-0a09e43a7a05%7D&action=default', icon:'💻'}
       ]},
       { name:'DAY 2', items:[
-        {type:'roleplay', name:'롤플레이 가이드',       desc:'슬라이드로 보기',             images:[], icon:'🎭'},
+        {type:'roleplay', name:'롤플레이 가이드',       desc:'카테고리별 핵심포인트·멘트',   icon:'🎭', categories:[
+          {name:'핸드빌 기본', checkpoints:['고객 동선을 막지 않음','3걸음 전 눈 맞춤 및 인사','한걸음 다가가기 · 고개 약 15도','손을 뻗어 손등 위치에 테스트 진행'], scripts:[{label:'기본 멘트',text:'안녕하세요, 촉촉한 바디로션 발라드릴게요~'},{label:'대안 멘트',text:'안녕하세요, 프랑스 바디로션 발라드릴게요~'}]},
+          {name:'빠른 고객', checkpoints:[], scripts:[]},
+          {name:'느린 고객', checkpoints:[], scripts:[]},
+          {name:'수분스틱', checkpoints:[], scripts:[]},
+          {name:'세럼', checkpoints:[], scripts:[]},
+          {name:'머드스틱', checkpoints:[], scripts:[]},
+          {name:'사워오일', checkpoints:[], scripts:[]}
+        ]},
         {type:'link',     name:'이의제기 교육',          desc:'PPT',                        url:'https://laroseekr-my.sharepoint.com/personal/taeyun_kim_larosee_co_kr/_layouts/15/Doc.aspx?sourcedoc=%7Bc5354b74-e3d6-4425-b7d1-6bd5f23e9d1c%7D&action=default', icon:'📋'},
         {type:'flashcard',name:'이의제기 플래시카드 배포', desc:'QR 배포 후 핸드폰으로 연습', fcId:'', icon:'🗂'},
         {type:'quiz',     name:'마무리 퀴즈 배포',       desc:'QR 배포 후 응시',             quizId:'', icon:'✅'},
@@ -483,23 +508,53 @@ function openLinkViewer(item) {
 function openExt() { if(extUrl) window.open(extUrl, '_blank'); }
 
 // ROLEPLAY
+let rpCategories = [], rpCatIdx = 0, rpChecked = {};
 function openRoleplay(item) {
-  rpImages = item.images || [];
-  if (!rpImages.length) { showEmpty('🎭','이미지가 없습니다','관리자 페이지에서 롤플레이 이미지를 추가해주세요.'); return; }
-  rpIdx = 0;
+  rpCategories = item.categories || [];
+  if (!rpCategories.length) { showEmpty('🎭','내용이 없습니다','관리자 페이지에서 롤플레이 내용을 추가해주세요.'); return; }
+  rpCatIdx = 0; rpChecked = {};
   const el = document.getElementById('v-roleplay');
   el.style.display = 'flex';
   el.style.flexDirection = 'column';
   renderRP();
-  setKbd([['←','이전'],['→','다음'],['ESC','닫기']]);
+  setKbd([['←→','카테고리 이동'],['ESC','닫기']]);
 }
 function renderRP() {
-  document.getElementById('rp-img').src = rpImages[rpIdx];
-  document.getElementById('rp-counter').textContent = (rpIdx+1)+' / '+rpImages.length;
-  document.getElementById('rp-prev').disabled = rpIdx === 0;
-  document.getElementById('rp-next').disabled = rpIdx === rpImages.length-1;
+  const cats = rpCategories;
+  const cat = cats[rpCatIdx];
+  // tabs
+  document.getElementById('rp-tabs').innerHTML = cats.map((c,i)=>
+    `<button class="rp-tab ${i===rpCatIdx?'on':'off'}" onclick="rpSetCat(${i})">${c.name}</button>`
+  ).join('');
+  // left: checkpoints
+  const left = document.getElementById('rp-left');
+  const pts = cat.checkpoints || [];
+  left.innerHTML = `<div class="rp-panel-title">핵심 포인트</div>` +
+    (pts.length ? pts.map((p,i)=>{
+      const key = rpCatIdx+'_'+i;
+      const ck = rpChecked[key];
+      return `<div class="rp-check-item" onclick="rpToggle(${i})">
+        <div class="rp-chk ${ck?'checked':''}"></div>
+        <span class="rp-check-text ${ck?'checked':''}">${p}</span>
+      </div>`;
+    }).join('') : '<p style="color:#999;font-size:14px;">항목 없음</p>');
+  // right: scripts
+  const right = document.getElementById('rp-right');
+  const scripts = cat.scripts || [];
+  right.innerHTML = `<div class="rp-panel-title">멘트</div>` +
+    (scripts.length ? scripts.map(s=>
+      `<div class="rp-script-block">
+        <div class="rp-script-label">${s.label||''}</div>
+        <div class="rp-script-text">${s.text||''}</div>
+      </div>`
+    ).join('') : '<p style="color:#999;font-size:14px;">멘트 없음</p>');
 }
-function rpNav(d) { rpIdx = Math.max(0, Math.min(rpImages.length-1, rpIdx+d)); renderRP(); }
+function rpSetCat(i) { rpCatIdx = i; renderRP(); }
+function rpToggle(i) {
+  const key = rpCatIdx+'_'+i;
+  rpChecked[key] = !rpChecked[key];
+  renderRP();
+}
 
 // LECTURE
 function openLecture(item) {
@@ -579,8 +634,8 @@ document.addEventListener('keydown', e => {
   const fcOn = document.getElementById('v-lecture').style.display  !== 'none';
 
   if (rpOn) {
-    if (e.key==='ArrowLeft')  rpNav(-1);
-    if (e.key==='ArrowRight') rpNav(1);
+    if (e.key==='ArrowLeft')  rpSetCat(Math.max(0, rpCatIdx-1));
+    if (e.key==='ArrowRight') rpSetCat(Math.min(rpCategories.length-1, rpCatIdx+1));
   }
   if (fcOn) {
     if (e.key===' ') { e.preventDefault(); flipFC(); }

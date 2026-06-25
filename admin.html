@@ -355,7 +355,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div id="tab-quiz" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
         <div style="font-size:20px;font-weight:800;">퀴즈 관리</div>
-        <button class="btn btn-p">＋ 퀴즈 추가</button>
+        <button class="btn btn-p" onclick="openQuizEditor(null)">＋ 퀴즈 추가</button>
       </div>
       <div id="quiz-list-wrap">
         <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
@@ -366,7 +366,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
     <div id="tab-flashcard" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
         <div style="font-size:20px;font-weight:800;">플래시카드 관리</div>
-        <button class="btn btn-p">＋ 세트 추가</button>
+        <button class="btn btn-p" onclick="openFcEditor(null)">＋ 세트 추가</button>
       </div>
       <div id="fc-list-wrap">
         <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
@@ -404,6 +404,12 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <div id="pw-err" style="color:var(--red);font-size:12px;display:none;"></div>
         <button class="btn btn-p" onclick="changePw()">비밀번호 변경</button>
       </div>
+
+      <div class="sep"></div>
+
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">항목 유형 관리</div>
+      <div id="type-list-wrap" style="margin-bottom:10px;"></div>
+      <button class="btn btn-g btn-sm" onclick="addItemType()">＋ 유형 추가</button>
 
       <div class="sep"></div>
 
@@ -502,7 +508,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">유형</label>
         <select id="item-type" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" onchange="updateItemFields()">
           <option value="link">🔗 링크 (PPT/PDF)</option>
-          <option value="roleplay">🎭 롤플레이 (이미지 슬라이드)</option>
+          <option value="roleplay">🎭 롤플레이 (카테고리·포인트·멘트)</option>
           <option value="flashcard">🗂 플래시카드 QR 배포</option>
           <option value="quiz">✅ 퀴즈 QR 배포</option>
           <option value="lecture">🎓 플래시카드 강의 모드</option>
@@ -518,10 +524,15 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <input type="url" id="item-url" placeholder="https://drive.google.com/..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
         <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 링크를 그대로 붙여넣으면 자동 변환됩니다.</div>
       </div>
-      <!-- 롤플레이 이미지 -->
+      <!-- 롤플레이 에디터 -->
       <div id="item-f-roleplay" style="margin-bottom:14px;display:none;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">이미지 URL 목록 (한 줄에 하나씩)</label>
-        <textarea id="item-images" rows="5" placeholder="https://example.com/img1.jpg&#10;https://example.com/img2.jpg" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;resize:vertical;"></textarea>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blue-light);border-radius:10px;border:1px solid var(--border);">
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--blue);">롤플레이 내용 편집</div>
+            <div id="rp-edit-summary" style="font-size:12px;color:var(--muted);margin-top:2px;">카테고리 0개</div>
+          </div>
+          <button class="btn btn-p btn-sm" onclick="openRpEditor()">편집 열기 →</button>
+        </div>
       </div>
       <!-- 플래시카드 ID -->
       <div id="item-f-fc" style="margin-bottom:14px;display:none;">
@@ -541,6 +552,100 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <button class="btn btn-g" onclick="closeOvD('item-ov')">취소</button>
         <button class="btn btn-p" onclick="saveItem()">저장</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Quiz Editor Modal ── -->
+<div class="ov" id="quiz-editor-ov" onclick="closeOv('quiz-editor-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:680px;">
+    <div class="mh"><h2 id="qe-title">퀴즈 편집</h2><button class="mcl" onclick="closeOvD('quiz-editor-ov')">✕</button></div>
+    <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 이름</label>
+        <input type="text" id="qe-name" placeholder="예: 신규입사자 마무리 퀴즈" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">문항 목록</div>
+      <div id="qe-question-list" style="margin-bottom:12px;"></div>
+      <!-- 문항 추가 폼 -->
+      <div id="qe-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="qe-form-title">문항 추가</div>
+        <input type="text" id="qe-q-text" placeholder="질문 내용" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <input type="text" id="qe-opt0" placeholder="① 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt1" placeholder="② 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt2" placeholder="③ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt3" placeholder="④ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <label style="font-size:13px;color:var(--muted);">정답:</label>
+          <select id="qe-answer" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <option value="0">① 번</option><option value="1">② 번</option>
+            <option value="2">③ 번</option><option value="3">④ 번</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-g btn-sm" onclick="qeCloseForm()">취소</button>
+          <button class="btn btn-p btn-sm" onclick="qeSaveQuestion()">저장</button>
+        </div>
+      </div>
+      <button class="btn btn-g btn-sm" id="qe-add-btn" onclick="qeOpenForm()" style="margin-top:8px;">＋ 문항 추가</button>
+    </div>
+    <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn btn-g" onclick="closeOvD('quiz-editor-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveQuizEditor()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── FC Editor Modal ── -->
+<div class="ov" id="fc-editor-ov" onclick="closeOv('fc-editor-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:600px;">
+    <div class="mh"><h2 id="fce-title">플래시카드 편집</h2><button class="mcl" onclick="closeOvD('fc-editor-ov')">✕</button></div>
+    <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
+      <div style="margin-bottom:16px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세트 이름</label>
+        <input type="text" id="fce-name" placeholder="예: 이의제기 플래시카드" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">카드 목록</div>
+      <div id="fce-card-list" style="margin-bottom:12px;"></div>
+      <div id="fce-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="fce-form-title">카드 추가</div>
+        <input type="text" id="fce-front" placeholder="앞면 (질문)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <input type="text" id="fce-back" placeholder="뒷면 (정답)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;">
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-g btn-sm" onclick="fceCloseForm()">취소</button>
+          <button class="btn btn-p btn-sm" onclick="fceSaveCard()">저장</button>
+        </div>
+      </div>
+      <button class="btn btn-g btn-sm" id="fce-add-btn" onclick="fceOpenForm()" style="margin-top:8px;">＋ 카드 추가</button>
+    </div>
+    <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn btn-g" onclick="closeOvD('fc-editor-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveFcEditor()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Roleplay Editor Modal ── -->
+<div class="ov" id="rp-ov" onclick="closeOv('rp-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:860px;max-width:96vw;">
+    <div class="mh"><h2>롤플레이 내용 편집</h2><button class="mcl" onclick="closeOvD('rp-ov')">✕</button></div>
+    <div class="mb" style="padding:0;display:grid;grid-template-columns:220px 1fr;min-height:480px;max-height:72vh;">
+      <!-- 카테고리 사이드바 -->
+      <div style="border-right:1px solid var(--border);padding:16px;overflow-y:auto;background:#f9fbfd;">
+        <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:10px;">카테고리</div>
+        <div id="rpe-cat-list"></div>
+        <button class="btn btn-g btn-sm" style="width:100%;margin-top:10px;" onclick="rpeAddCat()">＋ 카테고리 추가</button>
+      </div>
+      <!-- 편집 패널 -->
+      <div style="padding:20px;overflow-y:auto;" id="rpe-panel">
+        <p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 선택하세요.</p>
+      </div>
+    </div>
+    <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
+      <button class="btn btn-g" onclick="closeOvD('rp-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveRpEditor()">저장</button>
     </div>
   </div>
 </div>
@@ -839,7 +944,8 @@ function renderQuizList(sets) {
       <div style="display:flex;gap:8px;align-items:center;">
         <span class="badge bg-green">활성</span>
         <button class="btn btn-g btn-sm" onclick="openQR('quiz-'+s.id)">QR 보기</button>
-        <button class="btn btn-o btn-sm">수정</button>
+        <button class="btn btn-o btn-sm" onclick="openQuizEditor('${s.id}')">수정</button>
+        <button class="btn btn-g btn-sm" onclick="deleteQuizSet('${s.id}')" style="color:var(--red);">삭제</button>
       </div>
     </div>
   `).join('');
@@ -859,10 +965,244 @@ function renderFCList() {
       <div style="display:flex;gap:8px;align-items:center;">
         <span class="badge bg-green">활성</span>
         <button class="btn btn-g btn-sm" onclick="openQR('fc-'+s.id)">QR 보기</button>
-        <button class="btn btn-o btn-sm">카드 관리</button>
+        <button class="btn btn-o btn-sm" onclick="openFcEditor('${s.id}')">수정</button>
+        <button class="btn btn-g btn-sm" onclick="deleteFcSet('${s.id}')" style="color:var(--red);">삭제</button>
       </div>
     </div>
   `).join('');
+}
+
+// ── 퀴즈 에디터 ──
+let _qeId = null, _qeQuestions = [], _qeEditIdx = null;
+
+function openQuizEditor(id) {
+  const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
+  const set = id ? sets.find(s=>s.id===id) : null;
+  _qeId = id;
+  _qeQuestions = set ? JSON.parse(JSON.stringify(set.questions||[])) : [];
+  _qeEditIdx = null;
+  document.getElementById('qe-title').textContent = set ? '퀴즈 수정' : '퀴즈 추가';
+  document.getElementById('qe-name').value = set ? set.name : '';
+  qeCloseForm();
+  renderQeList();
+  document.getElementById('quiz-editor-ov').classList.add('open');
+}
+
+function renderQeList() {
+  const wrap = document.getElementById('qe-question-list');
+  if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">문항 없음</div>'; return; }
+  wrap.innerHTML = _qeQuestions.map((q,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
+      <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
+      <span style="flex:1;font-size:13px;">${q.q}</span>
+      <span style="font-size:11px;color:var(--muted);">정답:${Number(q.answer)+1}번</span>
+      <button class="btn btn-o btn-sm" onclick="qeEditQuestion(${i})">수정</button>
+      <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
+    </div>
+  `).join('');
+}
+
+function qeOpenForm(editIdx) {
+  _qeEditIdx = editIdx ?? null;
+  const q = editIdx != null ? _qeQuestions[editIdx] : null;
+  document.getElementById('qe-form-title').textContent = q ? '문항 수정' : '문항 추가';
+  document.getElementById('qe-q-text').value = q ? q.q : '';
+  const opts = q ? q.options : ['','','',''];
+  [0,1,2,3].forEach(i => document.getElementById('qe-opt'+i).value = opts[i]||'');
+  document.getElementById('qe-answer').value = q ? q.answer : 0;
+  document.getElementById('qe-add-form').style.display = 'block';
+  document.getElementById('qe-add-btn').style.display = 'none';
+}
+
+function qeCloseForm() {
+  document.getElementById('qe-add-form').style.display = 'none';
+  document.getElementById('qe-add-btn').style.display = 'inline-flex';
+  _qeEditIdx = null;
+}
+
+function qeEditQuestion(i) { qeOpenForm(i); }
+
+function qeSaveQuestion() {
+  const q = document.getElementById('qe-q-text').value.trim();
+  if (!q) { alert('질문을 입력해주세요.'); return; }
+  const opts = [0,1,2,3].map(i=>document.getElementById('qe-opt'+i).value.trim());
+  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
+  const ans = Number(document.getElementById('qe-answer').value);
+  const item = { id:'q'+(Date.now()), q, options:opts, answer:ans };
+  if (_qeEditIdx != null) _qeQuestions[_qeEditIdx] = item;
+  else _qeQuestions.push(item);
+  qeCloseForm(); renderQeList();
+}
+
+function qeDeleteQuestion(i) {
+  if (!confirm('이 문항을 삭제하시겠습니까?')) return;
+  _qeQuestions.splice(i,1); renderQeList();
+}
+
+function saveQuizEditor() {
+  const name = document.getElementById('qe-name').value.trim();
+  if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
+  const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
+  if (_qeId) {
+    const idx = sets.findIndex(s=>s.id===_qeId);
+    if (idx>=0) sets[idx] = { ...sets[idx], name, questions:_qeQuestions };
+  } else {
+    sets.push({ id:'quiz_'+Date.now(), name, questions:_qeQuestions });
+  }
+  localStorage.setItem('lr_sets', JSON.stringify(sets));
+  closeOvD('quiz-editor-ov');
+  renderQuizList();
+}
+
+function deleteQuizSet(id) {
+  if (!confirm('이 퀴즈를 삭제하시겠습니까?')) return;
+  const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]').filter(s=>s.id!==id);
+  localStorage.setItem('lr_sets', JSON.stringify(sets));
+  renderQuizList();
+}
+
+// ── 플래시카드 에디터 ──
+let _fceId = null, _fceCards = [], _fceEditIdx = null;
+
+function openFcEditor(id) {
+  const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
+  const set = id ? sets.find(s=>s.id===id) : null;
+  _fceId = id;
+  _fceCards = set ? JSON.parse(JSON.stringify(set.cards||[])) : [];
+  _fceEditIdx = null;
+  document.getElementById('fce-title').textContent = set ? '플래시카드 수정' : '플래시카드 추가';
+  document.getElementById('fce-name').value = set ? set.name : '';
+  fceCloseForm();
+  renderFceList();
+  document.getElementById('fc-editor-ov').classList.add('open');
+}
+
+function renderFceList() {
+  const wrap = document.getElementById('fce-card-list');
+  if (!_fceCards.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">카드 없음</div>'; return; }
+  wrap.innerHTML = _fceCards.map((c,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
+      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <span style="font-size:13px;color:var(--text);">앞: ${c.front||c.q||''}</span>
+        <span style="font-size:13px;color:var(--muted);">뒤: ${c.back||c.a||''}</span>
+      </div>
+      <button class="btn btn-o btn-sm" onclick="fceEditCard(${i})">수정</button>
+      <button class="btn btn-g btn-sm" onclick="fceDeleteCard(${i})" style="color:var(--red);">삭제</button>
+    </div>
+  `).join('');
+}
+
+function fceOpenForm(editIdx) {
+  _fceEditIdx = editIdx ?? null;
+  const c = editIdx != null ? _fceCards[editIdx] : null;
+  document.getElementById('fce-form-title').textContent = c ? '카드 수정' : '카드 추가';
+  document.getElementById('fce-front').value = c ? (c.front||c.q||'') : '';
+  document.getElementById('fce-back').value  = c ? (c.back||c.a||'') : '';
+  document.getElementById('fce-add-form').style.display = 'block';
+  document.getElementById('fce-add-btn').style.display = 'none';
+}
+
+function fceCloseForm() {
+  document.getElementById('fce-add-form').style.display = 'none';
+  document.getElementById('fce-add-btn').style.display = 'inline-flex';
+  _fceEditIdx = null;
+}
+
+function fceEditCard(i) { fceOpenForm(i); }
+
+function fceSaveCard() {
+  const front = document.getElementById('fce-front').value.trim();
+  const back  = document.getElementById('fce-back').value.trim();
+  if (!front||!back) { alert('앞면과 뒷면을 모두 입력해주세요.'); return; }
+  const card = { id:'c'+(Date.now()), front, back };
+  if (_fceEditIdx != null) _fceCards[_fceEditIdx] = card;
+  else _fceCards.push(card);
+  fceCloseForm(); renderFceList();
+}
+
+function fceDeleteCard(i) {
+  if (!confirm('이 카드를 삭제하시겠습니까?')) return;
+  _fceCards.splice(i,1); renderFceList();
+}
+
+function saveFcEditor() {
+  const name = document.getElementById('fce-name').value.trim();
+  if (!name) { alert('세트 이름을 입력해주세요.'); return; }
+  const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
+  if (_fceId) {
+    const idx = sets.findIndex(s=>s.id===_fceId);
+    if (idx>=0) sets[idx] = { ...sets[idx], name, cards:_fceCards };
+  } else {
+    sets.push({ id:'fc_'+Date.now(), name, cards:_fceCards });
+  }
+  localStorage.setItem('lr_fcsets', JSON.stringify(sets));
+  closeOvD('fc-editor-ov');
+  renderFCList();
+}
+
+function deleteFcSet(id) {
+  if (!confirm('이 플래시카드 세트를 삭제하시겠습니까?')) return;
+  const sets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]').filter(s=>s.id!==id);
+  localStorage.setItem('lr_fcsets', JSON.stringify(sets));
+  renderFCList();
+}
+
+// ── 유형 관리 ──
+const DEFAULT_ITEM_TYPES = [
+  {id:'link',     icon:'📋', name:'링크 (PPT/PDF)'},
+  {id:'roleplay', icon:'🎭', name:'롤플레이'},
+  {id:'flashcard',icon:'🗂', name:'플래시카드 QR'},
+  {id:'quiz',     icon:'✅', name:'퀴즈 QR'},
+  {id:'lecture',  icon:'🎓', name:'강의 모드'}
+];
+
+function getItemTypes() {
+  try { return JSON.parse(localStorage.getItem('lr_item_types')||'null') || DEFAULT_ITEM_TYPES; } catch(e) { return DEFAULT_ITEM_TYPES; }
+}
+function saveItemTypes(types) { localStorage.setItem('lr_item_types', JSON.stringify(types)); }
+
+function renderTypeList() {
+  const wrap = document.getElementById('type-list-wrap');
+  if (!wrap) return;
+  const types = getItemTypes();
+  wrap.innerHTML = types.map((t,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
+      <span style="font-size:18px;">${t.icon}</span>
+      <span style="flex:1;font-size:13px;font-weight:600;">${t.name}</span>
+      <button class="btn btn-o btn-sm" onclick="editItemType(${i})">수정</button>
+      ${!['link','roleplay','flashcard','quiz','lecture'].includes(t.id)?`<button class="btn btn-g btn-sm" onclick="deleteItemType(${i})" style="color:var(--red);">삭제</button>`:''}
+    </div>
+  `).join('');
+  // 아이템 모달 select도 업데이트
+  const sel = document.getElementById('item-type');
+  if (sel) sel.innerHTML = types.map(t=>`<option value="${t.id}">${t.icon} ${t.name}</option>`).join('');
+}
+
+function editItemType(i) {
+  const types = getItemTypes();
+  const t = types[i];
+  const icon = prompt('아이콘 (이모지):', t.icon);
+  if (icon===null) return;
+  const name = prompt('유형 이름:', t.name);
+  if (name===null) return;
+  types[i] = { ...t, icon: icon||t.icon, name: name||t.name };
+  saveItemTypes(types); renderTypeList();
+}
+
+function addItemType() {
+  const icon = prompt('아이콘 (이모지):') || '📌';
+  const name = prompt('유형 이름:');
+  if (!name) return;
+  const types = getItemTypes();
+  types.push({ id:'custom_'+Date.now(), icon, name });
+  saveItemTypes(types); renderTypeList();
+}
+
+function deleteItemType(i) {
+  if (!confirm('이 유형을 삭제하시겠습니까?')) return;
+  const types = getItemTypes();
+  types.splice(i,1);
+  saveItemTypes(types); renderTypeList();
 }
 
 // ── Tier modal ──
@@ -1038,7 +1378,15 @@ const DEFAULT_SESSIONS = [
         {type:'link',name:'전산교육',desc:'PPT + 홈페이지',url:'',icon:'💻'}
       ]},
       { name:'DAY 2', items:[
-        {type:'roleplay',name:'롤플레이 가이드',desc:'슬라이드로 보기',images:[],icon:'🎭'},
+        {type:'roleplay',name:'롤플레이 가이드',desc:'카테고리별 핵심포인트·멘트',icon:'🎭',categories:[
+          {name:'핸드빌 기본',checkpoints:['고객 동선을 막지 않음','3걸음 전 눈 맞춤 및 인사','한걸음 다가가기 · 고개 약 15도','손을 뻗어 손등 위치에 테스트 진행'],scripts:[{label:'기본 멘트',text:'안녕하세요, 촉촉한 바디로션 발라드릴게요~'},{label:'대안 멘트',text:'안녕하세요, 프랑스 바디로션 발라드릴게요~'}]},
+          {name:'빠른 고객',checkpoints:[],scripts:[]},
+          {name:'느린 고객',checkpoints:[],scripts:[]},
+          {name:'수분스틱',checkpoints:[],scripts:[]},
+          {name:'세럼',checkpoints:[],scripts:[]},
+          {name:'머드스틱',checkpoints:[],scripts:[]},
+          {name:'사워오일',checkpoints:[],scripts:[]}
+        ]},
         {type:'link',name:'이의제기 교육',desc:'PPT',url:'',icon:'📋'},
         {type:'flashcard',name:'이의제기 플래시카드 배포',desc:'QR 배포 후 핸드폰으로 연습',fcId:'',icon:'🗂'},
         {type:'quiz',name:'마무리 퀴즈 배포',desc:'QR 배포 후 응시',quizId:'',icon:'✅'},
@@ -1253,7 +1601,9 @@ function openItemModal(sessId, dayIdx, itemIdx) {
   document.getElementById('item-desc').value  = item ? (item.desc||'') : '';
   document.getElementById('item-type').value  = item ? item.type  : 'link';
   document.getElementById('item-url').value   = item ? (item.url||'')  : '';
-  document.getElementById('item-images').value = item ? (item.images||[]).join('\n') : '';
+  // 롤플레이 카테고리 로드
+  window._rpEditorCats = item && item.type==='roleplay' ? JSON.parse(JSON.stringify(item.categories||[])) : [];
+  updateRpSummary();
 
   // populate FC and quiz selects
   const fcSets = JSON.parse(localStorage.getItem('lr_fcsets')||'[]');
@@ -1285,8 +1635,8 @@ async function saveItem() {
   const desc = document.getElementById('item-desc').value.trim();
 
   const item = { type, name, desc, icon: ICON_MAP[type]||'📋' };
-  if (type==='link')      item.url     = document.getElementById('item-url').value.trim();
-  if (type==='roleplay')  item.images  = document.getElementById('item-images').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  if (type==='link')      item.url        = document.getElementById('item-url').value.trim();
+  if (type==='roleplay')  item.categories = JSON.parse(JSON.stringify(window._rpEditorCats||[]));
   if (type==='flashcard'||type==='lecture') item.fcId = document.getElementById('item-fcid').value;
   if (type==='quiz')      item.quizId  = document.getElementById('item-quizid').value;
 
@@ -1303,6 +1653,145 @@ async function saveItem() {
   renderSessionsTab();
 }
 
+// ── Roleplay Editor ──
+let _rpCatIdx = 0;
+
+function updateRpSummary() {
+  const cats = window._rpEditorCats || [];
+  document.getElementById('rp-edit-summary').textContent = `카테고리 ${cats.length}개`;
+}
+
+function openRpEditor() {
+  _rpCatIdx = 0;
+  renderRpeCatList();
+  renderRpePanel();
+  document.getElementById('rp-ov').classList.add('open');
+}
+
+function saveRpEditor() {
+  updateRpSummary();
+  closeOvD('rp-ov');
+}
+
+function renderRpeCatList() {
+  const cats = window._rpEditorCats || [];
+  const list = document.getElementById('rpe-cat-list');
+  list.innerHTML = cats.map((c, i) => `
+    <div style="display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:8px;margin-bottom:4px;cursor:pointer;
+      background:${i===_rpCatIdx?'#e8f4fb':'#fff'};border:1px solid ${i===_rpCatIdx?'#0E94CD':'var(--border)'};"
+      onclick="rpeSelectCat(${i})">
+      <span style="flex:1;font-size:13px;font-weight:${i===_rpCatIdx?'600':'400'};color:${i===_rpCatIdx?'#0a78a8':'var(--text)'};">${c.name}</span>
+      <button onclick="event.stopPropagation();rpeDeleteCat(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px;">✕</button>
+    </div>
+  `).join('');
+}
+
+function renderRpePanel() {
+  const cats = window._rpEditorCats || [];
+  const panel = document.getElementById('rpe-panel');
+  if (!cats.length) { panel.innerHTML = '<p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 추가하세요.</p>'; return; }
+  const cat = cats[_rpCatIdx];
+  if (!cat) return;
+
+  const pts = cat.checkpoints || [];
+  const scripts = cat.scripts || [];
+
+  panel.innerHTML = `
+    <div style="margin-bottom:20px;">
+      <label style="font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">카테고리 이름</label>
+      <input type="text" value="${cat.name}" oninput="rpeCatName(this.value)"
+        style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">핵심 포인트</div>
+        ${pts.map((p,i) => `
+          <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:0.5px solid var(--border);">
+            <span style="flex:1;font-size:13px;">${p}</span>
+            <button onclick="rpePtEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✏️</button>
+            <button onclick="rpePtDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✕</button>
+          </div>`).join('')}
+        <button class="btn btn-g btn-sm" style="margin-top:8px;width:100%;" onclick="rpePtAdd()">＋ 포인트 추가</button>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#0E94CD;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid #e8f4fb;">멘트</div>
+        ${scripts.map((s,i) => `
+          <div style="margin-bottom:10px;padding:10px;background:#f9fbfd;border-radius:8px;border:1px solid var(--border);">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <span style="font-size:11px;font-weight:700;color:var(--muted);">${s.label||'멘트'}</span>
+              <div style="display:flex;gap:4px;">
+                <button onclick="rpeScriptEdit(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✏️</button>
+                <button onclick="rpeScriptDelete(${i})" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;">✕</button>
+              </div>
+            </div>
+            <div style="font-size:13px;color:var(--text);font-style:italic;">"${s.text||''}"</div>
+          </div>`).join('')}
+        <button class="btn btn-g btn-sm" style="width:100%;" onclick="rpeScriptAdd()">＋ 멘트 추가</button>
+      </div>
+    </div>
+  `;
+}
+
+function rpeSelectCat(i) { _rpCatIdx = i; renderRpeCatList(); renderRpePanel(); }
+
+function rpeAddCat() {
+  const name = prompt('카테고리 이름을 입력하세요:');
+  if (!name) return;
+  window._rpEditorCats.push({ name, checkpoints:[], scripts:[] });
+  _rpCatIdx = window._rpEditorCats.length - 1;
+  renderRpeCatList(); renderRpePanel();
+}
+
+function rpeDeleteCat(i) {
+  if (!confirm('이 카테고리를 삭제하시겠습니까?')) return;
+  window._rpEditorCats.splice(i, 1);
+  _rpCatIdx = Math.min(_rpCatIdx, window._rpEditorCats.length - 1);
+  renderRpeCatList(); renderRpePanel();
+}
+
+function rpeCatName(val) {
+  window._rpEditorCats[_rpCatIdx].name = val;
+  renderRpeCatList();
+}
+
+function rpePtAdd() {
+  const val = prompt('핵심 포인트를 입력하세요:');
+  if (!val) return;
+  window._rpEditorCats[_rpCatIdx].checkpoints.push(val);
+  renderRpePanel();
+}
+function rpePtEdit(i) {
+  const cur = window._rpEditorCats[_rpCatIdx].checkpoints[i];
+  const val = prompt('수정:', cur);
+  if (val === null) return;
+  window._rpEditorCats[_rpCatIdx].checkpoints[i] = val;
+  renderRpePanel();
+}
+function rpePtDelete(i) {
+  window._rpEditorCats[_rpCatIdx].checkpoints.splice(i, 1);
+  renderRpePanel();
+}
+
+function rpeScriptAdd() {
+  const label = prompt('멘트 라벨 (예: 기본 멘트, 대안 멘트):') || '멘트';
+  const text  = prompt('멘트 내용:');
+  if (!text) return;
+  window._rpEditorCats[_rpCatIdx].scripts.push({ label, text });
+  renderRpePanel();
+}
+function rpeScriptEdit(i) {
+  const s = window._rpEditorCats[_rpCatIdx].scripts[i];
+  const label = prompt('라벨:', s.label) ?? s.label;
+  const text  = prompt('멘트 내용:', s.text);
+  if (text === null) return;
+  window._rpEditorCats[_rpCatIdx].scripts[i] = { label, text };
+  renderRpePanel();
+}
+function rpeScriptDelete(i) {
+  window._rpEditorCats[_rpCatIdx].scripts.splice(i, 1);
+  renderRpePanel();
+}
+
 async function deleteItem(sessId, dayIdx, itemIdx) {
   if (!confirm('이 항목을 삭제하시겠습니까?')) return;
   const s = adminSessions.find(s=>s.id===sessId);
@@ -1317,6 +1806,7 @@ function gotoTab(id) {
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
   document.getElementById('tab-'+id).classList.add('on');
   document.querySelector('[data-tab="'+id+'"]').classList.add('on');
+  if (id==='settings') renderTypeList();
 }
 
 // ── Modal helpers ──
