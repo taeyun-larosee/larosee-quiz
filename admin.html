@@ -54,7 +54,7 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   padding:0 24px;z-index:100;
 }
 .logo-wrap{display:flex;align-items:center;gap:6px;cursor:pointer;text-decoration:none;}
-.logo-wrap img{height:44px;}
+.logo-wrap img{height:52px;}
 .logo-hint{font-size:10px;color:var(--muted);}
 .btn-normal{padding:7px 16px;border:2px solid var(--blue);border-radius:8px;
   background:#fff;color:var(--blue);font-size:13px;cursor:pointer;font-weight:500;transition:.15s;}
@@ -257,7 +257,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   <div id="hdr">
     <a class="logo-wrap" onclick="gotoTab('dashboard')">
       <img src="logo.png" alt="라로제">
-      <span class="logo-hint">↩ 홈</span>
     </a>
     <div class="row" style="gap:12px;">
       <span style="font-size:12px;color:var(--muted);" id="last-updated"></span>
@@ -281,17 +280,13 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
 
     <!-- ━━ DASHBOARD ━━ -->
     <div id="tab-dashboard" class="tab on">
-      <div class="row" style="justify-content:space-between;margin-bottom:20px;">
+      <div class="row" style="justify-content:space-between;margin-bottom:16px;">
         <div style="font-size:20px;font-weight:800;">대시보드</div>
-        <select id="prog-sel" style="padding:7px 12px;border-radius:8px;border:1px solid var(--border);font-size:13px;"
-          onchange="applyFilters()">
-          <option value="all">전체 퀴즈</option>
-        </select>
       </div>
 
-      <!-- question pills -->
+      <!-- quiz pills -->
       <div class="pills" style="margin-bottom:20px;" id="cpills">
-        <div class="pill on" onclick="setQuestion(this,'all')">전체</div>
+        <div class="pill on" onclick="setQuizPill(this,'all')">전체</div>
       </div>
 
       <!-- stats -->
@@ -315,9 +310,6 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <div class="card">
           <div class="row" style="justify-content:space-between;margin-bottom:14px;">
             <div class="card-t" style="margin:0;">기수별 평균 점수</div>
-            <div style="display:flex;gap:4px;" id="chart-tabs">
-              <div class="ctab on" onclick="setChartTab(this,'all')">전체</div>
-            </div>
           </div>
           <div style="height:200px;"><canvas id="cohortChart"></canvas></div>
         </div>
@@ -587,6 +579,16 @@ body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 이름</label>
         <input type="text" id="qe-name" placeholder="예: 신규입사자 마무리 퀴즈" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">출제 문제 수 <span style="font-weight:400;">(0 = 전체)</span></label>
+          <input type="number" id="qe-quiz-cnt" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">타이머 <span style="font-weight:400;">(분, 0 = 미사용)</span></label>
+          <input type="number" id="qe-timer" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        </div>
+      </div>
       <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">문항 목록</div>
       <div id="qe-question-list" style="margin-bottom:12px;"></div>
       <!-- 문항 추가 폼 -->
@@ -731,7 +733,7 @@ function showApp() {
 }
 
 // ── Data ──
-let allScores = [], filteredScores = [], currentCohort = 'all', currentQuestion = 'all';
+let allScores = [], filteredScores = [], currentQuiz = 'all';
 let quizMap = {}, fcSets = [];
 let currentTier = 'green', currentTierTab = 'new';
 
@@ -765,8 +767,7 @@ function renderFromLocal() {
 }
 
 function renderAll() {
-  buildCohortPills();
-  buildQuizSelector();
+  buildQuizPills();
   applyFilters();
   renderQuizStatus();
   renderQuizList();
@@ -774,77 +775,31 @@ function renderAll() {
   loadAdminSessions();
 }
 
-function buildCohortPills() {
-  // 문제별 pills
-  const questions = [...new Set(allScores.flatMap(s=>(s.answers||[]).map(a=>a.q)).filter(Boolean))];
-  const wrap = document.getElementById('cpills');
-  wrap.innerHTML = '<div class="pill on" onclick="setQuestion(this,\'all\')">전체</div>';
-  questions.forEach((q, i) => {
-    const d = document.createElement('div');
-    d.className = 'pill';
-    d.textContent = '문제' + (i + 1);
-    d.title = q; // 툴팁으로 전체 문제 텍스트 표시
-    d.onclick = function(){ setQuestion(this, q); };
-    wrap.appendChild(d);
-  });
-}
-function _buildCohortPillsOld() {
-  const cohorts = [...new Set(allScores.map(s => s.cohort).filter(Boolean))].sort();
-  const wrap = document.getElementById('cpills');
-  wrap.innerHTML = '<div class="pill on" onclick="setCohort(this,\'all\')">전체</div>';
-  cohorts.forEach(c => {
-    const d = document.createElement('div');
-    d.className = 'pill';
-    d.textContent = c;
-    d.onclick = function(){ setCohort(this, c); };
-    wrap.appendChild(d);
-  });
-}
-
-function buildQuizSelector() {
-  const sel = document.getElementById('prog-sel');
+function buildQuizPills() {
   const names = [...new Set(allScores.map(s => s.quizName).filter(Boolean))];
-  sel.innerHTML = '<option value="all">전체 퀴즈</option>';
-  names.forEach(n => {
-    const o = document.createElement('option');
-    o.value = n; o.textContent = n;
-    sel.appendChild(o);
-  });
-
-  // build chart tabs
-  const ctWrap = document.getElementById('chart-tabs');
-  ctWrap.innerHTML = '<div class="ctab on" onclick="setChartTab(this,\'all\')">전체</div>';
-  names.forEach((n,i) => {
+  const wrap = document.getElementById('cpills');
+  wrap.innerHTML = '<div class="pill on" onclick="setQuizPill(this,\'all\')">전체</div>';
+  names.forEach((n, i) => {
     const d = document.createElement('div');
-    d.className = 'ctab';
-    d.textContent = '퀴즈'+(i+1);
-    d.onclick = function(){ setChartTab(this, n); };
-    ctWrap.appendChild(d);
+    d.className = 'pill';
+    d.textContent = '퀴즈' + (i + 1);
+    d.title = n;
+    d.onclick = function(){ setQuizPill(this, n); };
+    wrap.appendChild(d);
   });
 }
 
-function setQuestion(el, q) {
+function setQuizPill(el, quiz) {
   document.querySelectorAll('#cpills .pill').forEach(p => p.classList.remove('on'));
   el.classList.add('on');
-  currentQuestion = q;
-  applyFilters();
-}
-
-function setCohort(el, c) {
-  document.querySelectorAll('#cpills .pill').forEach(p => p.classList.remove('on'));
-  el.classList.add('on');
-  currentCohort = c;
+  currentQuiz = quiz;
   applyFilters();
 }
 
 function applyFilters() {
-  const quiz = document.getElementById('prog-sel').value;
-  filteredScores = allScores.filter(s =>
-    (currentCohort === 'all' || s.cohort === currentCohort) &&
-    (quiz === 'all' || s.quizName === quiz)
-  );
+  filteredScores = allScores.filter(s => currentQuiz === 'all' || s.quizName === currentQuiz);
   renderStats();
-  renderChart('all');
+  renderChart();
   renderTop5();
 }
 
@@ -920,19 +875,8 @@ function openCohortDetail(label, d) {
   document.getElementById('cohort-detail-ov').classList.add('open');
 }
 
-let chartQuizFilter = 'all';
-function setChartTab(el, key) {
-  document.querySelectorAll('.ctab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
-  chartQuizFilter = key;
-  renderChart(key);
-}
-
-function renderChart(quizFilter) {
-  const src = allScores.filter(s =>
-    (currentQuestion==='all' || (s.answers||[]).some(a=>a.q===currentQuestion)) &&
-    (quizFilter==='all' || s.quizName===quizFilter)
-  );
+function renderChart() {
+  const src = currentQuiz === 'all' ? allScores : allScores.filter(s => s.quizName === currentQuiz);
   const cohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
   const data = cohorts.map(c => {
     const rows = src.filter(s=>s.cohort===c);
@@ -1017,7 +961,7 @@ function renderQuizList(sets) {
       <div class="qn" style="background:${colors[i%3]};color:${tcols[i%3]};">${i+1}</div>
       <div style="flex:1;">
         <div style="font-size:15px;font-weight:700;">${s.name||'퀴즈 '+(i+1)}</div>
-        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항</div>
+        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항${s.quizCount>0?' · 출제 '+s.quizCount+'문':''}${s.timerMin>0?' · '+s.timerMin+'분 타이머':''}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <span class="badge bg-green">활성</span>
@@ -1051,7 +995,7 @@ function renderFCList() {
 }
 
 // ── 퀴즈 에디터 ──
-let _qeId = null, _qeQuestions = [], _qeEditIdx = null;
+let _qeId = null, _qeQuestions = [], _qeEditIdx = null, _qeInlineIdx = null;
 
 function openQuizEditor(id) {
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
@@ -1061,6 +1005,8 @@ function openQuizEditor(id) {
   _qeEditIdx = null;
   document.getElementById('qe-title').textContent = set ? '퀴즈 수정' : '퀴즈 추가';
   document.getElementById('qe-name').value = set ? set.name : '';
+  document.getElementById('qe-quiz-cnt').value = set ? (set.quizCount || 0) : 0;
+  document.getElementById('qe-timer').value = set ? (set.timerMin || 0) : 0;
   qeCloseForm();
   renderQeList();
   document.getElementById('quiz-editor-ov').classList.add('open');
@@ -1069,15 +1015,44 @@ function openQuizEditor(id) {
 function renderQeList() {
   const wrap = document.getElementById('qe-question-list');
   if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">문항 없음</div>'; return; }
-  wrap.innerHTML = _qeQuestions.map((q,i)=>`
-    <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
-      <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
-      <span style="flex:1;font-size:13px;">${q.q}</span>
-      <span style="font-size:11px;color:var(--muted);">정답:${Number(q.answer)+1}번</span>
-      <button class="btn btn-o btn-sm" onclick="qeEditQuestion(${i})">수정</button>
-      <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
-    </div>
-  `).join('');
+  wrap.innerHTML = _qeQuestions.map((q,i) => {
+    if (_qeInlineIdx === i) {
+      const esc = s => (s||'').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+      return `
+        <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;margin-bottom:8px;background:#f4faff;">
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} 수정 중</div>
+          <input type="text" id="qe-il-q" value="${esc(q.q)}" placeholder="질문 내용"
+            style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+            <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="① 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-1" value="${esc(q.options[1])}" placeholder="② 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="③ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="④ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <span style="font-size:13px;color:var(--muted);">정답:</span>
+            <select id="qe-il-ans" style="padding:6px 10px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+              <option value="0" ${q.answer==0?'selected':''}>① 번</option>
+              <option value="1" ${q.answer==1?'selected':''}>② 번</option>
+              <option value="2" ${q.answer==2?'selected':''}>③ 번</option>
+              <option value="3" ${q.answer==3?'selected':''}>④ 번</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">취소</button>
+            <button class="btn btn-p btn-sm" onclick="qeInlineSave(${i})">저장</button>
+          </div>
+        </div>`;
+    }
+    return `
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
+        <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
+        <span style="flex:1;font-size:13px;">${q.q}</span>
+        <span style="font-size:11px;color:var(--muted);">정답:${Number(q.answer)+1}번</span>
+        <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">수정</button>
+        <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
+      </div>`;
+  }).join('');
 }
 
 function qeOpenForm(editIdx) {
@@ -1096,9 +1071,32 @@ function qeCloseForm() {
   document.getElementById('qe-add-form').style.display = 'none';
   document.getElementById('qe-add-btn').style.display = 'inline-flex';
   _qeEditIdx = null;
+  _qeInlineIdx = null;
 }
 
-function qeEditQuestion(i) { qeOpenForm(i); }
+function qeEditQuestion(i) { qeInlineEdit(i); }
+
+function qeInlineEdit(i) {
+  _qeInlineIdx = i;
+  qeCloseForm(); // 하단 추가 폼 닫기
+  renderQeList();
+}
+
+function qeInlineCancel() {
+  _qeInlineIdx = null;
+  renderQeList();
+}
+
+function qeInlineSave(i) {
+  const q = document.getElementById('qe-il-q').value.trim();
+  if (!q) { alert('질문을 입력해주세요.'); return; }
+  const opts = [0,1,2,3].map(j => document.getElementById('qe-il-'+j).value.trim());
+  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
+  const ans = Number(document.getElementById('qe-il-ans').value);
+  _qeQuestions[i] = { ...(_qeQuestions[i]), q, options:opts, answer:ans };
+  _qeInlineIdx = null;
+  renderQeList();
+}
 
 function qeSaveQuestion() {
   const q = document.getElementById('qe-q-text').value.trim();
@@ -1120,12 +1118,14 @@ function qeDeleteQuestion(i) {
 function saveQuizEditor() {
   const name = document.getElementById('qe-name').value.trim();
   if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
+  const quizCount = parseInt(document.getElementById('qe-quiz-cnt').value) || 0;
+  const timerMin = parseInt(document.getElementById('qe-timer').value) || 0;
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   if (_qeId) {
     const idx = sets.findIndex(s=>s.id===_qeId);
-    if (idx>=0) sets[idx] = { ...sets[idx], name, questions:_qeQuestions };
+    if (idx>=0) sets[idx] = { ...sets[idx], name, questions:_qeQuestions, quizCount, timerMin };
   } else {
-    sets.push({ id:'quiz_'+Date.now(), name, questions:_qeQuestions });
+    sets.push({ id:'quiz_'+Date.now(), name, questions:_qeQuestions, quizCount, timerMin });
   }
   localStorage.setItem('lr_sets', JSON.stringify(sets));
   closeOvD('quiz-editor-ov');
@@ -1247,7 +1247,7 @@ function renderTypeList() {
     <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
       <span style="font-size:18px;">${t.icon}</span>
       <span style="flex:1;font-size:13px;font-weight:600;">${t.name}</span>
-      <button class="btn btn-o btn-sm" onclick="editItemType(${i})">수정</button>
+      <button class="btn btn-o btn-sm" onclick="editItemType(${i})">이모지 변경</button>
       ${!['link','roleplay','flashcard','quiz','lecture'].includes(t.id)?`<button class="btn btn-g btn-sm" onclick="deleteItemType(${i})" style="color:var(--red);">삭제</button>`:''}
     </div>
   `).join('');
@@ -1259,11 +1259,9 @@ function renderTypeList() {
 function editItemType(i) {
   const types = getItemTypes();
   const t = types[i];
-  const icon = prompt('아이콘 (이모지):', t.icon);
-  if (icon===null) return;
-  const name = prompt('유형 이름:', t.name);
-  if (name===null) return;
-  types[i] = { ...t, icon: icon||t.icon, name: name||t.name };
+  const icon = prompt('이모지를 변경하세요:', t.icon);
+  if (icon === null) return;
+  types[i] = { ...t, icon: icon.trim() || t.icon };
   saveItemTypes(types); renderTypeList();
 }
 
