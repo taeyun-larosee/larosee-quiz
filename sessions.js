@@ -87,11 +87,10 @@ function renderSessionsTab() {
           <h3>${s.icon||'?뱴'} ${s.name}</h3>
           <p>${(s.days||[]).map(d=>d.name).join(' 쨌 ')} 쨌 ??ぉ ${totalItems}媛?/p>
           <div style="margin-top:8px;display:flex;gap:8px;">
-            <span class="badge ${s.status==='active'?'bg-green':'bg-muted'}">${s.status==='active'?'吏꾪뻾以?:'以鍮?以?}</span>
+            <span class="badge ${s.status==='active'?'bg-green':'bg-muted'}">${s.status==='active'?'진행중':'종료'}</span>
           </div>
         </div>
         <div class="sc-acts" onclick="event.stopPropagation()">
-          <button class="btn btn-o btn-sm" onclick="openSessionModal('${s.id}')">?섏젙</button>
           <button class="btn btn-g btn-sm" onclick="deleteSess('${s.id}')">??젣</button>
           <button class="btn btn-g btn-sm tog-btn">${isOpen?'???묎린':'???닿린'}</button>
         </div>
@@ -339,7 +338,7 @@ let _rpCatIdx = 0;
 
 function updateRpSummary() {
   const cats = window._rpEditorCats || [];
-  document.getElementById('rp-edit-summary').textContent = `移댄뀒怨좊━ ${cats.length}媛?;
+  document.getElementById('rp-edit-summary').textContent = `카테고리 ${cats.length}개`;
 }
 
 function openRpEditor() {

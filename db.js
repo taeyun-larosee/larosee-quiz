@@ -158,7 +158,7 @@ function initChart(labels, data) {
         if (d) openCohortDetail(label, d);
       },
       plugins:{ legend:{display:false},
-        tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' ?됯퇏 '+c.raw+'??:' ?묒떆 '+c.raw+'紐? }}
+        tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' 평균 '+c.raw+'점':' 응시 '+c.raw+'명' }}
       },
       scales:{
         y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'%',font:{size:11}} },
