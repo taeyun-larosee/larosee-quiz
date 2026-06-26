@@ -1,29 +1,29 @@
 // ── Quiz CRUD ──
-// ?? Quiz / FC lists ??
+// ── Quiz / FC lists ──
 function renderQuizList(sets) {
   const data = sets || JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const wrap = document.getElementById('quiz-list-wrap');
-  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">?깅줉???댁쫰 ?놁쓬</div>'; return; }
+  if (!data.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;">등록된 퀴즈 없음</div>'; return; }
   const colors = ['#eff6ff','#f0fdf4','#fffbeb'];
   const tcols = ['var(--blue)','var(--green)','var(--amber)'];
   wrap.innerHTML = data.map((s,i) => `
     <div class="qi">
       <div class="qn" style="background:${colors[i%3]};color:${tcols[i%3]};">${i+1}</div>
       <div style="flex:1;">
-        <div style="font-size:15px;font-weight:700;">${s.name||'?댁쫰 '+(i+1)}</div>
-        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항${s.quizCount>0?' · 제한 '+s.quizCount+'개':''}${s.timerMin>0?' · '+s.timerMin+'분 제한':''}</div>
+        <div style="font-size:15px;font-weight:700;">${s.name||'퀴즈 '+(i+1)}</div>
+        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항${s.quizCount>0?' · 출제 '+s.quizCount+'문':''}${s.timerMin>0?' · '+s.timerMin+'분 타이머':''}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
-        <span class="badge bg-green">?쒖꽦</span>
-        <button class="btn btn-g btn-sm" onclick="openQR('quiz-'+s.id)">QR 蹂닿린</button>
-        <button class="btn btn-o btn-sm" onclick="openQuizEditor('${s.id}')">?섏젙</button>
-        <button class="btn btn-g btn-sm" onclick="deleteQuizSet('${s.id}')" style="color:var(--red);">??젣</button>
+        <span class="badge bg-green">활성</span>
+        <button class="btn btn-g btn-sm" onclick="openQR('quiz-'+s.id)">QR 보기</button>
+        <button class="btn btn-o btn-sm" onclick="openQuizEditor('${s.id}')">수정</button>
+        <button class="btn btn-g btn-sm" onclick="deleteQuizSet('${s.id}')" style="color:var(--red);">삭제</button>
       </div>
     </div>
   `).join('');
 }
 
-// ?? ?댁쫰 ?먮뵒????
+// ── 퀴즈 에디터 ──
 let _qeId = null, _qeQuestions = [], _qeEditIdx = null, _qeInlineIdx = null;
 
 function openQuizEditor(id) {
@@ -36,7 +36,7 @@ function openQuizEditor(id) {
     correct: q.correct ?? q.answer
   })) : [];
   _qeEditIdx = null;
-  document.getElementById('qe-title').textContent = set ? '?댁쫰 ?섏젙' : '?댁쫰 異붽?';
+  document.getElementById('qe-title').textContent = set ? '퀴즈 수정' : '퀴즈 추가';
   document.getElementById('qe-name').value = set ? set.name : '';
   document.getElementById('qe-quiz-cnt').value = set ? (set.quizCount || 0) : 0;
   document.getElementById('qe-timer').value = set ? (set.timerMin || 0) : 0;
@@ -49,9 +49,9 @@ function openQuizEditor(id) {
 
 function renderQeList() {
   const wrap = document.getElementById('qe-question-list');
-  if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">臾명빆 ?놁쓬</div>'; return; }
+  if (!_qeQuestions.length) { wrap.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:8px;">문항 없음</div>'; return; }
   wrap.innerHTML = _qeQuestions.map((q,i) => {
-    // ?꾨뱶紐??뺢퇋??(question/correct ?곗꽑, q/answer ?대갚)
+    // 필드명 정규화 (question/correct 우선, q/answer 폴백)
     const qText = q.question || q.q || '';
     const ansArr = Array.isArray(q.correct) ? q.correct.map(Number)
       : q.correct != null ? [Number(q.correct)]
@@ -62,38 +62,38 @@ function renderQeList() {
       const cbHtml = [0,1,2,3].map(j =>
         '<label style="display:flex;align-items:center;gap:5px;font-size:13px;padding:6px 8px;border:1px solid #e2eaf4;border-radius:7px;cursor:pointer;background:#fff;">' +
         '<input type="checkbox" id="qe-il-ans-'+j+'" '+(ansArr.includes(j)?'checked':'')+' style="width:14px;height:14px;accent-color:#0E94CD;"> ' +
-        '?졻몼?™몿'[j]+' 踰?/label>'
+        '①②③④'[j]+' 번</label>'
       ).join('');
       return `
         <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;margin-bottom:8px;background:#f4faff;">
-          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} ?섏젙 以?/div>
-          <input type="text" id="qe-il-q" value="${esc(qText)}" placeholder="吏덈Ц ?댁슜"
+          <div style="font-size:12px;font-weight:700;color:var(--blue);margin-bottom:10px;">Q${i+1} 수정 중</div>
+          <input type="text" id="qe-il-q" value="${esc(qText)}" placeholder="질문 내용"
             style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-1" value="${esc(q.options[1])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-            <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="??蹂닿린" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-0" value="${esc(q.options[0])}" placeholder="① 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-1" value="${esc(q.options[1])}" placeholder="② 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-2" value="${esc(q.options[2])}" placeholder="③ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+            <input type="text" id="qe-il-3" value="${esc(q.options[3])}" placeholder="④ 보기" style="padding:7px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
           </div>
           <div style="margin-bottom:10px;">
-            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">?뺣떟 <span style="font-size:11px;">(蹂듭닔 ?좏깮 媛??</span></div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:6px;">정답 <span style="font-size:11px;">(복수 선택 가능)</span></div>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">${cbHtml}</div>
           </div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">痍⑥냼</button>
-            <button class="btn btn-p btn-sm" onclick="qeInlineSave(${i})">???/button>
+            <button class="btn btn-g btn-sm" onclick="qeInlineCancel()">취소</button>
+            <button class="btn btn-p btn-sm" onclick="qeInlineSave(${i})">저장</button>
           </div>
         </div>`;
     }
     const ansLabel = ansArr.map(a=>(a+1)+'번').join(', ');
-    const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">蹂듭닔</span>' : '';
+    const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">복수</span>' : '';
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
         <span style="font-size:13px;font-weight:700;color:var(--blue);min-width:24px;">Q${i+1}</span>
         <span style="flex:1;font-size:13px;">${qText}</span>
-        <span style="font-size:11px;color:var(--muted);">?뺣떟:${ansLabel}${multiTag}</span>
-        <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">?섏젙</button>
-        <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">??젣</button>
+        <span style="font-size:11px;color:var(--muted);">정답:${ansLabel}${multiTag}</span>
+        <button class="btn btn-o btn-sm" onclick="qeInlineEdit(${i})">수정</button>
+        <button class="btn btn-g btn-sm" onclick="qeDeleteQuestion(${i})" style="color:var(--red);">삭제</button>
       </div>`;
   }).join('');
 }
@@ -101,11 +101,11 @@ function renderQeList() {
 function qeOpenForm(editIdx) {
   _qeEditIdx = editIdx ?? null;
   const q = editIdx != null ? _qeQuestions[editIdx] : null;
-  document.getElementById('qe-form-title').textContent = q ? '臾명빆 ?섏젙' : '臾명빆 異붽?';
+  document.getElementById('qe-form-title').textContent = q ? '문항 수정' : '문항 추가';
   document.getElementById('qe-q-text').value = q ? (q.question || q.q || '') : '';
   const opts = q ? q.options : ['','','',''];
   [0,1,2,3].forEach(i => document.getElementById('qe-opt'+i).value = opts[i]||'');
-  // ?뺣떟 泥댄겕諛뺤뒪 ?ㅼ젙
+  // 정답 체크박스 설정
   const ansArr = q ? (Array.isArray(q.correct) ? q.correct.map(Number)
     : q.correct != null ? [Number(q.correct)]
     : Array.isArray(q.answer) ? q.answer.map(Number)
@@ -119,14 +119,14 @@ function qeCloseForm() {
   document.getElementById('qe-add-form').style.display = 'none';
   document.getElementById('qe-add-btn').style.display = 'inline-flex';
   _qeEditIdx = null;
-  // _qeInlineIdx???ш린??珥덇린?뷀븯吏 ?딆쓬 (qeInlineCancel?먯꽌留?珥덇린??
+  // _qeInlineIdx는 여기서 초기화하지 않음 (qeInlineCancel에서만 초기화)
 }
 
 function qeEditQuestion(i) { qeInlineEdit(i); }
 
 function qeInlineEdit(i) {
-  qeCloseForm(); // ?섎떒 異붽? ???リ린 (qeInlineIdx 嫄대뱶由ъ? ?딆쓬)
-  _qeInlineIdx = i; // qeCloseForm ?댄썑???ㅼ젙
+  qeCloseForm(); // 하단 추가 폼 닫기 (qeInlineIdx 건드리지 않음)
+  _qeInlineIdx = i; // qeCloseForm 이후에 설정
   renderQeList();
 }
 
@@ -137,11 +137,11 @@ function qeInlineCancel() {
 
 function qeInlineSave(i) {
   const qText = document.getElementById('qe-il-q').value.trim();
-  if (!qText) { alert('吏덈Ц???낅젰?댁＜?몄슂.'); return; }
+  if (!qText) { alert('질문을 입력해주세요.'); return; }
   const opts = [0,1,2,3].map(j => document.getElementById('qe-il-'+j).value.trim());
-  if (opts.some(o=>!o)) { alert('蹂닿린瑜?紐⑤몢 ?낅젰?댁＜?몄슂.'); return; }
+  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
   const checked = [0,1,2,3].filter(j => document.getElementById('qe-il-ans-'+j)?.checked);
-  if (!checked.length) { alert('?뺣떟???좏깮?댁＜?몄슂.'); return; }
+  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
   const correct = checked.length === 1 ? checked[0] : checked;
   _qeQuestions[i] = { id: _qeQuestions[i].id, question: qText, options: opts, correct };
   _qeInlineIdx = null;
@@ -150,11 +150,11 @@ function qeInlineSave(i) {
 
 function qeSaveQuestion() {
   const qText = document.getElementById('qe-q-text').value.trim();
-  if (!qText) { alert('吏덈Ц???낅젰?댁＜?몄슂.'); return; }
+  if (!qText) { alert('질문을 입력해주세요.'); return; }
   const opts = [0,1,2,3].map(i=>document.getElementById('qe-opt'+i).value.trim());
-  if (opts.some(o=>!o)) { alert('蹂닿린瑜?紐⑤몢 ?낅젰?댁＜?몄슂.'); return; }
+  if (opts.some(o=>!o)) { alert('보기를 모두 입력해주세요.'); return; }
   const checked = [0,1,2,3].filter(i => document.getElementById('qe-ans-'+i)?.checked);
-  if (!checked.length) { alert('?뺣떟???좏깮?댁＜?몄슂.'); return; }
+  if (!checked.length) { alert('정답을 선택해주세요.'); return; }
   const correct = checked.length === 1 ? checked[0] : checked;
   const existId = _qeEditIdx != null ? _qeQuestions[_qeEditIdx].id : null;
   const item = { id: existId || 'q'+Date.now(), question: qText, options: opts, correct };
@@ -164,13 +164,13 @@ function qeSaveQuestion() {
 }
 
 function qeDeleteQuestion(i) {
-  if (!confirm('??臾명빆????젣?섏떆寃좎뒿?덇퉴?')) return;
+  if (!confirm('이 문항을 삭제하시겠습니까?')) return;
   _qeQuestions.splice(i,1); renderQeList();
 }
 
 function saveQuizEditor() {
   const name = document.getElementById('qe-name').value.trim();
-  if (!name) { alert('?댁쫰 ?대쫫???낅젰?댁＜?몄슂.'); return; }
+  if (!name) { alert('퀴즈 이름을 입력해주세요.'); return; }
   const quizCount = parseInt(document.getElementById('qe-quiz-cnt').value) || 0;
   const timerMin = parseInt(document.getElementById('qe-timer').value) || 0;
   const passS = parseInt(document.getElementById('qe-pass-s').value) || 90;
@@ -191,21 +191,21 @@ async function deleteQuizSet(id) {
   const sets = JSON.parse(localStorage.getItem('lr_sets')||'[]');
   const quiz = sets.find(s=>s.id===id);
   if (!quiz) return;
-  if (!confirm(`"${quiz.name||'???댁쫰'}"瑜???젣?섏떆寃좎뒿?덇퉴?`)) return;
+  if (!confirm(`"${quiz.name||'이 퀴즈'}"를 삭제하시겠습니까?`)) return;
 
-  // 愿???묒떆 ?곗씠????젣 ?щ? ?뺤씤
+  // 관련 응시 데이터 삭제 여부 확인
   const relatedScores = allScores.filter(s=>s.quizName===quiz.name);
   let deleteScores = false;
   if (relatedScores.length > 0) {
-    deleteScores = confirm(`愿???묒떆 ?곗씠??${relatedScores.length}嫄대룄 ?④퍡 ??젣?좉퉴??\n\n[?뺤씤] ?④퍡 ??젣 / [痍⑥냼] ?댁쫰留???젣`);
+    deleteScores = confirm(`관련 응시 데이터 ${relatedScores.length}건도 함께 삭제할까요?\n\n[확인] 함께 삭제 / [취소] 퀴즈만 삭제`);
   }
 
-  // ?댁쫰 ??젣
+  // 퀴즈 삭제
   const newSets = sets.filter(s=>s.id!==id);
   localStorage.setItem('lr_sets', JSON.stringify(newSets));
   renderQuizList();
 
-  // ?먯닔 ?곗씠?곕룄 ??젣
+  // 점수 데이터도 삭제
   if (deleteScores) {
     await deleteQuizScores(quiz.name);
   } else {
