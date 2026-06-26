@@ -11,7 +11,7 @@ function renderQuizList(sets) {
       <div class="qn" style="background:${colors[i%3]};color:${tcols[i%3]};">${i+1}</div>
       <div style="flex:1;">
         <div style="font-size:15px;font-weight:700;">${s.name||'?댁쫰 '+(i+1)}</div>
-        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}臾명빆${s.quizCount>0?' 쨌 異쒖젣 '+s.quizCount+'臾?:''}${s.timerMin>0?' 쨌 '+s.timerMin+'遺???대㉧':''}</div>
+        <div style="font-size:12px;color:var(--muted);">${(s.questions||[]).length}문항${s.quizCount>0?' · 제한 '+s.quizCount+'개':''}${s.timerMin>0?' · '+s.timerMin+'분 제한':''}</div>
       </div>
       <div style="display:flex;gap:8px;align-items:center;">
         <span class="badge bg-green">?쒖꽦</span>
@@ -85,7 +85,7 @@ function renderQeList() {
           </div>
         </div>`;
     }
-    const ansLabel = ansArr.map(a=>(a+1)+'踰?).join(', ');
+    const ansLabel = ansArr.map(a=>(a+1)+'번').join(', ');
     const multiTag = ansArr.length > 1 ? ' <span style="font-size:10px;background:#e8f4fb;color:var(--blue);padding:1px 5px;border-radius:4px;">蹂듭닔</span>' : '';
     return `
       <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">

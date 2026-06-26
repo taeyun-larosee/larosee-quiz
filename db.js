@@ -88,23 +88,23 @@ function applyFilters() {
 }
 
 function formatDur(sec) {
-  if (!sec) return '??;
+  if (!sec) return '-';
   const m = Math.floor(sec / 60), s = sec % 60;
-  return m > 0 ? m + '遺?' + s + '珥? : s + '珥?;
+  return m > 0 ? m + '분' + s + '초' : s + '초';
 }
 
 function renderStats() {
   const fs = filteredScores;
-  document.getElementById('st-tot').textContent = fs.length + '紐?;
+  document.getElementById('st-tot').textContent = fs.length + '명';
   const avg = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.pct||s.score/s.total*100||0),0)/fs.length) : 0;
-  document.getElementById('st-avg').textContent = avg + '??;
+  document.getElementById('st-avg').textContent = avg + '%';
   const avgDur = fs.length ? Math.round(fs.reduce((a,s)=>a+(s.duration||0),0)/fs.length) : 0;
   document.getElementById('st-time').textContent = formatDur(avgDur);
   const pct = s => s.pct ?? (s.score && s.total ? Math.round(s.score/s.total*100) : 0);
   const ss = S_SCORE(), ps = P_SCORE();
-  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= ss).length + '紐?;
-  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= ps && pct(s) < ss).length + '紐?;
-  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < ps).length + '紐?;
+  document.getElementById('st-g').textContent = fs.filter(s => pct(s) >= ss).length + '명';
+  document.getElementById('st-b').textContent = fs.filter(s => pct(s) >= ps && pct(s) < ss).length + '명';
+  document.getElementById('st-r').textContent = fs.filter(s => pct(s) < ps).length + '명';
   document.getElementById('tl-g').textContent = ss + '?먥넁 ?곗닔?⑷꺽';
   document.getElementById('tl-b').textContent = ps + '~' + ss + '???⑷꺽';
   document.getElementById('tl-r').textContent = ps + '?먥넃 誘몃떖';
@@ -127,7 +127,7 @@ const barScorePlugin = {
         ctx.font = 'bold 11px -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'bottom';
-        ctx.fillText(val + '??, bar.x, bottomY);
+        ctx.fillText(val + '%', bar.x, bottomY);
         ctx.restore();
       });
     });
@@ -161,9 +161,9 @@ function initChart(labels, data) {
         tooltip:{ callbacks:{ label: c => c.dataset.type==='bar'?' ?됯퇏 '+c.raw+'??:' ?묒떆 '+c.raw+'紐? }}
       },
       scales:{
-        y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'??,font:{size:11}} },
+        y:{ min:0, max:100, grid:{color:'#e2eaf4'}, ticks:{callback:v=>v+'%',font:{size:11}} },
         y2:{ position:'right', min:0, grid:{display:false},
-          ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'紐?:'',font:{size:11},color:'#d97706'} }
+          ticks:{stepSize:1, precision:0, callback:v=>Number.isInteger(v)?v+'명':'',font:{size:11},color:'#d97706'} }
       }
     },
     plugins: [barScorePlugin]
@@ -172,13 +172,13 @@ function initChart(labels, data) {
 
 function openCohortDetail(label, d) {
   document.getElementById('cd-title').textContent = label + ' ?곸꽭';
-  document.getElementById('cd-stat-cnt').textContent = d.cnt + '紐?;
-  document.getElementById('cd-stat-avg').textContent = d.avg + '??;
+  document.getElementById('cd-stat-cnt').textContent = d.cnt + '명';
+  document.getElementById('cd-stat-avg').textContent = d.avg + '%';
   document.getElementById('cd-stat-time').textContent = formatDur(d.avgDur);
   const tbody = document.getElementById('cd-tbody');
   tbody.innerHTML = (d.rows || []).map(r => `
     <tr>
-      <td>${r.name || '??}</td>
+      <td>${r.name || '-'}</td>
       <td>${r.pct ?? 0}??/td>
       <td>${formatDur(r.duration || 0)}</td>
     </tr>
@@ -189,7 +189,7 @@ function openCohortDetail(label, d) {
 function renderChart() {
   const src = currentQuiz === 'all' ? allScores : allScores.filter(s => s.quizName === currentQuiz);
   const rawCohorts = [...new Set(src.map(s=>s.cohort).filter(Boolean))].sort();
-  const labels = rawCohorts.map(c => /湲?/.test(c) ? c : c + '湲?);
+  const labels = rawCohorts.map(c => /기/.test(c) ? c : c + '기');
   const data = rawCohorts.map(c => {
     const rows = src.filter(s=>s.cohort===c);
     const avg = rows.length ? Math.round(rows.reduce((a,s)=>a+(s.pct||0),0)/rows.length) : 0;
@@ -302,9 +302,9 @@ function openTier(tier) {
   currentTier = tier;
   currentTierTab = 'new';
   const cfg = {
-    green:{ title:'?곗닔?⑷꺽 쨌 90?먥넁 쨌 ?믪? ?먯닔 ??, bg:'var(--green-bg)', col:'var(--green)' },
-    blue: { title:'?⑷꺽 쨌 80~90??쨌 ?믪? ?먯닔 ??, bg:'var(--blue-light)', col:'var(--blue)' },
-    red:  { title:'誘몃떖 쨌 80?먥넃 쨌 ??? ?먯닔 ??, bg:'var(--red-bg)', col:'var(--red)' }
+    green:{ title:'?곗닔?⑷꺽 쨌 90?먥넁 쨌 ?믪? ?먯닔 ??', bg:'var(--green-bg)', col:'var(--green)' },
+    blue: { title:'?⑷꺽 쨌 80~90??쨌 ?믪? ?먯닔 ??', bg:'var(--blue-light)', col:'var(--blue)' },
+    red:  { title:'誘몃떖 쨌 80?먥넃 쨌 ??? ?먯닔 ??', bg:'var(--red-bg)', col:'var(--red)' }
   }[tier];
   const mh = document.getElementById('tier-mh');
   mh.style.background = cfg.bg;
@@ -350,9 +350,9 @@ function renderTierTable() {
   const errs = s => (s.wrongQuestions||[]).length || (s.answers||[]).filter(a=>!a.ok).length;
   body.innerHTML = rows.map(r => `
     <tr onclick="openWrongQ(${JSON.stringify(r.id).replace(/"/g,"'")})">
-      <td style="font-weight:600;">${r.name||'??}</td>
-      <td><span class="badge bg-blue">${r.cohort||'??}</span></td>
-      <td style="color:var(--muted);font-size:12px;">${r.quizName||'??}</td>
+      <td style="font-weight:600;">${r.name||'-'}</td>
+      <td><span class="badge bg-blue">${r.cohort||'-'}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${r.quizName||'-'}</td>
       <td><span style="display:inline-flex;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700;background:${sbg};color:${sfg};">${pct(r)}??/span></td>
       <td style="color:var(--muted);">${errs(r)}媛?/td>
       <td><button class="btn btn-g btn-sm" style="font-size:11px;">?由?臾명빆 ??/button></td>
@@ -366,12 +366,12 @@ function openWrongQ(id) {
   const wrong = (s.answers||[]).filter(a=>!a.ok);
   if (!wrong.length) { alert(s.name+'?섏? 紐⑤몢 ?뺣떟?낅땲??'); return; }
   document.getElementById('ans-title').textContent = s.name + '???ㅻ떟 紐⑸줉';
-  document.getElementById('ans-meta').textContent = s.quizName + ' 쨌 ' + (s.pct||0) + '??;
+  document.getElementById('ans-meta').textContent = s.quizName + ' 쨌 ' + (s.pct||0) + '%';
   document.getElementById('ans-body').innerHTML = wrong.map(a => `
     <div style="background:var(--gray);border-radius:8px;padding:12px 16px;margin-bottom:10px;">
       <div style="font-size:13px;font-weight:700;margin-bottom:6px;">${a.q}</div>
-      <div style="font-size:12px;color:var(--red);">?좏깮: ${a.chosen??'??}</div>
-      <div style="font-size:12px;color:var(--green);">?뺣떟: ${a.correct??'??}</div>
+      <div style="font-size:12px;color:var(--red);">?좏깮: ${a.chosen??'-'}</div>
+      <div style="font-size:12px;color:var(--green);">?뺣떟: ${a.correct??'-'}</div>
     </div>
   `).join('');
   document.getElementById('ans-ov').classList.add('open');
@@ -436,9 +436,9 @@ function changePw() {
 }
 function exportCSV() {
   if (!allScores.length) { alert('?대낫???곗씠?곌? ?놁뒿?덈떎.'); return; }
-  const hdr = ['?대쫫','湲곗닔','?댁쫰','?먯닔(%)','?먯닔','珥앸Ц??,'?좎쭨'];
+  const hdr = ['이름','기수','퀴즈명','점수(%)','득점','총문항','날짜'];
   const rows = allScores.map(s => [s.name,s.cohort,s.quizName,s.pct,s.score,s.total,s.date].join(','));
-  const csv = '癤? + [hdr.join(','), ...rows].join('\n');
+  const csv = '﻿' + [hdr.join(','), ...rows].join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = '?쇰줈???묒떆寃곌낵_' + new Date().toISOString().slice(0,10) + '.csv';

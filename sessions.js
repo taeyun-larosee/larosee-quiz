@@ -18,8 +18,8 @@ const DEFAULT_SESSIONS = [
         {type:'link',name:'?꾩궛援먯쑁',desc:'PPT + ?덊럹?댁?',url:'',icon:'?뮲'}
       ]},
       { name:'DAY 2', items:[
-        {type:'roleplay',name:'濡ㅽ뵆?덉씠 媛?대뱶',desc:'移댄뀒怨좊━蹂??듭떖?ъ씤?맞룸찘??,icon:'?렚',categories:[
-          {name:'?몃뱶鍮?湲곕낯',checkpoints:['怨좉컼 ?숈꽑??留됱? ?딆쓬','3嫄몄쓬 ????留욎땄 諛??몄궗','?쒓구???ㅺ?媛湲?쨌 怨좉컻 ??15??,'?먯쓣 六쀬뼱 ?먮벑 ?꾩튂???뚯뒪??吏꾪뻾'],scripts:[{label:'湲곕낯 硫섑듃',text:'?덈뀞?섏꽭?? 珥됱큺??諛붾뵒濡쒖뀡 諛쒕씪?쒕┫寃뚯슂~'},{label:'???硫섑듃',text:'?덈뀞?섏꽭?? ?꾨옉??諛붾뵒濡쒖뀡 諛쒕씪?쒕┫寃뚯슂~'}]},
+        {type:'roleplay',name:'롤플레이 시나리오',desc:'롤플레이 실습',icon:'🎭',categories:[
+          {name:'일반 고객',checkpoints:['고객 인사하기','3초 안에 반응하기','시선 맞추기','상품 소개하기'],scripts:[{label:'일반 스크립트',text:'안녕하세요! 라로제 방문을 환영합니다~'},{label:'응대 스크립트',text:'안녕하세요! 무엇을 찾으시나요~'}]},
           {name:'鍮좊Ⅸ 怨좉컼',checkpoints:[],scripts:[]},
           {name:'?먮┛ 怨좉컼',checkpoints:[],scripts:[]},
           {name:'?섎텇?ㅽ떛',checkpoints:[],scripts:[]},
@@ -29,13 +29,13 @@ const DEFAULT_SESSIONS = [
         ]},
         {type:'link',name:'?댁쓽?쒓린 援먯쑁',desc:'PPT',url:'',icon:'?뱥'},
         {type:'flashcard',name:'?댁쓽?쒓린 ?뚮옒?쒖뭅??諛고룷',desc:'QR 諛고룷 ???몃뱶?곗쑝濡??곗뒿',fcId:'',icon:'?뾺'},
-        {type:'quiz',name:'留덈Т由??댁쫰 諛고룷',desc:'QR 諛고룷 ???묒떆',quizId:'',icon:'??},
+        {type:'quiz',name:'留덈Т由??댁쫰 諛고룷',desc:'QR 諛고룷 ???묒떆',quizId:'',icon:'✅'},
         {type:'lecture',name:'留덈Т由?媛뺤쓽',desc:'?뚮옒?쒖뭅??媛뺤쓽 紐⑤뱶',fcId:'',icon:'?럳'}
       ]}
     ]
   },
-  { id:'retrain-1', name:'?ш탳??1李?, status:'preparing', icon:'?봽', order:1, days:[] },
-  { id:'retrain-2', name:'?ш탳??2李?, status:'preparing', icon:'?봽', order:2, days:[] }
+  { id:'retrain-1', name:'재훈련 1차', status:'preparing', icon:'📋', order:1, days:[] },
+  { id:'retrain-2', name:'재훈련 2차', status:'preparing', icon:'📋', order:2, days:[] }
 ];
 
 async function loadAdminSessions() {
@@ -67,7 +67,7 @@ async function saveSessionsToStore() {
   try { await batch.commit(); } catch(e) { console.warn('Firestore save:', e); }
 }
 
-const ICON_MAP = { link:'?뱥', roleplay:'?렚', flashcard:'?뾺', quiz:'??, lecture:'?럳' };
+const ICON_MAP = { link:'?뱥', roleplay:'?렚', flashcard:'?뾺', quiz:'✅', lecture:'?럳' };
 const TYPE_LABEL = { link:'留곹겕', roleplay:'濡ㅽ뵆?덉씠', flashcard:'FC QR', quiz:'?댁쫰 QR', lecture:'媛뺤쓽 紐⑤뱶' };
 const ITEM_BG = { link:'#eff6ff', roleplay:'#f0fdf4', flashcard:'#fdf4ff', quiz:'#fef2f2', lecture:'#fffbeb' };
 
