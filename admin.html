@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>?쇰줈??愿由ъ옄</title>
+<title>라로제 관리자</title>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -15,12 +15,21 @@
 <script src="sessions.js" defer></script>
 <script src="auth.js" defer></script>
 <script src="present.js" defer></script>
-<link rel="stylesheet" href="common.css">
 <style>
-:root { --sw:200px; --hh:60px; --r:12px; }
-body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
+:root {
+  --blue:#0E94CD; --blue-dark:#0a78a8; --blue-light:#e8f4fb;
+  --white:#fff; --gray:#f4f7fb; --text:#1a2233; --muted:#6b7c93;
+  --border:#e2eaf4;
+  --green:#16a34a; --green-mid:#22c55e; --green-bg:#f0fdf4; --green-text:#166534;
+  --amber:#d97706; --amber-bg:#fffbeb; --amber-text:#92400e;
+  --red:#ef4444; --red-bg:#fef2f2; --red-text:#b91c1c;
+  --sw:200px; --hh:60px; --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 
-/* ?? Login ?? */
+/* ── Login ── */
 #login-screen{
   position:fixed;inset:0;background:var(--gray);
   display:flex;align-items:center;justify-content:center;z-index:999;
@@ -45,7 +54,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .login-box button:hover{background:var(--blue-dark);}
 .login-err{font-size:12px;color:var(--red);margin-top:8px;display:none;}
 
-/* ?? Header ?? */
+/* ── Header ── */
 #hdr{
   position:fixed;top:0;left:0;right:0;height:var(--hh);
   background:#fff;border-bottom:1px solid var(--border);
@@ -59,7 +68,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   background:#fff;color:var(--blue);font-size:13px;cursor:pointer;font-weight:500;transition:.15s;}
 .btn-normal:hover{background:var(--blue-light);}
 
-/* ?? Sidebar ?? */
+/* ── Sidebar ── */
 #sb{
   position:fixed;top:var(--hh);left:0;bottom:0;width:var(--sw);
   background:#fff;border-right:1px solid var(--border);padding-top:12px;z-index:90;
@@ -74,14 +83,14 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .ni.on{background:var(--blue-light);color:var(--blue);border-left-color:var(--blue);font-weight:700;}
 .ni .ic{font-size:17px;width:22px;text-align:center;}
 
-/* ?? Main ?? */
+/* ── Main ── */
 #main{
   margin-left:var(--sw);margin-top:var(--hh);
   height:calc(100vh - var(--hh));overflow-y:auto;padding:28px;
 }
 .tab{display:none;}.tab.on{display:block;}
 
-/* ?? Components ?? */
+/* ── Components ── */
 .card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;}
 .card-t{font-size:14px;font-weight:700;margin-bottom:16px;}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
@@ -104,7 +113,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .row{display:flex;gap:12px;align-items:center;}
 .sep{height:1px;background:var(--border);margin:20px 0;}
 
-/* ?? Stats ?? */
+/* ── Stats ── */
 .stats-row{display:flex;gap:14px;}
 .sc{flex:1;background:#fff;border-radius:var(--r);border:1px solid var(--border);padding:14px 18px;}
 .sc .n{font-size:28px;font-weight:800;}
@@ -119,12 +128,12 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .tier.blue{background:var(--blue-light);border-color:var(--blue);color:var(--blue);}
 .tier.red{background:var(--red-bg);border-color:var(--red);color:var(--red);}
 
-/* ?? Chart tabs ?? */
+/* ── Chart tabs ── */
 .ctab{padding:4px 12px;border-radius:14px;font-size:11px;cursor:pointer;
   border:1px solid var(--border);background:#fff;color:var(--muted);transition:.15s;}
 .ctab.on{background:var(--blue);color:#fff;border-color:var(--blue);}
 
-/* ?? Top5 ?? */
+/* ── Top5 ── */
 .t5{display:flex;align-items:center;gap:12px;padding:8px 12px;
   border-radius:8px;background:var(--gray);cursor:pointer;transition:.12s;margin-bottom:6px;}
 .t5:hover{background:var(--blue-light);}
@@ -133,7 +142,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .t5q{flex:1;font-size:13px;}
 .t5p{font-size:13px;font-weight:700;color:var(--red);}
 
-/* ?? Sessions ?? */
+/* ── Sessions ── */
 .sc-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   margin-bottom:12px;overflow:hidden;border-left:5px solid var(--blue);}
 .sc-card.dim{border-left-color:var(--muted);}
@@ -159,7 +168,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .ci-desc{font-size:12px;color:var(--muted);margin-top:3px;}
 .ci-btns{display:flex;gap:6px;flex-shrink:0;}
 
-/* ?? Modals ?? */
+/* ── Modals ── */
 .ov{display:none;position:fixed;inset:0;background:rgba(15,25,50,.5);
   z-index:200;align-items:center;justify-content:center;}
 .ov.open{display:flex;}
@@ -192,7 +201,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .mt tr:not(:last-child) td{border-bottom:1px solid #f3f5f9;}
 .mt tr:hover td{background:var(--gray);cursor:pointer;}
 
-/* ?? Answer bars ?? */
+/* ── Answer bars ── */
 .abar{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
 .albl{width:28px;font-size:13px;font-weight:700;color:var(--muted);}
 .atrk{flex:1;height:32px;background:var(--gray);border-radius:8px;overflow:hidden;}
@@ -200,13 +209,13 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   padding:0 10px;font-size:12px;font-weight:600;color:#fff;transition:width .6s;}
 .apct{width:42px;text-align:right;font-size:13px;font-weight:700;}
 
-/* ?? Quiz/FC list ?? */
+/* ── Quiz/FC list ── */
 .qi{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   padding:18px 20px;display:flex;align-items:center;gap:16px;margin-bottom:12px;}
 .qn{width:40px;height:40px;border-radius:10px;background:var(--blue-light);
   color:var(--blue);font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 
-/* ?? Settings ?? */
+/* ── Settings ── */
 .srow{background:#fff;border:1px solid var(--border);border-radius:var(--r);
   padding:16px 20px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
 .toggle{width:44px;height:24px;border-radius:12px;background:var(--blue);position:relative;cursor:pointer;}
@@ -224,11 +233,12 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 #loading{position:fixed;inset:0;background:#fff;z-index:9999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 #loading img{height:52px;animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+
 #main::-webkit-scrollbar{width:6px;}
 #main::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
 
-/* ?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??   PRESENT VIEW (援먯쑁 吏꾪뻾 ?붾㈃ ?듯빀)
-?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??*/
+/* ── Present View ── */
 #present-view{display:none;position:fixed;inset:0;background:var(--gray);z-index:500;overflow-y:auto;}
 #p-loading{position:fixed;inset:0;background:#fff;z-index:9999;
   display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
@@ -324,8 +334,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 .p-rp-tab.off{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);}
 .p-rp-tab.off:hover{background:rgba(255,255,255,.18);}
 .p-rp-body{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:16px 24px;overflow:hidden;}
-.p-rp-panel{background:#fff;border-radius:14px;padding:20px 24px;overflow-y:auto;
-  border:0.5px solid #e2eaf4;}
+.p-rp-panel{background:#fff;border-radius:14px;padding:20px 24px;overflow-y:auto;border:0.5px solid #e2eaf4;}
 .p-rp-panel-title{font-size:13px;font-weight:700;color:#0E94CD;letter-spacing:.06em;
   text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #e8f4fb;}
 .p-rp-check-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;
@@ -367,8 +376,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   align-items:center;justify-content:center;background:#fff;gap:20px;}
 .p-qr-title{font-size:26px;font-weight:800;color:var(--text);}
 .p-qr-sub{font-size:16px;color:var(--muted);}
-.p-qr-box{background:#fff;padding:24px;border-radius:20px;
-  box-shadow:0 8px 48px rgba(14,148,205,.18);}
+.p-qr-box{background:#fff;padding:24px;border-radius:20px;box-shadow:0 8px 48px rgba(14,148,205,.18);}
 .p-qr-url{font-size:13px;color:var(--blue);background:var(--blue-light);
   padding:8px 20px;border-radius:8px;word-break:break-all;text-align:center;max-width:500px;}
 
@@ -381,18 +389,18 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 </head>
 <body>
 
-<!-- ?? Loading ?? -->
+<!-- ── Loading ── -->
 <div id="loading">
-  <img src="logo.png" alt="?쇰줈??>
-  <span style="font-size:13px;color:var(--muted);">로딩중..</span>
+  <img src="logo.png" alt="라로제">
+  <span style="font-size:13px;color:var(--muted);">불러오는 중...</span>
 </div>
 
-<!-- ?? Login ?? -->
+<!-- ── Login ── -->
 <div id="login-screen" style="display:none;">
   <div class="login-box">
-    <img src="logo.png" alt="?쇰줈??>
-    <h2>愿由ъ옄 濡쒓렇??/h2>
-    <p>?쇰줈??愿由ъ옄 ?꾩슜 ?섏씠吏?낅땲??</p>
+    <img src="logo.png" alt="라로제">
+    <h2>관리자 로그인</h2>
+    <p>라로제 관리자 전용 페이지입니다.</p>
     <input type="password" id="login-pw" placeholder="비밀번호"
       onkeydown="if(event.key==='Enter')doLogin()">
     <button onclick="doLogin()">로그인</button>
@@ -400,40 +408,41 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   </div>
 </div>
 
-<!-- ?? App ?? -->
+<!-- ── App ── -->
 <div id="app" style="display:none;">
 
   <!-- Header -->
   <div id="hdr">
     <a class="logo-wrap" onclick="gotoTab('dashboard')">
-      <img src="logo.png" alt="?쇰줈??>
+      <img src="logo.png" alt="라로제">
     </a>
     <span style="font-size:12px;color:var(--muted);" id="last-updated"></span>
     <button onclick="openPresentView()" style="display:flex;align-items:center;gap:6px;padding:8px 18px;
       border:2px solid var(--blue);border-radius:9px;background:#fff;color:var(--blue);
       font-size:13px;font-weight:700;cursor:pointer;transition:.15s;font-family:inherit;"
       onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='#fff'">
-      ?벟 援먯쑁 吏꾪뻾 ??    </button>
+      📺 교육 진행 →
+    </button>
   </div>
 
   <!-- Sidebar -->
   <nav id="sb">
-    <div class="lbl">愿由ъ옄紐⑤뱶</div>
-    <div class="ni on" onclick="gotoTab('dashboard')" data-tab="dashboard"><span class="ic">?뱤</span>??쒕낫??/div>
-    <div class="ni" onclick="gotoTab('sessions')" data-tab="sessions"><span class="ic">?뱴</span>?몄뀡</div>
-    <div class="ni" onclick="gotoTab('quiz')" data-tab="quiz"><span class="ic">??/span>?댁쫰</div>
-    <div class="ni" onclick="gotoTab('flashcard')" data-tab="flashcard"><span class="ic">?뾺</span>?뚮옒?쒖뭅??/div>
-    <div class="ni" onclick="gotoTab('settings')" data-tab="settings"><span class="ic">??/span>설정</div>
+    <div class="lbl">관리자모드</div>
+    <div class="ni on" onclick="gotoTab('dashboard')" data-tab="dashboard"><span class="ic">📊</span>대시보드</div>
+    <div class="ni" onclick="gotoTab('sessions')" data-tab="sessions"><span class="ic">📚</span>세션</div>
+    <div class="ni" onclick="gotoTab('quiz')" data-tab="quiz"><span class="ic">✅</span>퀴즈</div>
+    <div class="ni" onclick="gotoTab('flashcard')" data-tab="flashcard"><span class="ic">🗂</span>플래시카드</div>
+    <div class="ni" onclick="gotoTab('settings')" data-tab="settings"><span class="ic">⚙</span>설정</div>
   </nav>
 
   <!-- Main -->
   <div id="main">
 
-    <!-- ?곣봺 DASHBOARD ?곣봺 -->
+    <!-- ━━ DASHBOARD ━━ -->
     <div id="tab-dashboard" class="tab on">
       <div class="row" style="justify-content:space-between;margin-bottom:16px;">
-        <div style="font-size:20px;font-weight:800;">??쒕낫??/div>
-        <button id="dash-edit-btn" class="btn btn-o" onclick="toggleDashEdit()" style="font-size:13px;padding:7px 18px;">??쒕낫???섏젙</button>
+        <div style="font-size:20px;font-weight:800;">대시보드</div>
+        <button id="dash-edit-btn" class="btn btn-o" onclick="toggleDashEdit()" style="font-size:13px;padding:7px 18px;">대시보드 수정</button>
       </div>
 
       <!-- quiz pills -->
@@ -443,17 +452,17 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 
       <!-- stats -->
       <div class="stats-row" style="margin-bottom:16px;">
-        <div class="sc"><div class="n" style="color:var(--blue);" id="st-tot">-</div><div class="l">응시 인원/div></div>
-        <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">-</div><div class="l">평균 점수</div></div>
-        <div class="sc"><div class="n" style="color:#d97706;" id="st-time">-</div><div class="l">평균 응시시간</div></div>
+        <div class="sc"><div class="n" style="color:var(--blue);" id="st-tot">–</div><div class="l">총 응시자</div></div>
+        <div class="sc"><div class="n" style="color:var(--green-mid);" id="st-avg">–</div><div class="l">평균 점수</div></div>
+        <div class="sc"><div class="n" style="color:#d97706;" id="st-time">–</div><div class="l">평균 응시시간</div></div>
         <div class="tier green" onclick="openTier('green')">
-          <span class="tc">??/span><div class="tn" id="st-g">-</div><div class="tl" id="tl-g">우수합격 · 90점↑</div>
+          <span class="tc">▾</span><div class="tn" id="st-g">–</div><div class="tl" id="tl-g">90점↑ 우수합격</div>
         </div>
         <div class="tier blue" onclick="openTier('blue')">
-          <span class="tc">??/span><div class="tn" id="st-b">-</div><div class="tl" id="tl-b">합격 · 80~90점</div>
+          <span class="tc">▾</span><div class="tn" id="st-b">–</div><div class="tl" id="tl-b">80~90점 합격</div>
         </div>
         <div class="tier red" onclick="openTier('red')">
-          <span class="tc">??/span><div class="tn" id="st-r">-</div><div class="tl" id="tl-r">미달 · 80점↓</div>
+          <span class="tc">▾</span><div class="tn" id="st-r">–</div><div class="tl" id="tl-r">80점↓ 미달</div>
         </div>
       </div>
 
@@ -461,7 +470,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
       <div class="grid2" style="margin-bottom:16px;">
         <div class="card">
           <div class="row" style="justify-content:space-between;margin-bottom:14px;">
-            <div class="card-t" style="margin:0;">湲곗닔蹂?평균 점수</div>
+            <div class="card-t" style="margin:0;">기수별 평균 점수</div>
           </div>
           <div style="height:200px;"><canvas id="cohortChart"></canvas></div>
         </div>
@@ -469,7 +478,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
           <div class="row" style="justify-content:space-between;margin-bottom:14px;">
             <div class="card-t" style="margin:0;">오답률 TOP 5</div>
             <span style="font-size:11px;color:var(--blue);background:var(--blue-light);padding:4px 10px;border-radius:6px;">
-              클릭하면 답변 분포 확인
+              문항 클릭 시 답변 분포
             </span>
           </div>
           <div id="top5-list"><div style="color:var(--muted);font-size:13px;padding:8px 0;">데이터 없음</div></div>
@@ -480,62 +489,62 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
       <div class="card">
         <div class="card-t">퀴즈 응시 현황</div>
         <div class="grid2" id="quiz-status">
-          <div style="background:var(--gray);border-radius:10px;padding:14px 18px;color:var(--muted);font-size:13px;">로딩 중..</div>
+          <div style="background:var(--gray);border-radius:10px;padding:14px 18px;color:var(--muted);font-size:13px;">로딩 중...</div>
         </div>
       </div>
     </div>
 
-    <!-- ?곣봺 SESSIONS ?곣봺 -->
+    <!-- ━━ SESSIONS ━━ -->
     <div id="tab-sessions" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">?몄뀡 愿由?/div>
+        <div style="font-size:20px;font-weight:800;">세션 관리</div>
         <button class="btn btn-p" onclick="openSessionModal()">＋ 세션 추가</button>
       </div>
       <div id="sessions-list">
-        <div style="color:var(--muted);font-size:13px;">로딩중..</div>
+        <div style="color:var(--muted);font-size:13px;">불러오는 중...</div>
       </div>
     </div>
 
-    <!-- ?곣봺 QUIZ ?곣봺 -->
+    <!-- ━━ QUIZ ━━ -->
     <div id="tab-quiz" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">?댁쫰 愿由?/div>
+        <div style="font-size:20px;font-weight:800;">퀴즈 관리</div>
         <button class="btn btn-p" onclick="openQuizEditor(null)">＋ 퀴즈 추가</button>
       </div>
       <div id="quiz-list-wrap">
-        <div style="color:var(--muted);font-size:13px;">로딩 중..</div>
+        <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
       </div>
     </div>
 
-    <!-- ?곣봺 FLASHCARD ?곣봺 -->
+    <!-- ━━ FLASHCARD ━━ -->
     <div id="tab-flashcard" class="tab">
       <div class="row" style="justify-content:space-between;margin-bottom:20px;">
-        <div style="font-size:20px;font-weight:800;">?뚮옒?쒖뭅??愿由?/div>
+        <div style="font-size:20px;font-weight:800;">플래시카드 관리</div>
         <button class="btn btn-p" onclick="openFcEditor(null)">＋ 세트 추가</button>
       </div>
       <div id="fc-list-wrap">
-        <div style="color:var(--muted);font-size:13px;">로딩 중..</div>
+        <div style="color:var(--muted);font-size:13px;">로딩 중...</div>
       </div>
     </div>
 
-    <!-- ?곣봺 SETTINGS ?곣봺 -->
+    <!-- ━━ SETTINGS ━━ -->
     <div id="tab-settings" class="tab">
       <div style="font-size:20px;font-weight:800;margin-bottom:24px;">설정</div>
 
-      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">鍮꾨?踰덊샇 蹂寃?/div>
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">비밀번호 변경</div>
       <div class="srow" style="flex-direction:column;align-items:flex-start;gap:10px;">
         <input type="password" id="pw-cur" placeholder="현재 비밀번호" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
         <input type="password" id="pw-new" placeholder="새 비밀번호" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
         <input type="password" id="pw-new2" placeholder="새 비밀번호 확인" style="width:280px;padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-size:13px;">
         <div id="pw-err" style="color:var(--red);font-size:12px;display:none;"></div>
-        <button class="btn btn-p" onclick="changePw()">鍮꾨?踰덊샇 蹂寃?/button>
+        <button class="btn btn-p" onclick="changePw()">비밀번호 변경</button>
       </div>
 
       <div class="sep"></div>
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">??ぉ ?좏삎 愿由?/div>
-        <button class="btn btn-o btn-sm" onclick="toggleTypePanel()">설정보기</button>
+        <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;">항목 유형 관리</div>
+        <button class="btn btn-o btn-sm" onclick="toggleTypePanel()">수정하기</button>
       </div>
       <div id="type-panel" style="display:none;border:1px solid var(--border);border-radius:12px;padding:14px;background:var(--gray);">
         <div id="type-list-wrap" style="margin-bottom:10px;"></div>
@@ -547,23 +556,23 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
       <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;">데이터</div>
       <div class="srow">
         <span>응시 결과 내보내기 (CSV)</span>
-        <button class="btn btn-o btn-sm" onclick="exportCSV()">내보내기</button>
+        <button class="btn btn-o btn-sm" onclick="exportCSV()">다운로드</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ?? Cohort Detail Modal ?? -->
+<!-- ── Cohort Detail Modal ── -->
 <div class="ov" id="cohort-detail-ov" onclick="closeOv('cohort-detail-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="max-width:500px;">
     <div class="mh">
       <h2 id="cd-title">기수 상세</h2>
-      <button class="mcl" onclick="closeOvD('cohort-detail-ov')">??/button>
+      <button class="mcl" onclick="closeOvD('cohort-detail-ov')">✕</button>
     </div>
     <div style="display:flex;gap:16px;padding:12px 20px;background:var(--blue-light);border-bottom:1px solid var(--border);">
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--blue);" id="cd-stat-cnt">??/div><div style="font-size:11px;color:var(--muted);">李몄뿬??/div></div>
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--green-mid);" id="cd-stat-avg">??/div><div style="font-size:11px;color:var(--muted);">평균 점수</div></div>
-      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#d97706;" id="cd-stat-time">??/div><div style="font-size:11px;color:var(--muted);">평균 응시시간</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--blue);" id="cd-stat-cnt">–</div><div style="font-size:11px;color:var(--muted);">참여자</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:var(--green-mid);" id="cd-stat-avg">–</div><div style="font-size:11px;color:var(--muted);">평균 점수</div></div>
+      <div style="text-align:center;flex:1;"><div style="font-size:22px;font-weight:800;color:#d97706;" id="cd-stat-time">–</div><div style="font-size:11px;color:var(--muted);">평균 응시시간</div></div>
     </div>
     <div style="padding:16px 20px;overflow-y:auto;max-height:340px;">
       <table class="mt" style="width:100%;">
@@ -574,19 +583,19 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   </div>
 </div>
 
-<!-- ?? Tier Modal ?? -->
+<!-- ── Tier Modal ── -->
 <div class="ov" id="tier-ov" onclick="closeOv('tier-ov',event)">
   <div class="modal" onclick="event.stopPropagation()">
     <div class="mh" id="tier-mh">
       <h2 id="tier-title"></h2>
-      <button class="mcl" onclick="closeOvD('tier-ov')">??/button>
+      <button class="mcl" onclick="closeOvD('tier-ov')">✕</button>
     </div>
     <div class="mtb">
-      <button class="mtab on" id="tt-new" onclick="setTierTab('new')">?좉퇋?낆궗??/button>
-      <button class="mtab" id="tt-old" onclick="setTierTab('old')">湲곗〈吏곸썝</button>
+      <button class="mtab on" id="tt-new" onclick="setTierTab('new')">신규입사자</button>
+      <button class="mtab" id="tt-old" onclick="setTierTab('old')">기존직원</button>
       <div class="msrch">
-        <span>?뵇</span>
-        <input type="text" id="tier-srch" placeholder="吏곸썝 ?대쫫 寃??.." oninput="renderTierTable()">
+        <span>🔍</span>
+        <input type="text" id="tier-srch" placeholder="직원 이름 검색..." oninput="renderTierTable()">
       </div>
     </div>
     <div class="mb">
@@ -598,7 +607,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
   </div>
 </div>
 
-<!-- ?? Answer Modal ?? -->
+<!-- ── Answer Modal ── -->
 <div class="ov" id="ans-ov" onclick="closeOv('ans-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:560px;">
     <div class="mh">
@@ -606,30 +615,30 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
         <h2 id="ans-title"></h2>
         <div style="font-size:12px;color:var(--muted);margin-top:4px;" id="ans-meta"></div>
       </div>
-      <button class="mcl" onclick="closeOvD('ans-ov')">??/button>
+      <button class="mcl" onclick="closeOvD('ans-ov')">✕</button>
     </div>
     <div class="mb" id="ans-body" style="padding:24px;"></div>
   </div>
 </div>
 
-<!-- ?? Session Modal ?? -->
+<!-- ── Session Modal ── -->
 <div class="ov" id="sess-ov" onclick="closeOv('sess-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:500px;">
-    <div class="mh"><h2 id="sess-modal-title">세션 추가</h2><button class="mcl" onclick="closeOvD('sess-ov')">??/button></div>
+    <div class="mh"><h2 id="sess-modal-title">세션 추가</h2><button class="mcl" onclick="closeOvD('sess-ov')">✕</button></div>
     <div class="mb" style="padding:24px;">
       <div style="margin-bottom:16px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세션 이름</label>
-        <input type="text" id="sess-name" placeholder="?? 신규입사자 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <input type="text" id="sess-name" placeholder="예: 신규입사자 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:16px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?꾩씠肄?(?대え吏)</label>
-        <input type="text" id="sess-icon" placeholder="?뱴" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">아이콘 (이모지)</label>
+        <input type="text" id="sess-icon" placeholder="📚" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:24px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">상태</label>
         <select id="sess-status" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
-          <option value="active">吏꾪뻾以?/option>
-          <option value="preparing">以鍮?以?/option>
+          <option value="active">진행중</option>
+          <option value="preparing">준비 중</option>
         </select>
       </div>
       <div id="sess-days-section" style="margin-bottom:24px;">
@@ -640,60 +649,60 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
         <div id="sess-days-list"></div>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
-        <button class="btn btn-g" onclick="closeOvD('sess-ov')">痍⑥냼</button>
-        <button class="btn btn-p" onclick="saveSession()">???/button>
+        <button class="btn btn-g" onclick="closeOvD('sess-ov')">취소</button>
+        <button class="btn btn-p" onclick="saveSession()">저장</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ?? Item Modal ?? -->
+<!-- ── Item Modal ── -->
 <div class="ov" id="item-ov" onclick="closeOv('item-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:520px;">
-    <div class="mh"><h2 id="item-modal-title">항목 추가</h2><button class="mcl" onclick="closeOvD('item-ov')">??/button></div>
+    <div class="mh"><h2 id="item-modal-title">항목 추가</h2><button class="mcl" onclick="closeOvD('item-ov')">✕</button></div>
     <div class="mb" style="padding:24px;">
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">항목 이름</label>
-        <input type="text" id="item-name" placeholder="?? 브랜드 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <input type="text" id="item-name" placeholder="예: 브랜드 교육" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">유형</label>
         <select id="item-type" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;" onchange="updateItemFields()">
-          <option value="link">?뵕 留곹겕 (PPT/PDF)</option>
-          <option value="roleplay">🎭 롤플레이 (카테고리·핵심포인트·멘트)</option>
+          <option value="link">🔗 링크 (PPT/PDF)</option>
+          <option value="roleplay">🎭 롤플레이 (카테고리·포인트·멘트)</option>
           <option value="flashcard">🗂 플래시카드 QR 배포</option>
           <option value="quiz">✅ 퀴즈 QR 배포</option>
-          <option value="lecture">?럳 ?뚮옒?쒖뭅??媛뺤쓽 紐⑤뱶</option>
+          <option value="lecture">🎓 플래시카드 강의 모드</option>
         </select>
       </div>
       <div style="margin-bottom:14px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">설명 (선택)</label>
-        <input type="text" id="item-desc" placeholder="?? PPT, PDF, 구글드라이브 등" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <input type="text" id="item-desc" placeholder="예: PPT, PDF, 구글드라이브" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
-      <!-- 留곹겕 -->
+      <!-- 링크 -->
       <div id="item-f-link" style="margin-bottom:14px;">
-        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">留곹겕 URL</label>
+        <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">링크 URL</label>
         <input type="url" id="item-url" placeholder="https://drive.google.com/..." style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 留곹겕瑜?洹몃?濡?遺숈뿬?ｌ쑝硫??먮룞 蹂?섎맗?덈떎.</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Google Drive 링크를 그대로 붙여넣으면 자동 변환됩니다.</div>
       </div>
-      <!-- 濡ㅽ뵆?덉씠 ?먮뵒??-->
+      <!-- 롤플레이 에디터 -->
       <div id="item-f-roleplay" style="margin-bottom:14px;display:none;">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--blue-light);border-radius:10px;border:1px solid var(--border);">
           <div>
-            <div style="font-size:14px;font-weight:600;color:var(--blue);">롤플레이 내용 설정</div>
+            <div style="font-size:14px;font-weight:600;color:var(--blue);">롤플레이 내용 편집</div>
             <div id="rp-edit-summary" style="font-size:12px;color:var(--muted);margin-top:2px;">카테고리 0개</div>
           </div>
-          <button class="btn btn-p btn-sm" onclick="openRpEditor()">내용 편집 →</button>
+          <button class="btn btn-p btn-sm" onclick="openRpEditor()">편집 열기 →</button>
         </div>
       </div>
-      <!-- ?뚮옒?쒖뭅??ID -->
+      <!-- 플래시카드 ID -->
       <div id="item-f-fc" style="margin-bottom:14px;display:none;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">플래시카드 세트 ID</label>
         <select id="item-fcid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
           <option value="">-- 세트 선택 --</option>
         </select>
       </div>
-      <!-- ?댁쫰 ID -->
+      <!-- 퀴즈 ID -->
       <div id="item-f-quiz" style="margin-bottom:14px;display:none;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 ID</label>
         <select id="item-quizid" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
@@ -701,150 +710,164 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
         </select>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:8px;">
-        <button class="btn btn-g" onclick="closeOvD('item-ov')">痍⑥냼</button>
-        <button class="btn btn-p" onclick="saveItem()">???/button>
+        <button class="btn btn-g" onclick="closeOvD('item-ov')">취소</button>
+        <button class="btn btn-p" onclick="saveItem()">저장</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ?? Quiz Editor Modal ?? -->
+<!-- ── Quiz Editor Modal ── -->
 <div class="ov" id="quiz-editor-ov" onclick="closeOv('quiz-editor-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:680px;">
-    <div class="mh"><h2 id="qe-title">퀴즈 에디터</h2><button class="mcl" onclick="closeOvD('quiz-editor-ov')">??/button></div>
+    <div class="mh"><h2 id="qe-title">퀴즈 편집</h2><button class="mcl" onclick="closeOvD('quiz-editor-ov')">✕</button></div>
     <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
       <div style="margin-bottom:16px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">퀴즈 세트 이름</label>
-        <input type="text" id="qe-name" placeholder="?? ?좉퇋?낆궗??留덈Т由??댁쫰" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <input type="text" id="qe-name" placeholder="예: 신규입사자 마무리 퀴즈" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">異쒖젣 臾몄젣 ??<span style="font-weight:400;">(0 = ?꾩껜)</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">출제 문제 수 <span style="font-weight:400;">(0 = 전체)</span></label>
           <input type="number" id="qe-quiz-cnt" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">??대㉧ <span style="font-weight:400;">(遺? 0 = 誘몄궗??</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">타이머 <span style="font-weight:400;">(분, 0 = 미사용)</span></label>
           <input type="number" id="qe-timer" min="0" value="0" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?곗닔?⑷꺽 湲곗? <span style="font-weight:400;">(??</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">우수합격 기준 <span style="font-weight:400;">(점)</span></label>
           <input type="number" id="qe-pass-s" min="0" max="100" value="90" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
         <div>
-          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">?⑷꺽 湲곗? <span style="font-weight:400;">(??</span></label>
+          <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">합격 기준 <span style="font-weight:400;">(점)</span></label>
           <input type="number" id="qe-pass-p" min="0" max="100" value="80" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
         </div>
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">臾명빆 紐⑸줉</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">문항 목록</div>
       <div id="qe-question-list" style="margin-bottom:12px;"></div>
-      <!-- 臾명빆 異붽? ??-->
+      <!-- 문항 추가 폼 -->
       <div id="qe-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="qe-form-title">臾명빆 異붽?</div>
-        <input type="text" id="qe-q-text" placeholder="吏덈Ц ?댁슜" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="qe-form-title">문항 추가</div>
+        <input type="text" id="qe-q-text" placeholder="질문 내용" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-          <input type="text" id="qe-opt0" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt1" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt2" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
-          <input type="text" id="qe-opt3" placeholder="??蹂닿린" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt0" placeholder="① 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt1" placeholder="② 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt2" placeholder="③ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
+          <input type="text" id="qe-opt3" placeholder="④ 보기" style="padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;">
         </div>
         <div style="margin-bottom:12px;">
-          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">?뺣떟 <span style="font-size:11px;font-weight:400;">(蹂듭닔 ?좏깮 媛??</span></label>
+          <label style="font-size:13px;color:var(--muted);display:block;margin-bottom:6px;">정답 <span style="font-size:11px;font-weight:400;">(복수 선택 가능)</span></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-0"> ??踰?/label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-1"> ??踰?/label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-2"> ??踰?/label>
-            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-3"> ??踰?/label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-0"> ① 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-1"> ② 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-2"> ③ 번</label>
+            <label style="display:flex;align-items:center;gap:6px;font-size:13px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:#fff;"><input type="checkbox" id="qe-ans-3"> ④ 번</label>
           </div>
         </div>
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-g btn-sm" onclick="qeCloseForm()">痍⑥냼</button>
-          <button class="btn btn-p btn-sm" onclick="qeSaveQuestion()">???/button>
+          <button class="btn btn-g btn-sm" onclick="qeCloseForm()">취소</button>
+          <button class="btn btn-p btn-sm" onclick="qeSaveQuestion()">저장</button>
         </div>
       </div>
       <button class="btn btn-g btn-sm" id="qe-add-btn" onclick="qeOpenForm()" style="margin-top:8px;">＋ 문항 추가</button>
     </div>
     <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('quiz-editor-ov')">痍⑥냼</button>
-      <button class="btn btn-p" onclick="saveQuizEditor()">???/button>
+      <button class="btn btn-g" onclick="closeOvD('quiz-editor-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveQuizEditor()">저장</button>
     </div>
   </div>
 </div>
 
-<!-- ?? FC Editor Modal ?? -->
+<!-- ── FC Editor Modal ── -->
 <div class="ov" id="fc-editor-ov" onclick="closeOv('fc-editor-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:600px;">
-    <div class="mh"><h2 id="fce-title">플래시카드 에디터</h2><button class="mcl" onclick="closeOvD('fc-editor-ov')">??/button></div>
+    <div class="mh"><h2 id="fce-title">플래시카드 편집</h2><button class="mcl" onclick="closeOvD('fc-editor-ov')">✕</button></div>
     <div class="mb" style="padding:20px;max-height:65vh;overflow-y:auto;">
       <div style="margin-bottom:16px;">
         <label style="font-size:12px;font-weight:700;color:var(--muted);display:block;margin-bottom:6px;">세트 이름</label>
-        <input type="text" id="fce-name" placeholder="?? ?댁쓽?쒓린 ?뚮옒?쒖뭅?? style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
+        <input type="text" id="fce-name" placeholder="예: 이의제기 플래시카드" style="width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;">
       </div>
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">移대뱶 紐⑸줉</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;">카드 목록</div>
       <div id="fce-card-list" style="margin-bottom:12px;"></div>
       <div id="fce-add-form" style="background:var(--gray);border-radius:10px;padding:16px;display:none;">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="fce-form-title">移대뱶 異붽?</div>
-        <input type="text" id="fce-front" placeholder="?욌㈃ (吏덈Ц)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;" id="fce-form-title">카드 추가</div>
+        <input type="text" id="fce-front" placeholder="앞면 (질문)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:8px;">
         <input type="text" id="fce-back" placeholder="뒷면 (정답)" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;margin-bottom:12px;">
         <div style="display:flex;gap:8px;">
-          <button class="btn btn-g btn-sm" onclick="fceCloseForm()">痍⑥냼</button>
-          <button class="btn btn-p btn-sm" onclick="fceSaveCard()">???/button>
+          <button class="btn btn-g btn-sm" onclick="fceCloseForm()">취소</button>
+          <button class="btn btn-p btn-sm" onclick="fceSaveCard()">저장</button>
         </div>
       </div>
       <button class="btn btn-g btn-sm" id="fce-add-btn" onclick="fceOpenForm()" style="margin-top:8px;">＋ 카드 추가</button>
     </div>
     <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('fc-editor-ov')">痍⑥냼</button>
-      <button class="btn btn-p" onclick="saveFcEditor()">???/button>
+      <button class="btn btn-g" onclick="closeOvD('fc-editor-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveFcEditor()">저장</button>
     </div>
   </div>
 </div>
 
-<!-- ?? Roleplay Editor Modal ?? -->
+<!-- ── Roleplay Editor Modal ── -->
 <div class="ov" id="rp-ov" onclick="closeOv('rp-ov',event)">
   <div class="modal" onclick="event.stopPropagation()" style="width:860px;max-width:96vw;">
-    <div class="mh"><h2>롤플레이 내용 설정</h2><button class="mcl" onclick="closeOvD('rp-ov')">??/button></div>
+    <div class="mh"><h2>롤플레이 내용 편집</h2><button class="mcl" onclick="closeOvD('rp-ov')">✕</button></div>
     <div class="mb" style="padding:0;display:grid;grid-template-columns:220px 1fr;min-height:480px;max-height:72vh;">
-      <!-- 移댄뀒怨좊━ ?ъ씠?쒕컮 -->
+      <!-- 카테고리 사이드바 -->
       <div style="border-right:1px solid var(--border);padding:16px;overflow-y:auto;background:#f9fbfd;">
         <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.06em;margin-bottom:10px;">카테고리</div>
         <div id="rpe-cat-list"></div>
         <button class="btn btn-g btn-sm" style="width:100%;margin-top:10px;" onclick="rpeAddCat()">＋ 카테고리 추가</button>
       </div>
-      <!-- ?몄쭛 ?⑤꼸 -->
+      <!-- 편집 패널 -->
       <div style="padding:20px;overflow-y:auto;" id="rpe-panel">
-        <p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 추가하세요.</p>
+        <p style="color:var(--muted);font-size:14px;">좌측에서 카테고리를 선택하세요.</p>
       </div>
     </div>
     <div style="padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;">
-      <button class="btn btn-g" onclick="closeOvD('rp-ov')">痍⑥냼</button>
-      <button class="btn btn-p" onclick="saveRpEditor()">???/button>
+      <button class="btn btn-g" onclick="closeOvD('rp-ov')">취소</button>
+      <button class="btn btn-p" onclick="saveRpEditor()">저장</button>
     </div>
   </div>
 </div>
 
-<!-- ?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??     PRESENT VIEW (援먯쑁 吏꾪뻾 ?붾㈃ ?듯빀)
-?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺?곣봺??-->
+<!-- ── QR Modal ── -->
+<div class="ov" id="qr-ov" onclick="closeOv('qr-ov',event)">
+  <div class="modal" onclick="event.stopPropagation()" style="width:420px;">
+    <div class="mh"><h2>QR 배포</h2><button class="mcl" onclick="closeOvD('qr-ov')">✕</button></div>
+    <div class="qrbox">
+      <div class="qrph">📱</div>
+      <div id="qr-lbl" style="font-size:13px;color:var(--muted);text-align:center;"></div>
+      <div id="qr-url" style="font-size:12px;color:var(--blue);word-break:break-all;text-align:center;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-p" onclick="copyQR()">링크 복사</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Present View ── -->
 <div id="present-view">
 
 <div id="p-loading" style="display:none;">
-  <img src="logo.png" alt="?쇰줈??>
-  <span style="font-size:13px;color:#6b7c93;">로딩중..</span>
+  <img src="logo.png" alt="라로제">
+  <span style="font-size:13px;color:#6b7c93;">불러오는 중...</span>
 </div>
 
 <!-- Header -->
 <div class="p-hdr" id="p-main-hdr">
-  <img src="logo.png" alt="?쇰줈?? onclick="pGoHome()">
+  <img src="logo.png" alt="라로제" onclick="pGoHome()">
   <div class="p-hdr-right" id="p-hdr-right">
-    <button class="p-back-btn" onclick="closePresentView()">??愿由ъ옄濡??뚯븘媛湲?/button>
+    <button class="p-back-btn" onclick="closePresentView()">← 관리자로 돌아가기</button>
   </div>
 </div>
 
 <!-- HOME -->
 <div class="p-screen on" id="p-s-home">
   <div id="p-home-inner">
-    <div class="p-home-title">?벟 援먯쑁 吏꾪뻾</div>
+    <div class="p-home-title">📺 교육 진행</div>
     <div class="p-home-sub">세션을 선택하여 교육을 시작하세요.</div>
     <div class="p-session-grid" id="p-session-grid"></div>
   </div>
@@ -862,7 +885,7 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
     <div class="p-vhdr-title" id="p-vhdr-title"></div>
     <div class="p-vhdr-right">
       <div class="p-kbd-hints" id="p-kbd-hints"></div>
-      <button class="p-v-close-btn" onclick="pCloseViewer()">???リ린 &nbsp;<span style="opacity:.5;font-size:11px;">(ESC)</span></button>
+      <button class="p-v-close-btn" onclick="pCloseViewer()">✕ 닫기 &nbsp;<span style="opacity:.5;font-size:11px;">(ESC)</span></button>
     </div>
   </div>
   <div class="p-vbody" id="p-vbody">
@@ -871,10 +894,10 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
     <div id="p-v-link">
       <iframe id="p-v-link-frame" allowfullscreen></iframe>
       <div id="p-v-link-ext">
-        <div class="p-ext-icon">?뱨</div>
-        <div class="p-ext-title" id="p-ext-title">?몃? 留곹겕</div>
+        <div class="p-ext-icon">📎</div>
+        <div class="p-ext-title" id="p-ext-title">외부 링크</div>
         <div class="p-ext-url" id="p-ext-url-text"></div>
-        <button class="p-ext-btn" onclick="pOpenExt()">새 탭으로 열기</button>
+        <button class="p-ext-btn" onclick="pOpenExt()">↗ 새 탭으로 열기</button>
       </div>
     </div>
 
@@ -892,9 +915,9 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
       <div class="p-fc-wrap" onclick="pFlipFC()">
         <div class="p-fc-inner" id="p-fc-inner">
           <div class="p-fc-face p-fc-front">
-            <div class="p-fc-label">吏덈Ц</div>
+            <div class="p-fc-label">질문</div>
             <div class="p-fc-text" id="p-fc-front-text"></div>
-            <div class="p-fc-hint">클릭하면 뒷면 확인</div>
+            <div class="p-fc-hint">클릭하여 답 보기 ↩</div>
           </div>
           <div class="p-fc-face p-fc-back">
             <div class="p-fc-label" style="color:var(--blue);">정답</div>
@@ -903,25 +926,25 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
         </div>
       </div>
       <div class="p-fc-nav">
-        <button class="p-nav-btn" id="p-fc-prev" onclick="pFcNav(-1)">??/button>
+        <button class="p-nav-btn" id="p-fc-prev" onclick="pFcNav(-1)">←</button>
         <div class="p-fc-counter" id="p-fc-counter">1 / 1</div>
-        <button class="p-nav-btn" id="p-fc-next" onclick="pFcNav(1)">??/button>
+        <button class="p-nav-btn" id="p-fc-next" onclick="pFcNav(1)">→</button>
       </div>
     </div>
 
     <!-- QR -->
     <div id="p-v-qr">
       <div class="p-qr-title" id="p-qr-title"></div>
-      <div class="p-qr-sub" id="p-qr-sub">핸드폰 카메라로 QR을 스캔하세요./div>
+      <div class="p-qr-sub" id="p-qr-sub">핸드폰 카메라로 QR을 스캔하세요</div>
       <div class="p-qr-box"><div id="p-qr-canvas"></div></div>
       <div class="p-qr-url" id="p-qr-url"></div>
     </div>
 
     <!-- EMPTY -->
     <div id="p-v-empty">
-      <div class="p-empty-icon" id="p-empty-icon">?뵕</div>
-      <div class="p-empty-h" id="p-empty-h">아직 설정되지 않았습니다./div>
-      <div class="p-empty-p" id="p-empty-p">愿由ъ옄 ?섏씠吏?먯꽌 ????ぉ???ㅼ젙?댁＜?몄슂.</div>
+      <div class="p-empty-icon" id="p-empty-icon">🔗</div>
+      <div class="p-empty-h" id="p-empty-h">아직 설정되지 않았습니다</div>
+      <div class="p-empty-p" id="p-empty-p">관리자 페이지에서 이 항목을 설정해주세요.</div>
     </div>
 
   </div>
@@ -929,37 +952,20 @@ body{background:var(--gray);color:var(--text);height:100vh;overflow:hidden;}
 
 </div><!-- #present-view -->
 
-<!-- ?? QR Modal ?? -->
-<div class="ov" id="qr-ov" onclick="closeOv('qr-ov',event)">
-  <div class="modal" onclick="event.stopPropagation()" style="width:420px;">
-    <div class="mh"><h2>QR 배포</h2><button class="mcl" onclick="closeOvD('qr-ov')">??/button></div>
-    <div class="qrbox">
-      <div class="qrph">?벑</div>
-      <div id="qr-lbl" style="font-size:13px;color:var(--muted);text-align:center;"></div>
-      <div id="qr-url" style="font-size:12px;color:var(--blue);word-break:break-all;text-align:center;"></div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-p" onclick="copyQR()">留곹겕 蹂듭궗</button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-
-// ?? ?좏삎 愿由???
+// ── 항목 유형 기본값 ──
 const DEFAULT_ITEM_TYPES = [
-  {id:'link',     icon:'?뱥', name:'留곹겕 (PPT/PDF)',   order:0, active:true},
-  {id:'roleplay', icon:'?렚', name:'濡ㅽ뵆?덉씠',          order:1, active:true},
-  {id:'flashcard',icon:'?뾺', name:'?뚮옒?쒖뭅??QR',     order:2, active:true},
-  {id:'quiz',     icon:'✅', name:'?댁쫰 QR',          order:3, active:true},
-  {id:'lecture',  icon:'?럳', name:'媛뺤쓽 紐⑤뱶',         order:4, active:true}
+  {id:'link',     icon:'📋', name:'링크 (PPT/PDF)',   order:0, active:true},
+  {id:'roleplay', icon:'🎭', name:'롤플레이',          order:1, active:true},
+  {id:'flashcard',icon:'🗂', name:'플래시카드 QR',     order:2, active:true},
+  {id:'quiz',     icon:'✅', name:'퀴즈 QR',          order:3, active:true},
+  {id:'lecture',  icon:'🎓', name:'강의 모드',         order:4, active:true}
 ];
 
 function getItemTypes() {
   try {
     const saved = JSON.parse(localStorage.getItem('lr_item_types')||'null');
     if (!saved) return DEFAULT_ITEM_TYPES;
-    // 湲곗〈 ?곗씠?곗뿉 order/active ?놁쑝硫?蹂댁셿
     return saved.map((t,i) => ({ order:i, active:true, ...t }));
   } catch(e) { return DEFAULT_ITEM_TYPES; }
 }
@@ -970,7 +976,7 @@ function toggleTypePanel() {
   const btn = event.target;
   const isOpen = panel.style.display !== 'none';
   panel.style.display = isOpen ? 'none' : 'block';
-  btn.textContent = isOpen ? '설정보기' : '?リ린';
+  btn.textContent = isOpen ? '수정하기' : '닫기';
   if (!isOpen) renderTypeList();
 }
 
@@ -982,8 +988,8 @@ function renderTypeList() {
   wrap.innerHTML = types.map((t,i)=>`
     <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;background:#fff;">
       <div style="display:flex;flex-direction:column;gap:2px;">
-        <button onclick="moveTypeUp(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===0?'disabled style="opacity:.3;"':''}>??/button>
-        <button onclick="moveTypeDown(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===types.length-1?'disabled style="opacity:.3;"':''}>??/button>
+        <button onclick="moveTypeUp(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===0?'disabled style="opacity:.3;"':''}>▲</button>
+        <button onclick="moveTypeDown(${i})" style="padding:1px 7px;font-size:10px;border:1px solid var(--border);border-radius:4px;background:#fff;cursor:pointer;color:var(--text);" ${i===types.length-1?'disabled style="opacity:.3;"':''}>▼</button>
       </div>
       <input type="text" value="${(t.name||'').replace(/"/g,'&quot;')}"
         onblur="renameItemType('${t.id}',this.value)"
@@ -992,10 +998,9 @@ function renderTypeList() {
         <input type="checkbox" ${t.active!==false?'checked':''} onchange="toggleTypeActive('${t.id}',this.checked)" style="cursor:pointer;width:14px;height:14px;">
         활성
       </label>
-      ${!isBuiltin(t.id)?`<button onclick="deleteItemType('${t.id}')" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">??젣</button>`:''}
+      ${!isBuiltin(t.id)?`<button onclick="deleteItemType('${t.id}')" style="padding:5px 10px;font-size:12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--red);cursor:pointer;">삭제</button>`:''}
     </div>
   `).join('');
-  // ?꾩씠??紐⑤떖 select???낅뜲?댄듃 (활성?붾맂 寃껊쭔)
   const sel = document.getElementById('item-type');
   if (sel) sel.innerHTML = types.filter(t=>t.active!==false).map(t=>`<option value="${t.id}">${t.icon||''} ${t.name}</option>`).join('');
 }
@@ -1028,7 +1033,7 @@ function addItemType() {
   if (!name) return;
   const types = getItemTypes();
   const maxOrder = types.reduce((m,t)=>Math.max(m,t.order||0), 0);
-  types.push({ id:'custom_'+Date.now(), icon:'?뱦', name, order:maxOrder+1, active:true });
+  types.push({ id:'custom_'+Date.now(), icon:'📌', name, order:maxOrder+1, active:true });
   saveItemTypes(types); renderTypeList();
 }
 function deleteItemType(id) {
@@ -1037,7 +1042,7 @@ function deleteItemType(id) {
   saveItemTypes(types); renderTypeList();
 }
 
-// ?? Nav ??
+// ── Nav ──
 function gotoTab(id) {
   document.querySelectorAll('.tab').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
@@ -1046,11 +1051,11 @@ function gotoTab(id) {
   if (id==='settings') renderTypeList();
 }
 
-// ?? Modal helpers ??
+// ── Modal helpers ──
 function closeOv(id, e) { if(e.target===document.getElementById(id)) document.getElementById(id).classList.remove('open'); }
 function closeOvD(id) { document.getElementById(id).classList.remove('open'); }
 
-// ?? Session accordion ??
+// ── Session accordion ──
 function toggleSc(hdr) {
   const body = hdr.nextElementSibling;
   const btn = hdr.querySelector('.tog-btn');
@@ -1063,8 +1068,8 @@ function setDay(el) {
   el.classList.add('on');
 }
 
-// ── 초기화 (DOMContentLoaded) ──
-document.addEventListener('DOMContentLoaded', () => {
+// ── Init ──
+window.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     document.getElementById('loading').style.display = 'none';
     if (isLoggedIn()) {
