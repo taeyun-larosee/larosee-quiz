@@ -1032,6 +1032,11 @@ async function fsGetAllSets() {
     return snap.docs.map(d => d.data()).filter(s => s && s.id);
   } catch(e) { return null; }
 }
+async function syncSetsFromRemote() {
+  await waitForDb();
+  const remoteSets = await fsGetAllSets();
+  if (remoteSets && remoteSets.length > 0) localStorage.setItem('lr_sets', JSON.stringify(remoteSets));
+}
 async function fsSyncFcSet(set) {
   if (!db) return;
   try { await db.collection('fcsets').doc(set.id).set(set); } catch(e) {}
@@ -1412,9 +1417,14 @@ function switchTab(t) {
     document.getElementById('dash-detail-view').style.display = 'none';
     loadDashboard();
   }
-  else if (t === 'quiz') { _qViewSetId = null; renderQTab(); loadScoreList(); }
+  else if (t === 'quiz') {
+    _qViewSetId = null;
+    renderQTab();
+    syncSetsFromRemote().then(renderQTab); // 다른 기기에서 수정한 최신 문제로 갱신
+    loadScoreList();
+  }
   else if (t === 'flashcard') renderFcSetList();
-  else if (t === 'qr') renderQRTab();
+  else if (t === 'qr') { renderQRTab(); syncSetsFromRemote().then(renderQRTab); }
   else if (t === 'settings') {
     const val = localStorage.getItem('lr_shuffle_lecture') === 'true';
     const chk = document.getElementById('shuffle-toggle');
@@ -2410,6 +2420,7 @@ function renderQSetList() {
           '</div>' +
           '<div style="display:flex;gap:6px;">' +
           '<button class="btn btn-sm btn-outline" onclick="openEditSetModal(\'' + set.id + '\')">수정</button>' +
+          '<button class="btn btn-sm btn-outline" onclick="dupeQuizSet(\'' + set.id + '\')">복제</button>' +
           '<button class="btn btn-sm btn-danger" onclick="confirmDeleteSet(\'' + set.id + '\')">삭제</button>' +
           '</div></div></div>';
       } else {
@@ -2662,6 +2673,19 @@ function confirmDeleteSet(setId) {
   saveSets(loadSets().filter(s => s.id !== setId));
   fsDeleteSet(setId);
   if (_qViewSetId === setId) _qViewSetId = null;
+  renderQTab();
+}
+function dupeQuizSet(setId) {
+  const sets = loadSets();
+  const set = sets.find(s => s.id === setId);
+  if (!set) return;
+  const copy = JSON.parse(JSON.stringify(set));
+  copy.id = 'set_' + Date.now();
+  copy.name = set.name + ' (복사본)';
+  copy.questions = copy.questions.map((q, i) => ({ ...q, id: Date.now() + i }));
+  sets.push(copy);
+  saveSets(sets);
+  fsSyncSet(copy);
   renderQTab();
 }
 
@@ -3093,7 +3117,8 @@ function toggleFcCard(qEl) {
 let lecIdx = 0, lecQs = [], lecRevealed = false;
 let lecMode = 'quiz'; // 'quiz' | 'flashcard'
 
-function startLecture() {
+async function startLecture() {
+  await syncSetsFromRemote(); // 다른 기기에서 수정한 최신 문제로 갱신 후 시작
   lecMode = 'quiz';
   const sets = loadSets();
   if (sets.length === 0) { alert('등록된 퀴즈가 없습니다.'); return; }
@@ -3111,8 +3136,9 @@ function startLecture() {
   }
 }
 
-function startLectureWithSet(setId) {
+async function startLectureWithSet(setId) {
   document.getElementById('lec-set-modal').classList.remove('active');
+  await syncSetsFromRemote(); // 다른 기기에서 수정한 최신 문제로 갱신 후 시작
   lecMode = 'quiz';
   const set = getSetById(setId);
   lecQs = set ? set.questions : [];
