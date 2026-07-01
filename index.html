@@ -477,7 +477,7 @@
     <div class="q-options" id="q-options"></div>
     <div class="q-feedback" id="q-feedback"></div>
     <div class="q-next-wrap" id="q-confirm-wrap" style="display:none;">
-      <button class="btn btn-primary btn-block" onclick="confirmMultiAnswer()">확인</button>
+      <button class="btn btn-primary btn-block" onclick="confirmAnswer()">정답 확인</button>
     </div>
     <div class="q-next-wrap" id="q-next-wrap">
       <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
@@ -1266,7 +1266,7 @@ function renderQuestion() {
     fb.style.opacity = '';
   }
   document.getElementById('q-next-wrap').style.display = 'none';
-  document.getElementById('q-confirm-wrap').style.display = isMulti ? 'block' : 'none';
+  document.getElementById('q-confirm-wrap').style.display = 'block';
 }
 
 function selectAnswer(idx) {
@@ -1276,8 +1276,9 @@ function selectAnswer(idx) {
   const opts = document.querySelectorAll('.q-option');
   const fb = document.getElementById('q-feedback');
 
+  if (opts[idx].disabled) return;
+
   if (isMulti) {
-    if (opts[idx].disabled) return;
     // 토글 선택/해제
     if (_selectedOptions.has(idx)) {
       _selectedOptions.delete(idx);
@@ -1292,25 +1293,23 @@ function selectAnswer(idx) {
     fb.style.display = 'block';
     fb.style.opacity = '0.7';
   } else {
-    // 단일 정답 (기존 로직)
-    const ok = correctArr.includes(idx);
-    answers.push({ q, ok, chosen: idx, correct: q.correct });
-    opts.forEach((btn, i) => {
-      btn.disabled = true;
-      if (correctArr.includes(i)) btn.classList.add('correct');
-      else if (i === idx && !ok) btn.classList.add('wrong');
-    });
-    if (ok) { fb.textContent = '잘 기억하고 있네요!'; fb.className = 'q-feedback correct'; }
-    else { fb.textContent = '이 부분은 함께 다시 살펴볼까요?'; fb.className = 'q-feedback wrong'; }
-    fb.style.opacity = '';
-    document.getElementById('q-next-wrap').style.display = 'block';
+    // 단일 정답: 선택만 하고 채점은 "정답 확인" 버튼을 눌러야 이루어짐 (실수로 오답 확정되는 것 방지)
+    opts.forEach(btn => btn.classList.remove('selected'));
+    _selectedOptions = new Set([idx]);
+    opts[idx].classList.add('selected');
+    fb.textContent = '선택하셨어요 · 확인을 누르면 제출됩니다';
+    fb.className = 'q-feedback';
+    fb.style.display = 'block';
+    fb.style.opacity = '0.7';
   }
 }
 
-function confirmMultiAnswer() {
+function confirmAnswer() {
   const q = qs[qi];
   const correctArr = Array.isArray(q.correct) ? q.correct.map(Number) : [Number(q.correct)];
+  const isMulti = correctArr.length > 1;
   const selected = [..._selectedOptions].map(Number);
+  if (selected.length === 0) return; // 아직 답을 선택하지 않음
   const opts = document.querySelectorAll('.q-option');
   const fb = document.getElementById('q-feedback');
 
@@ -1328,7 +1327,7 @@ function confirmMultiAnswer() {
   else { fb.textContent = '이 부분은 함께 다시 살펴볼까요?'; fb.className = 'q-feedback wrong'; }
   fb.style.opacity = '';
 
-  answers.push({ q, ok, chosen: selected, correct: q.correct });
+  answers.push({ q, ok, chosen: isMulti ? selected : selected[0], correct: q.correct });
   document.getElementById('q-confirm-wrap').style.display = 'none';
   document.getElementById('q-next-wrap').style.display = 'block';
 }
