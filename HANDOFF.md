@@ -3,11 +3,21 @@
 > 🚨 **파일 수정은 반드시 Claude Code에서만. GitHub 웹 업로드 절대 금지.**  
 > 이거 한 번 어기면 한글 인코딩이 다 깨지고 하루 토큰을 날린다.
 
-> 최종 업데이트: 2026-06-26 (세션 8)  
+> 최종 업데이트: 2026-07-01 (세션 10)  
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: `f7ea81f` (HANDOFF 업데이트) ← `9a1216b` (admin.html 전면 재작성)
+> 최신 커밋: `54783bc` (index.html 기수/셔플 Firebase 동기화) ← `cff8856` (HANDOFF 세션 9 기록)
+
+> ⚠️ **`index.html`과 `admin.html`은 서로 다른 별개의 앱이다.** 같은 repo·같은 Firebase 프로젝트(`ra-rosee`)를 쓰지만 코드도, 관리자 로그인도, 기능 구성도 독립적임.
+> - `index.html` — 응시자용 퀴즈 앱. `?mode=admin`을 붙이면 자체 내장된 간이 관리자 화면(대시보드/퀴즈/플래시카드/QR/설정)이 뜬다. 로직 전부 인라인 `<script>`, Firebase 10.12.0 인라인 초기화.
+> - `admin.html` — 세션/DAY/롤플레이/프레젠테이션 뷰까지 포함한 정식 관리자 콘솔. db.js/quiz.js/flashcard.js/sessions.js/present.js로 로직 분리, config.js로 Firebase 9.22.2 초기화.
+> - 아래 "3. 각 파일 상세" 섹션은 **admin.html 계열 전용** 문서다. index.html 수정 시에는 참고하지 말 것.
+
+### 세션 10 변경사항 (index.html)
+- `lr_cohorts`(기수 목록), `lr_shuffle_lecture`(강의 셔플 설정)이 localStorage에만 저장되고 다른 기기와 동기화 안 되던 문제 수정.
+- Firebase에 `meta/admin_config` 문서 추가 (`fsSyncMeta()`/`fsGetMeta()` 함수). `saveCohorts()`/`saveShuffleSetting()` 호출 시 로컬 + Firebase 양쪽에 저장, 페이지 로드 시 Firebase 최신값으로 로컬 덮어씀 (관리자 모드 진입 시에도 동작).
+- 관리자 비밀번호(`lr_pw`)는 보안상 의도적으로 로컬 전용 유지 — Firebase 동기화 대상 아님.
 
 ---
 
@@ -320,6 +330,8 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 | 파일 | 상태 | 마지막 수정 |
 |---|---|---|
 | `admin.html` | ✅ 전면 재작성 완료, 한글 정상 | 세션 8 (커밋 9a1216b) |
+| `supabase.js` | ✅ 생성 완료 (클라이언트 초기화만, 아직 연결 안 됨) | 세션 9 |
+| `.env` | ✅ 생성 완료 (SERVICE_ROLE_KEY 직접 입력 필요, 커밋 금지) | 세션 9 |
 | `config.js` | ✅ 정상, 수정 없음 | 세션 1 |
 | `auth.js` | ✅ 정상 + localStorage 방어 | 세션 6 |
 | `db.js` | ✅ 한글 전수 복원 완료 | 세션 5 |
@@ -349,7 +361,7 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 2. 로그인 (`larosee1234`) → 각 탭/버튼 동작 확인
 3. 교육 진행 버튼 → present-view 동작 확인
 
-### 해야 할 콘텐츠 입력 (관리자 에디터에서 직접)
+### 해야 할 콘텐츠 입력 (모든 개발 완료 후 앱에서 직접 입력)
 롤플레이 카테고리 빈 항목 내용 입력:
 - `빠른 고객` — 핵심포인트 + 멘트
 - `느린 고객` — 핵심포인트 + 멘트
@@ -360,9 +372,25 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 
 입력 방법: 관리자 로그인 → 세션 탭 → 신규입사자 교육 → DAY 2 → 롤플레이 가이드 → 수정 → "편집 열기 →" → 각 카테고리 선택 → 내용 입력
 
+> ⚠️ **개발 작업이 모두 끝난 뒤 앱에서 직접 입력할 예정. 코드로 건드리지 말 것.**
+
 ### 예정된 기능 개발
 
-**Firebase → Supabase 마이그레이션:**
+**Firebase → Supabase 마이그레이션 (세션 9에서 준비 완료, 본작업 미완):**
+
+세션 9에서 완료한 것:
+- `supabase.js` 생성 — URL + anon key로 클라이언트 초기화 (HTML에서 script로 불러오면 됨)
+- `.env` 생성 — `SUPABASE_SERVICE_ROLE_KEY=` 뒤에 직접 붙여넣기 필요, **절대 커밋 금지**
+
+다음 세션에서 해야 할 것 (순서대로):
+1. Supabase 대시보드에서 테이블 5개 생성 (SQL)
+2. RLS 정책 설정 (anon 키 읽기/쓰기 권한)
+3. `db.js` Firebase → Supabase 교체
+4. `quiz.js` / `flashcard.js` localStorage → Supabase 교체
+5. `sessions.js` localStorage + Firebase → Supabase 교체
+6. `config.js` Firebase 제거, CDN 스크립트 정리
+
+**마이그레이션 테이블 매핑:**
 
 | localStorage 키 | Supabase 테이블 |
 |---|---|
