@@ -1047,6 +1047,17 @@ async function fsGetFcSetById(setId) {
     return doc.exists ? doc.data() : null;
   } catch(e) { return null; }
 }
+async function fsSyncMeta(data) {
+  if (!db) return;
+  try { await db.collection('meta').doc('admin_config').set(data, { merge: true }); } catch(e) {}
+}
+async function fsGetMeta() {
+  if (!db) return null;
+  try {
+    const doc = await db.collection('meta').doc('admin_config').get();
+    return doc.exists ? doc.data() : null;
+  } catch(e) { return null; }
+}
 
 /* ─── Default Questions ──────────────────────────────────────── */
 const DEFAULT_QUESTIONS = [
@@ -1109,7 +1120,7 @@ function escHtml(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(
 
 /* ─── Cohorts ────────────────────────────────────────────────── */
 function loadCohorts() { return JSON.parse(localStorage.getItem('lr_cohorts') || '[]'); }
-function saveCohorts(arr) { localStorage.setItem('lr_cohorts', JSON.stringify(arr)); }
+function saveCohorts(arr) { localStorage.setItem('lr_cohorts', JSON.stringify(arr)); fsSyncMeta({ cohorts: arr }); }
 
 /* ─── Quiz State ─────────────────────────────────────────────── */
 let student = '';
@@ -3130,6 +3141,7 @@ function startFcLecture(setId) {
 
 function saveShuffleSetting(val) {
   localStorage.setItem('lr_shuffle_lecture', val ? 'true' : 'false');
+  fsSyncMeta({ shuffleLecture: val });
   updateShuffleToggleUI(val);
 }
 
@@ -3235,6 +3247,21 @@ function lecNext() { if (lecIdx < lecQs.length - 1) { lecIdx++; renderLec(); } }
 /* ─── Init ───────────────────────────────────────────────────── */
 document.getElementById('name-date').textContent = formatDate();
 loadSets(); // migration
+
+(async () => {
+  await waitForDb();
+  const meta = await fsGetMeta();
+  if (!meta) return;
+  if (Array.isArray(meta.cohorts)) {
+    localStorage.setItem('lr_cohorts', JSON.stringify(meta.cohorts));
+    if (typeof renderCohortTags === 'function') renderCohortTags();
+  }
+  if (typeof meta.shuffleLecture === 'boolean') {
+    localStorage.setItem('lr_shuffle_lecture', meta.shuffleLecture ? 'true' : 'false');
+    const chk = document.getElementById('shuffle-toggle');
+    if (chk) { chk.checked = meta.shuffleLecture; updateShuffleToggleUI(meta.shuffleLecture); }
+  }
+})();
 
 if (URL_MODE === 'admin') {
   showScreen('s-admin-login');
