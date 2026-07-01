@@ -7,7 +7,7 @@
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: (푸시 예정) 단일정답 문제 "정답 확인" 버튼 추가 ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
+> 최신 커밋: `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
 
 > 📌 **이 세션은 오직 `index.html`("라로지앵 | LA ROSÉE" 타이틀, 응시자용 퀴즈 앱)만 다뤘다.** `admin.html` 계열은 이번 세션에서 손대지 않음. 사용자가 "이 앱"이라고 할 때는 항상 index.html을 가리킴.
 
