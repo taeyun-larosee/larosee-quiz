@@ -7,7 +7,7 @@
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: `54783bc` (index.html 기수/셔플 Firebase 동기화) ← `cff8856` (HANDOFF 세션 9 기록)
+> 최신 커밋: `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
 
 > ⚠️ **`index.html`과 `admin.html`은 서로 다른 별개의 앱이다.** 같은 repo·같은 Firebase 프로젝트(`ra-rosee`)를 쓰지만 코드도, 관리자 로그인도, 기능 구성도 독립적임.
 > - `index.html` — 응시자용 퀴즈 앱. `?mode=admin`을 붙이면 자체 내장된 간이 관리자 화면(대시보드/퀴즈/플래시카드/QR/설정)이 뜬다. 로직 전부 인라인 `<script>`, Firebase 10.12.0 인라인 초기화.
@@ -18,6 +18,12 @@
 - `lr_cohorts`(기수 목록), `lr_shuffle_lecture`(강의 셔플 설정)이 localStorage에만 저장되고 다른 기기와 동기화 안 되던 문제 수정.
 - Firebase에 `meta/admin_config` 문서 추가 (`fsSyncMeta()`/`fsGetMeta()` 함수). `saveCohorts()`/`saveShuffleSetting()` 호출 시 로컬 + Firebase 양쪽에 저장, 페이지 로드 시 Firebase 최신값으로 로컬 덮어씀 (관리자 모드 진입 시에도 동작).
 - 관리자 비밀번호(`lr_pw`)는 보안상 의도적으로 로컬 전용 유지 — Firebase 동기화 대상 아님.
+
+### 세션 10 추가 변경사항 (index.html) — 퀴즈 복제 + 크로스 디바이스 동기화
+- **퀴즈 복제 기능 추가**: `dupeQuizSet(setId)`. 퀴즈 탭 → "퀴즈 수정" 모드 → 각 세트에 "복제" 버튼. 문제까지 통째로 복사, 새 id 발급 후 Firebase에도 저장.
+- **버그 수정**: 관리자 모드(`?mode=admin`)로 진입할 때 Firebase에서 최신 퀴즈 세트(`lr_sets`)를 다시 받아오는 로직이 빠져있어서, 한 기기에서 퀴즈를 수정해도 **다른 기기의 QR 탭/강의모드에는 예전 문제가 그대로 남아있던 문제**를 수정함. (같은 기기·같은 세션에서 수정 직후엔 문제 없어서 발견하기 어려웠음 — 기수/셔플과 동일한 버그 패턴.)
+  - `syncSetsFromRemote()` 헬퍼 추가 (`fsGetAllSets()`로 원격 최신본 받아와 로컬 덮어씀).
+  - `switchTab('quiz')` / `switchTab('qr')` / `startLecture()` / `startLectureWithSet()` 진입 시마다 이 동기화를 실행하도록 연결.
 
 ---
 
