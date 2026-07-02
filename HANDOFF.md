@@ -7,7 +7,7 @@
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
+> 최신 커밋: `c184bcf` (퀴즈 화면 배경 이미지 + 문제별 이미지 기능 추가) ← `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
 
 > 📌 **이 세션은 오직 `index.html`("라로지앵 | LA ROSÉE" 타이틀, 응시자용 퀴즈 앱)만 다뤘다.** `admin.html` 계열은 이번 세션에서 손대지 않음. 사용자가 "이 앱"이라고 할 때는 항상 index.html을 가리킴.
 
@@ -49,6 +49,21 @@
 - `selectAnswer(idx)`: 단일정답 문제도 이제 클릭 시 채점하지 않고 옵션 선택 표시만 함 (다른 옵션 클릭 시 선택 변경 가능, 실수 정정 가능).
 - 채점 로직을 `confirmMultiAnswer()` → `confirmAnswer()`로 통합·일반화. 버튼 텍스트 "확인" → "정답 확인". 단일정답 데이터 포맷(`answers` 배열의 `chosen` 필드가 숫자 하나)은 기존과 동일하게 유지해서 관리자 대시보드 통계 호환성 깨지지 않음.
 - 프리뷰에서 `.click()`으로 검증: 옵션 클릭 → 선택 표시만 되고 정답/오답 색 안 뜸 → 다른 옵션 클릭 시 선택 변경됨 → "정답 확인" 클릭 시에만 채점·색칠·버튼 비활성화됨.
+
+### 세션 10 추가 변경사항 (index.html) — 퀴즈 화면 배경 이미지 + 문제별 이미지 (커밋 `c184bcf`)
+사용자가 응시자 화면에 제품 사진 배경을 넣고, 개별 문제에도 이미지를 넣고 싶다고 요청.
+
+1. **전체 배경 (장식용)**
+   - 신규 파일 `quiz_brand.jpg`(라로제 제품 사진, 프로젝트 루트에 있던 것을 처음으로 repo에 추가)를 `body.exam-bg`의 배경으로 적용.
+   - `showScreen(id)`에 `EXAM_BG_SCREENS = ['s-quiz-select','s-name','s-quiz','s-results','s-review']` 배열을 두고, 해당 화면일 때만 `document.body.classList.toggle('exam-bg', ...)`로 배경 켜짐/꺼짐 (관리자/강의모드 화면은 대상 아님).
+   - `.name-card`, `.results-card`, `.review-item`, `#s-quiz .page`를 반투명(`rgba(255,255,255,0.93)`) + `backdrop-filter: blur(4px)`로 변경해 배경 사진 위에 카드가 떠 있는 느낌으로 처리. (배경 없는 화면에서도 rgba가 흰 배경 위에 그대로 얹혀서 시각적으로 문제 없음.)
+
+2. **문제별 이미지 (선택 입력)**
+   - 문제 데이터 구조에 `image`(URL 문자열, 선택) 필드 추가. 없으면 기존과 동일하게 이미지 없이 표시됨.
+   - 관리자 모드(`?mode=admin`) 문제 추가/수정 모달(`#q-modal`)에 "이미지 URL" 입력란(`#m-image`) + 실시간 미리보기(`#m-image-preview`) 추가. `openModal()`/`saveQuestion()`에서 값 읽기·쓰기.
+   - 응시 화면 `renderQuestion()`에서 `q.image`가 있으면 `#q-image-wrap`에 `<img class="q-image">`로 렌더링 (문제 텍스트 위, `escHtml()`로 이스케이프 처리해 XSS 방지).
+   - 이미지는 파일 업로드가 아니라 **URL 붙여넣기 방식** (Firebase Storage 설정 필요 없음, Firestore 문서 용량 문제 없음). 저장소에 이미지 파일을 올리고 그 경로/URL을 입력하는 방식.
+   - 프리뷰에서 배경 클래스 적용, 카드 반투명 스타일, 문제별 이미지 렌더링, 관리자 모달 저장→재편집 흐름까지 전부 `preview_eval`로 검증 완료.
 
 ---
 
