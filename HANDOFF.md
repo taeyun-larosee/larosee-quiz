@@ -7,7 +7,7 @@
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: `c184bcf` (퀴즈 화면 배경 이미지 + 문제별 이미지 기능 추가) ← `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
+> 최신 커밋: `9c33c3e` (플래시카드 기기 간 동기화 버그 수정) ← `c184bcf` (퀴즈 화면 배경 이미지 + 문제별 이미지 기능 추가) ← `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
 
 > 📌 **이 세션은 오직 `index.html`("라로지앵 | LA ROSÉE" 타이틀, 응시자용 퀴즈 앱)만 다뤘다.** `admin.html` 계열은 이번 세션에서 손대지 않음. 사용자가 "이 앱"이라고 할 때는 항상 index.html을 가리킴.
 
@@ -64,6 +64,20 @@
    - 응시 화면 `renderQuestion()`에서 `q.image`가 있으면 `#q-image-wrap`에 `<img class="q-image">`로 렌더링 (문제 텍스트 위, `escHtml()`로 이스케이프 처리해 XSS 방지).
    - 이미지는 파일 업로드가 아니라 **URL 붙여넣기 방식** (Firebase Storage 설정 필요 없음, Firestore 문서 용량 문제 없음). 저장소에 이미지 파일을 올리고 그 경로/URL을 입력하는 방식.
    - 프리뷰에서 배경 클래스 적용, 카드 반투명 스타일, 문제별 이미지 렌더링, 관리자 모달 저장→재편집 흐름까지 전부 `preview_eval`로 검증 완료.
+   - 참고: 아직 미완성 — 지금은 이미지가 문제 위에 작게 뜨는 용도(`.q-image`)로만 쓰임. 사용자가 "문제마다 배경사진 자체를 바꾸고 싶다"고 요청했고, 이 이미지를 문제별 배경으로 전환하는 작업은 **아직 안 함** (사용자가 "만들어줘" 하면 진행 예정).
+
+### 세션 10 추가 변경사항 (index.html) — 플래시카드 기기 간 동기화 버그 수정 (커밋 `9c33c3e`)
+사용자가 "로컬에 저장되는 게 플래시카드만 있냐"고 물어봐서 전수 조사한 결과 발견. 세션 10 초반에 퀴즈 문제(`lr_sets`)/기수/셔플 설정에서 고쳤던 것과 **완전히 동일한 버그 패턴**이 플래시카드(`lr_fcsets`)에는 그대로 남아있었음.
+
+**원인 2가지:**
+1. 관리자 모드 플래시카드 탭(`switchTab('flashcard')`)이 Firebase 최신본을 받아오지 않고 로컬 캐시만 렌더링 — 한 기기에서 플래시카드를 수정해도 다른 기기 관리자 화면엔 예전 내용이 보임.
+2. 직원용 플래시카드 뷰(`?fc=` 링크로 접속) 진입 로직이 "로컬에 있으면 무조건 로컬 사용, 없을 때만 Firebase 조회"였음. 즉 한 번이라도 로컬에 캐시된 적 있으면 그 뒤로 영원히 예전 버전만 보임 (QR 찍고 처음 보는 직원이 아니라, 관리자가 미리보기 등으로 한 번 열어본 적 있는 기기라면 특히 문제).
+
+**수정:**
+- `fsGetAllFcSets()` (전체 플래시카드 세트 Firebase 조회), `syncFcSetsFromRemote()` (Firebase 최신본으로 `lr_fcsets` 덮어쓰기) 함수 추가 — `fsGetAllSets()`/`syncSetsFromRemote()`와 동일한 패턴.
+- `switchTab('flashcard')`: `renderFcSetList()` 즉시 실행 후 `syncFcSetsFromRemote().then(renderFcSetList)`로 최신본 재렌더링 (퀴즈 탭과 동일 패턴).
+- `URL_FC` 진입 로직: "로컬 우선"에서 "Firebase 최신본 우선 → 실패 시 로컬 폴백"으로 변경 (`URL_QUIZ` 로직과 동일 패턴으로 통일).
+- 프리뷰에서 실제 Firebase(`ra-rosee`)에 연결해 `syncFcSetsFromRemote()` 정상 동작 확인, 로컬에 일부러 가짜(stale) 데이터를 심고 "Firebase 우선" 로직이 그걸 덮어쓰는지까지 검증 완료.
 
 ---
 
