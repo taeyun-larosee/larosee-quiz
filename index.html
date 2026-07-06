@@ -1080,6 +1080,18 @@ async function fsGetFcSetById(setId) {
     return doc.exists ? doc.data() : null;
   } catch(e) { return null; }
 }
+async function fsGetAllFcSets() {
+  if (!db) return null;
+  try {
+    const snap = await db.collection('fcsets').get();
+    return snap.docs.map(d => d.data()).filter(s => s && s.id);
+  } catch(e) { return null; }
+}
+async function syncFcSetsFromRemote() {
+  await waitForDb();
+  const remoteFcSets = await fsGetAllFcSets();
+  if (remoteFcSets && remoteFcSets.length > 0) localStorage.setItem('lr_fcsets', JSON.stringify(remoteFcSets));
+}
 async function fsSyncMeta(data) {
   if (!db) return;
   try { await db.collection('meta').doc('admin_config').set(data, { merge: true }); } catch(e) {}
@@ -1453,7 +1465,7 @@ function switchTab(t) {
     syncSetsFromRemote().then(renderQTab); // 다른 기기에서 수정한 최신 문제로 갱신
     loadScoreList();
   }
-  else if (t === 'flashcard') renderFcSetList();
+  else if (t === 'flashcard') { renderFcSetList(); syncFcSetsFromRemote().then(renderFcSetList); }
   else if (t === 'qr') { renderQRTab(); syncSetsFromRemote().then(renderQRTab); }
   else if (t === 'settings') {
     const val = localStorage.getItem('lr_shuffle_lecture') === 'true';
@@ -3333,23 +3345,21 @@ loadSets(); // migration
 if (URL_MODE === 'admin') {
   showScreen('s-admin-login');
 } else if (URL_FC) {
-  // 플래시카드 직원 뷰
-  const localFcSet = getFcSetById(URL_FC);
-  if (localFcSet) {
-    showFcView(URL_FC);
-  } else {
-    (async () => {
-      await waitForDb();
-      const remoteFcSet = await fsGetFcSetById(URL_FC);
-      if (remoteFcSet) {
-        const sets = loadFcSets();
-        if (!sets.find(s => s.id === remoteFcSet.id)) { sets.push(remoteFcSet); localStorage.setItem(FC_KEY, JSON.stringify(sets)); }
-        showFcView(URL_FC);
-      } else {
-        renderQuizSelect();
-      }
-    })();
-  }
+  // 플래시카드 직원 뷰: Firebase 최신본 우선 → 없으면 로컬 폴백 (다른 기기에서 수정한 내용 즉시 반영)
+  (async () => {
+    await waitForDb();
+    const remoteFcSet = await fsGetFcSetById(URL_FC);
+    const fcSet = remoteFcSet || getFcSetById(URL_FC);
+    if (fcSet) {
+      const sets = loadFcSets();
+      const idx = sets.findIndex(s => s.id === fcSet.id);
+      if (idx >= 0) sets[idx] = fcSet; else sets.push(fcSet);
+      localStorage.setItem('lr_fcsets', JSON.stringify(sets));
+      showFcView(URL_FC);
+    } else {
+      renderQuizSelect();
+    }
+  })();
 } else if (URL_QUIZ) {
   (async () => {
     await waitForDb();
