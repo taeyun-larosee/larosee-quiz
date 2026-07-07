@@ -1014,6 +1014,20 @@ async function fsPost(col, data) {
   try { await db.collection(col).add(data); return true; }
   catch(e) { console.warn('fsPost error:', e); return false; }
 }
+// (퀴즈+기수) 조합당 최초 1건만 true를 반환 (Firestore 트랜잭션으로 동시 제출 경쟁 방지)
+async function fsClaimFirstSubmit(quizId, cohort) {
+  if (!db) return false;
+  const docId = String(quizId) + '__' + String(cohort).replace(/[\/]/g, '_');
+  const ref = db.collection('firstSubmits').doc(docId);
+  try {
+    return await db.runTransaction(async (tx) => {
+      const doc = await tx.get(ref);
+      if (doc.exists) return false;
+      tx.set(ref, { quizId, cohort, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+      return true;
+    });
+  } catch(e) { console.warn('fsClaimFirstSubmit error:', e); return false; }
+}
 async function waitForDb(timeout = 5000) {
   if (db) return true;
   const start = Date.now();
@@ -1395,6 +1409,12 @@ async function finishQuiz() {
   const answersData = answers.map(a => ({ id: a.q.id, q: a.q.question, ok: a.ok, chosen: a.chosen, correct: a.correct }));
 
   const set = getSetById(currentQuizSetId);
+  let isFirstSubmit = false;
+  let bonusPoints = 0;
+  if (set && set.firstBonusEnabled) {
+    isFirstSubmit = await fsClaimFirstSubmit(currentQuizSetId || 'set_default', studentCohort);
+    if (isFirstSubmit) bonusPoints = set.firstBonusPoints || 0;
+  }
   fsPost('scores', {
     quizId: currentQuizSetId || 'set_default',
     quizName: set ? set.name : '',
@@ -1407,7 +1427,9 @@ async function finishQuiz() {
     date: new Date().toLocaleString('ko-KR'),
     timestamp: db ? firebase.firestore.FieldValue.serverTimestamp() : new Date(),
     wrongQuestions,
-    answers: answersData
+    answers: answersData,
+    isFirstSubmit,
+    bonusPoints
   });
 
   window._reviewWrongAnswers = wrongAnswers;
@@ -2589,7 +2611,14 @@ function renderQList() {
     '<option value="force"' + ((set.timerExpireMode||'force')==='force' ? ' selected' : '') + '>강제 마감 (더 이상 못 풂)</option>' +
     '<option value="warn"' + (set.timerExpireMode==='warn' ? ' selected' : '') + '>경고만 표시 (계속 풀기 허용)</option>' +
     '</select></div>' +
-    '</div><button class="btn btn-sm btn-primary" style="margin-top:12px;" onclick="saveSetSettings(\'' + set.id + '\')">저장</button></div>' +
+    '</div>' +
+    '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-top:12px;">' +
+    '<div style="flex:1;min-width:200px;"><label style="display:flex;align-items:center;gap:6px;">' +
+    '<input type="checkbox" id="set-first-bonus-enabled" style="width:auto;"' + (set.firstBonusEnabled ? ' checked' : '') + '> 최초 제출 가산점 사용</label></div>' +
+    '<div style="flex:1;min-width:130px;"><label>가산점 (점)</label>' +
+    '<input type="number" id="set-first-bonus-points" min="0" max="100" value="' + (set.firstBonusPoints||0) + '" style="margin-top:4px;"></div>' +
+    '</div>' +
+    '<button class="btn btn-sm btn-primary" style="margin-top:12px;" onclick="saveSetSettings(\'' + set.id + '\')">저장</button></div>' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
     '<span id="q-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">문제 ' + set.questions.length + '개</span>' +
     '<div style="display:flex;gap:8px;">' +
@@ -2693,6 +2722,8 @@ function saveSetSettings(setId) {
   sets[idx].quizCount = parseInt(document.getElementById('set-quiz-cnt').value) || 0;
   sets[idx].timerMin = parseInt(document.getElementById('set-timer').value) || 0;
   sets[idx].timerExpireMode = document.getElementById('set-timer-expire').value === 'warn' ? 'warn' : 'force';
+  sets[idx].firstBonusEnabled = document.getElementById('set-first-bonus-enabled').checked;
+  sets[idx].firstBonusPoints = parseInt(document.getElementById('set-first-bonus-points').value) || 0;
   saveSets(sets);
   fsSyncSet(sets[idx]);
   alert('저장되었습니다.');
