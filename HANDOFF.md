@@ -3,11 +3,11 @@
 > 🚨 **파일 수정은 반드시 Claude Code에서만. GitHub 웹 업로드 절대 금지.**  
 > 이거 한 번 어기면 한글 인코딩이 다 깨지고 하루 토큰을 날린다.
 
-> 최종 업데이트: 2026-07-07 (세션 12 — **세션 11 설계 기반 구현 시작: 타이머 만료 처리 설정 완료**)  
+> 최종 업데이트: 2026-07-07 (세션 12 — **세션 11 설계 기반 구현 진행 중: 타이머 만료 처리 설정 + 최초 제출 가산점 완료**)  
 > GitHub: https://github.com/taeyun-larosee/larosee-quiz  
 > 배포 URL: https://taeyun-larosee.github.io/larosee-quiz/admin.html  
 > 로컬 작업 경로: `C:\Users\김태윤\Claude\Projects\라로제\`  
-> 최신 커밋: `b56ce3d` (타이머 만료 처리 설정 추가) ← `9c33c3e` (플래시카드 기기 간 동기화 버그 수정) ← `c184bcf` (퀴즈 화면 배경 이미지 + 문제별 이미지 기능 추가) ← `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
+> 최신 커밋: `9938dd0` (최초 제출 가산점 기능 추가) ← `b56ce3d` (타이머 만료 처리 설정 추가) ← `9c33c3e` (플래시카드 기기 간 동기화 버그 수정) ← `c184bcf` (퀴즈 화면 배경 이미지 + 문제별 이미지 기능 추가) ← `ef180ee` (단일정답 문제 "정답 확인" 버튼 추가) ← `2bad7de` (강의모드 버튼 고정 + 스포일러 제거) ← `911d215` (퀴즈 복제 + QR/강의모드 동기화) ← `be0bd61` (HANDOFF 세션 10) ← `54783bc` (기수/셔플 Firebase 동기화)
 > 
 > ⚠️ **세션 11은 코드를 전혀 건드리지 않았다 (설계만).** 세션 12부터 세션 11 설계를 바탕으로 순서대로(타이머→가산점→서술형→재접속잠금) 하나씩 구현 중. 아래 "세션 12" 섹션 참고.
 
@@ -18,15 +18,22 @@
 > - `admin.html` — 세션/DAY/롤플레이/프레젠테이션 뷰까지 포함한 정식 관리자 콘솔. db.js/quiz.js/flashcard.js/sessions.js/present.js로 로직 분리, config.js로 Firebase 9.22.2 초기화.
 > - 아래 "3. 각 파일 상세" 섹션은 **admin.html 계열 전용** 문서다. index.html 수정 시에는 참고하지 말 것.
 
-### 세션 12 — index.html 신규 기능 구현 (커밋 `b56ce3d`)
+### 세션 12 — index.html 신규 기능 구현 (커밋 `b56ce3d`, `9938dd0`)
 
-세션 11에서 확정한 설계 5개를 사용자 지시로 순서대로(위험도 낮은 것부터) 하나씩 구현 중. **③ 타이머 만료 처리 설정** 완료.
+세션 11에서 확정한 설계 5개를 사용자 지시로 순서대로(위험도 낮은 것부터) 하나씩 구현 중. **③ 타이머 만료 처리 설정**, **④ 최초 제출 가산점** 완료.
 
-#### ✅ ③ 타이머 만료 처리 설정 (퀴즈별 강제마감/경고만표시)
+#### ✅ ③ 타이머 만료 처리 설정 (퀴즈별 강제마감/경고만표시) — 커밋 `b56ce3d`
 - 퀴즈 데이터에 `timerExpireMode` 필드 추가 (`'force'`(기본값, 기존 동작과 동일) / `'warn'`).
 - 퀴즈 탭 → 퀴즈 클릭 → "퀴즈 설정" 카드에 "타이머 만료 시" 드롭다운 추가 (`renderQList()`, `saveSetSettings()`).
 - `startTimer(timerMin, expireMode)`: 시간 종료 시 `expireMode==='warn'`이면 `finishQuiz()` 호출 안 하고 "시간 초과 (계속 진행 가능)" 메시지만 표시, 계속 풀 수 있음. 기존 동작(`'force'` 또는 필드 없음)은 그대로 강제 종료.
-- 검증: 프리뷰에서 실제 Firebase(`ra-rosee`) `TEST` 퀴즈에 timerMin=1, timerExpireMode 저장 확인 → `startQuiz()` 후 `timerSeconds`를 인위적으로 만료 직전까지 당겨서 warn 모드(화면 유지)/force 모드(기존처럼 `finishQuiz()` 호출, s-results로 이동) 둘 다 동작 확인. 테스트 중 생성된 가짜 응시 기록(`__테스트__`)과 `TEST` 세트에 남은 테스트용 timerMin/timerExpireMode는 검증 직후 Firebase에서 정리·원복 완료 (실제 응시자 수 14명 그대로 유지됨).
+- 검증: 프리뷰에서 실제 Firebase(`ra-rosee`) `TEST` 퀴즈에 timerMin=1, timerExpireMode 저장 확인 → `startQuiz()` 후 `timerSeconds`를 인위적으로 만료 직전까지 당겨서 warn 모드(화면 유지)/force 모드(기존처럼 `finishQuiz()` 호출, s-results로 이동) 둘 다 동작 확인.
+
+#### ✅ ④ 최초 제출 가산점 — 커밋 `9938dd0`
+- 퀴즈 데이터에 `firstBonusEnabled`(bool, 기본 false), `firstBonusPoints`(number, 기본 0) 필드 추가. 설정 위치는 (등수표 관련 설정과 마찬가지로) **퀴즈 설정 카드**로 결정 — 세션 11 설계 메모 중 "설정 탭" 언급은 이후 "퀴즈 편집 모달에서 설정"으로 최종 확정된 문구를 따름.
+- `fsClaimFirstSubmit(quizId, cohort)` 함수 추가 (`firstSubmits/{quizId}__{cohort}` 문서에 대한 Firestore **트랜잭션**으로 구현) — 여러 기기가 거의 동시에 제출해도 정확히 한 명만 최초 제출로 판정되도록 경쟁 조건 방지.
+- `finishQuiz()`: `set.firstBonusEnabled`가 true면 제출 직전 `fsClaimFirstSubmit()` 호출 → 최초면 `isFirstSubmit:true, bonusPoints:{firstBonusPoints}`, 아니면 `false, 0`으로 `scores` 문서에 함께 기록.
+- **정답률(`score`/`pct`)에는 전혀 손대지 않음** — 대시보드 통계·합격 기준 등 기존 로직과 완전히 분리. 등수표(⑤, 최후 우선순위)가 나중에 만들어지면 `bonusPoints`를 랭킹 계산에 더하고 `isFirstSubmit`으로 "⚡최초제출" 뱃지를 표시하는 식으로 소비하면 됨. **현재는 데이터만 기록되고 화면 표시는 없음** (등수표 자체가 아직 없어서 — 세션 11 설계에서 뱃지 표시는 ⑤ 항목 소관).
+- 검증: 실제 Firebase에서 같은 (퀴즈+가짜 기수) 조합으로 두 번 연속 `finishQuiz()` 실행 → 첫 번째 제출자만 `isFirstSubmit:true, bonusPoints:5`, 두 번째는 `false, 0` 확인. 테스트용 `scores`/`firstSubmits` 문서와 `TEST` 세트의 테스트 설정 모두 정리·원복 완료 (응시자 수 14명 그대로 유지).
 
 ### 세션 10 변경사항 (index.html)
 - `lr_cohorts`(기수 목록), `lr_shuffle_lecture`(강의 셔플 설정)이 localStorage에만 저장되고 다른 기기와 동기화 안 되던 문제 수정.
@@ -492,8 +499,8 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 
 **index.html 신규 기능 5종 (세션 11에서 설계 확정) — 사용자 지시로 순서대로 하나씩 구현 중:**
 1. ✅ 타이머 만료 처리 설정 (퀴즈별 강제마감/계속풀기 선택) — **세션 12 완료 (커밋 `b56ce3d`)**
-2. ⏳ 최초 제출 가산점 (퀴즈+기수별, 정답률 무관) — 다음 순서
-3. 서술형 문제 (채점 없이 제출만, "제출되었습니다!" 톤)
+2. ✅ 최초 제출 가산점 (퀴즈+기수별, 정답률 무관) — **세션 12 완료 (커밋 `9938dd0`, 데이터 기록만·표시는 ⑤에서)**
+3. ⏳ 서술형 문제 (채점 없이 제출만, "제출되었습니다!" 톤) — 다음 순서
 4. 재접속 시 이어풀기 잠금 (부정행위 방지)
 5. 등수표 + 강의모드 개편 (라이브 세션 C안, 단계적 구현) ← **이건 맨 마지막에**
 
