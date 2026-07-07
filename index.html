@@ -1050,7 +1050,11 @@ async function fsGetProgress(quizId, cohort, name) {
 }
 async function fsSaveProgress(quizId, cohort, name, data) {
   if (!db) return;
-  try { await db.collection('progress').doc(progressDocId(quizId, cohort, name)).set(data); }
+  try {
+    // Firestore는 undefined 필드를 거부함 (서술형 문제는 correct 필드가 없어서 undefined가 될 수 있음) → JSON 왕복으로 제거
+    const safe = JSON.parse(JSON.stringify(data));
+    await db.collection('progress').doc(progressDocId(quizId, cohort, name)).set(safe);
+  }
   catch(e) { console.warn('fsSaveProgress error:', e); }
 }
 async function fsClearProgress(quizId, cohort, name) {
@@ -1336,7 +1340,7 @@ async function startQuiz() {
   let pool = set.questions.map(q => ({
     ...q,
     question: q.question || q.q || '',
-    correct: q.correct ?? q.answer
+    correct: q.correct ?? q.answer ?? null
   }));
   const cnt = set.quizCount || 0;
   if (cnt > 0 && cnt < pool.length) pool = pool.sort(() => Math.random() - 0.5).slice(0, cnt);
