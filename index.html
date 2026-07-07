@@ -494,7 +494,7 @@
     <div class="q-options" id="q-options"></div>
     <div class="q-feedback" id="q-feedback"></div>
     <div class="q-next-wrap" id="q-confirm-wrap" style="display:none;">
-      <button class="btn btn-primary btn-block" onclick="confirmAnswer()">정답 확인</button>
+      <button class="btn btn-primary btn-block" id="q-confirm-btn" onclick="confirmAnswer()">정답 확인</button>
     </div>
     <div class="q-next-wrap" id="q-next-wrap">
       <button class="btn btn-primary btn-block" onclick="nextQuestion()">다음으로</button>
@@ -850,7 +850,7 @@
 <div class="modal-overlay" id="wrong-q-modal">
   <div class="modal-box" style="max-width:540px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-      <div class="modal-title" id="wrong-q-modal-title" style="margin-bottom:0;">틀린 질문 목록</div>
+      <div class="modal-title" id="wrong-q-modal-title" style="margin-bottom:0;">답안지</div>
       <button class="btn btn-sm btn-outline" onclick="document.getElementById('wrong-q-modal').classList.remove('active')">닫기</button>
     </div>
     <div id="wrong-q-modal-sub" style="font-size:12px;color:var(--text-muted);margin-bottom:14px;"></div>
@@ -886,6 +886,13 @@
   <div class="modal-box">
     <div class="modal-title" id="modal-title">문제 추가</div>
     <div class="form-group">
+      <label>문제 유형</label>
+      <select id="m-type" onchange="mUpdateTypeUI()">
+        <option value="choice">객관식</option>
+        <option value="essay">서술형 (주관식, 채점 없음)</option>
+      </select>
+    </div>
+    <div class="form-group">
       <label>질문</label>
       <textarea id="m-question" rows="3" placeholder="질문을 입력하세요"></textarea>
     </div>
@@ -894,14 +901,16 @@
       <input type="text" id="m-image" placeholder="https://... (제품 사진 등, 비워두면 표시 안 됨)" oninput="mUpdateImagePreview()">
       <img id="m-image-preview" src="" alt="" style="display:none;max-width:100%;max-height:160px;object-fit:cover;border-radius:12px;margin-top:8px;">
     </div>
-    <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;">
-      선택지 &amp; 정답 — 체크박스로 정답 선택 (복수 가능) / ③④는 비워도 됩니다
-    </div>
-    <div class="radio-group">
-      <label class="radio-opt"><input type="checkbox" name="correct" value="0"> <span>① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="1"> <span>② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="2"> <span>③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
-      <label class="radio-opt"><input type="checkbox" name="correct" value="3"> <span>④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
+    <div id="m-choices-wrap">
+      <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.4px;">
+        선택지 &amp; 정답 — 체크박스로 정답 선택 (복수 가능) / ③④는 비워도 됩니다
+      </div>
+      <div class="radio-group">
+        <label class="radio-opt"><input type="checkbox" name="correct" value="0"> <span>① 정답</span> <input type="text" id="m-opt0" placeholder="선택지 ①" style="flex:1;margin-left:8px;"></label>
+        <label class="radio-opt"><input type="checkbox" name="correct" value="1"> <span>② 정답</span> <input type="text" id="m-opt1" placeholder="선택지 ②" style="flex:1;margin-left:8px;"></label>
+        <label class="radio-opt"><input type="checkbox" name="correct" value="2"> <span>③ 정답</span> <input type="text" id="m-opt2" placeholder="선택지 ③ (선택)" style="flex:1;margin-left:8px;"></label>
+        <label class="radio-opt"><input type="checkbox" name="correct" value="3"> <span>④ 정답</span> <input type="text" id="m-opt3" placeholder="선택지 ④ (선택)" style="flex:1;margin-left:8px;"></label>
+      </div>
     </div>
     <div class="form-group" style="margin-top:16px;">
       <label>해설 (선택)</label>
@@ -1176,6 +1185,10 @@ function getSetById(id) { return loadSets().find(s => s.id === id) || null; }
 function loadStore() { return { password: localStorage.getItem('lr_pw') || 'larosee1234' }; }
 function savePw(p) { localStorage.setItem('lr_pw', p); }
 function escHtml(s) { return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function qAnswerLabel(q) {
+  if (q.type === 'essay') return '서술형 (채점 없음)';
+  return '정답: ' + (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]);
+}
 
 /* ─── Cohorts ────────────────────────────────────────────────── */
 function loadCohorts() { return JSON.parse(localStorage.getItem('lr_cohorts') || '[]'); }
@@ -1304,21 +1317,31 @@ function renderQuestion() {
   document.getElementById('q-progress').style.width = (qi / qs.length * 100) + '%';
   document.getElementById('q-image-wrap').innerHTML = q.image ? '<img src="' + escHtml(q.image) + '" class="q-image" alt="">' : '';
   document.getElementById('q-text').textContent = 'Q' + (qi+1) + '. ' + q.question;
-  const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
-  const isMulti = correctArr.length > 1;
   const optsEl = document.getElementById('q-options');
-  optsEl.innerHTML = q.options.map((opt, i) =>
-    '<button class="q-option" onclick="selectAnswer(' + i + ')">' + opt + '</button>'
-  ).join('');
   const fb = document.getElementById('q-feedback');
-  if (isMulti) {
-    fb.textContent = '※ 정답을 선택하세요 (복수 선택 가능)';
-    fb.className = 'q-feedback';
-    fb.style.opacity = '0.6';
-  } else {
+  const confirmBtn = document.getElementById('q-confirm-btn');
+  if (q.type === 'essay') {
+    optsEl.innerHTML = '<textarea id="q-essay-input" rows="4" placeholder="답변을 입력하세요"></textarea>';
     fb.className = 'q-feedback';
     fb.textContent = '';
     fb.style.opacity = '';
+    confirmBtn.textContent = '제출';
+  } else {
+    const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
+    const isMulti = correctArr.length > 1;
+    optsEl.innerHTML = q.options.map((opt, i) =>
+      '<button class="q-option" onclick="selectAnswer(' + i + ')">' + opt + '</button>'
+    ).join('');
+    if (isMulti) {
+      fb.textContent = '※ 정답을 선택하세요 (복수 선택 가능)';
+      fb.className = 'q-feedback';
+      fb.style.opacity = '0.6';
+    } else {
+      fb.className = 'q-feedback';
+      fb.textContent = '';
+      fb.style.opacity = '';
+    }
+    confirmBtn.textContent = '정답 확인';
   }
   document.getElementById('q-next-wrap').style.display = 'none';
   document.getElementById('q-confirm-wrap').style.display = 'block';
@@ -1361,6 +1384,20 @@ function selectAnswer(idx) {
 
 function confirmAnswer() {
   const q = qs[qi];
+  if (q.type === 'essay') {
+    const textEl = document.getElementById('q-essay-input');
+    const text = textEl ? textEl.value.trim() : '';
+    if (!text) return; // 아직 답변을 입력하지 않음
+    if (textEl) textEl.disabled = true;
+    const fb = document.getElementById('q-feedback');
+    fb.textContent = '제출되었습니다!';
+    fb.className = 'q-feedback correct';
+    fb.style.opacity = '';
+    answers.push({ q, ok: null, chosen: text, correct: null, type: 'essay' });
+    document.getElementById('q-confirm-wrap').style.display = 'none';
+    document.getElementById('q-next-wrap').style.display = 'block';
+    return;
+  }
   const correctArr = Array.isArray(q.correct) ? q.correct.map(Number) : [Number(q.correct)];
   const isMulti = correctArr.length > 1;
   const selected = [..._selectedOptions].map(Number);
@@ -1396,17 +1433,19 @@ function nextQuestion() {
 async function finishQuiz() {
   stopTimer();
   const duration = Math.floor((Date.now() - startTime) / 1000);
-  const correctCount = answers.filter(a => a.ok).length;
-  const total = qs.length;
-  const pct = Math.round(correctCount / total * 100);
-  const wrongAnswers = answers.filter(a => !a.ok);
+  // 서술형 문항은 채점 대상이 아니므로 정답률 분모(total)와 정답 수(correctCount) 계산에서 제외
+  const gradedAnswers = answers.filter(a => a.type !== 'essay');
+  const correctCount = gradedAnswers.filter(a => a.ok).length;
+  const total = gradedAnswers.length;
+  const pct = total > 0 ? Math.round(correctCount / total * 100) : 0;
+  const wrongAnswers = gradedAnswers.filter(a => !a.ok);
   document.getElementById('q-progress').style.width = '100%';
 
   const wrongQuestions = wrongAnswers.map(a => {
     const ca = Array.isArray(a.correct) ? a.correct : [a.correct];
     return { q: a.q.question, correct: ca.map(i => a.q.options[i]).join(', '), chosen: a.q.options[a.chosen] };
   });
-  const answersData = answers.map(a => ({ id: a.q.id, q: a.q.question, ok: a.ok, chosen: a.chosen, correct: a.correct }));
+  const answersData = answers.map(a => ({ id: a.q.id, q: a.q.question, type: a.type || 'choice', ok: a.ok, chosen: a.chosen, correct: a.correct }));
 
   const set = getSetById(currentQuizSetId);
   let isFirstSubmit = false;
@@ -2148,32 +2187,45 @@ function showEmployeeWrongQ(idx, fromAttendee) {
   const s = list[idx];
   if (!s) return;
 
-  document.getElementById('wrong-q-modal-title').textContent = (s.name||'-') + '님의 틀린 질문';
+  document.getElementById('wrong-q-modal-title').textContent = (s.name||'-') + '님의 답안지';
   document.getElementById('wrong-q-modal-sub').textContent =
     (s.cohort ? s.cohort + '기' : '') + (s.quizName ? ' · ' + s.quizName : '') +
     ' | 점수: ' + (s.pct||0) + '점 (' + (s.score||0) + '/' + (s.total||0) + ')';
 
-  // wrongQuestions 또는 answers에서 틀린 것 추출
-  let wrongList = [];
+  // answers에 객관식+서술형 답변이 모두 들어있음 (없으면 예전 기록용 wrongQuestions로 폴백, 이 경우 오답만 표시됨)
+  let fullList = [];
+  let legacyWrongOnly = false;
   if (s.answers && s.answers.length > 0) {
-    wrongList = s.answers.filter(a => !a.ok);
+    fullList = s.answers;
   } else if (s.wrongQuestions && s.wrongQuestions.length > 0) {
-    wrongList = s.wrongQuestions.map(q => ({ q: typeof q === 'string' ? q : (q.q||'질문'), ok: false }));
+    fullList = s.wrongQuestions.map(q => ({ q: typeof q === 'string' ? q : (q.q||'질문'), ok: false }));
+    legacyWrongOnly = true;
   }
 
-  if (wrongList.length === 0) {
-    document.getElementById('wrong-q-modal-list').innerHTML = '<div class="dash-empty" style="color:#22c55e;">모든 문제를 맞혔습니다! 🎉</div>';
+  if (fullList.length === 0) {
+    document.getElementById('wrong-q-modal-list').innerHTML = '<div class="dash-empty">답안 기록이 없습니다.</div>';
   } else {
-    document.getElementById('wrong-q-modal-list').innerHTML = wrongList.map((a, i) => {
-      const qText = a.q || ('질문 ' + (i+1));
-      const chosen = a.chosen !== undefined ? '선택: 선지 ' + (Number(a.chosen)+1) : '';
-      const correct = a.correct !== undefined
+    document.getElementById('wrong-q-modal-list').innerHTML = (legacyWrongOnly
+      ? '<div style="font-size:11px;color:var(--text-muted);margin-bottom:10px;">(예전 기록이라 오답만 표시됩니다)</div>' : '') +
+      fullList.map((a, i) => {
+      const qText = escHtml(a.q || ('질문 ' + (i+1)));
+      if (a.type === 'essay') {
+        return '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Q' + (i+1) + '. ' + qText + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--success-text);background:var(--success-bg);display:inline-block;padding:2px 9px;border-radius:99px;margin-bottom:6px;">제출되었습니다!</div>' +
+          '<div style="font-size:13px;color:var(--text);white-space:pre-wrap;background:#f9fafb;padding:10px 12px;border-radius:8px;">' + escHtml(a.chosen || '') + '</div>' +
+        '</div>';
+      }
+      const chosen = a.chosen !== undefined && a.chosen !== null ? '선택: 선지 ' + (Number(a.chosen)+1) : '';
+      const correct = a.correct !== undefined && a.correct !== null
         ? (Array.isArray(a.correct) ? a.correct : [a.correct]).map(c => '선지 '+(Number(c)+1)).join(', ')
         : '';
-      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);last-child:border-none;">' +
+      const okColor = a.ok ? '#22c55e' : '#ef4444';
+      const okLabel = a.ok ? '✓ 정답' : '✗ 오답';
+      return '<div style="padding:12px 0;border-bottom:1px solid var(--border);">' +
         '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px;">Q' + (i+1) + '. ' + qText + '</div>' +
-        (chosen ? '<div style="font-size:12px;color:#ef4444;">✗ ' + chosen + '</div>' : '') +
-        (correct ? '<div style="font-size:12px;color:#22c55e;">✓ 정답: ' + correct + '</div>' : '') +
+        '<div style="font-size:12px;color:' + okColor + ';font-weight:700;">' + okLabel + (chosen ? ' · ' + chosen : '') + '</div>' +
+        (!a.ok && correct ? '<div style="font-size:12px;color:#22c55e;">✓ 정답: ' + correct + '</div>' : '') +
       '</div>';
     }).join('');
   }
@@ -2651,9 +2703,7 @@ function renderQListItems() {
       '<button class="btn btn-sm btn-outline" onclick="openModal(' + i + ')">수정</button>' +
       '<button class="btn btn-sm btn-danger" onclick="deleteQ(' + i + ')">삭제</button>' +
       '</div></div>' +
-      '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">정답: ' +
-      (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
-      '</div></div>'
+      '<div style="font-size:12px;color:var(--success-text);margin-top:8px;">' + qAnswerLabel(q) + '</div></div>'
     ).join('') + '</div>';
     setupQDrag();
   } else {
@@ -2670,9 +2720,8 @@ function renderQListItems() {
         '<div class="q-list-item-head">' +
         '<span class="q-list-item-text">Q' + (i+1) + '. ' + q.question + '</span>' +
         '</div>' +
-        '<div style="font-size:12px;color:var(--success-text);margin-top:6px;">정답: ' +
-        (Array.isArray(q.correct) ? q.correct.map(ci => q.options[ci]).join(', ') : q.options[q.correct]) +
-        '</div>' + statsHtml + '</div>';
+        '<div style="font-size:12px;color:var(--success-text);margin-top:6px;">' + qAnswerLabel(q) + '</div>' +
+        (q.type === 'essay' ? '' : statsHtml) + '</div>';
     }).join('');
   }
 }
@@ -2782,17 +2831,21 @@ function openModal(idx) {
   const qArr = set ? set.questions : [];
   if (editIdx >= 0 && qArr[editIdx]) {
     const q = qArr[editIdx];
+    document.getElementById('m-type').value = q.type === 'essay' ? 'essay' : 'choice';
     document.getElementById('m-question').value = q.question;
     document.getElementById('m-image').value = q.image || '';
-    [0,1,2,3].forEach(i => document.getElementById('m-opt' + i).value = q.options[i] || '');
+    [0,1,2,3].forEach(i => document.getElementById('m-opt' + i).value = (q.options && q.options[i]) || '');
     document.querySelectorAll('input[name="correct"]').forEach(cb => cb.checked = false);
-    const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
-    correctArr.forEach(ci => {
-      const cb = document.querySelector('input[name="correct"][value="' + ci + '"]');
-      if (cb) cb.checked = true;
-    });
+    if (q.type !== 'essay') {
+      const correctArr = Array.isArray(q.correct) ? q.correct : [q.correct];
+      correctArr.forEach(ci => {
+        const cb = document.querySelector('input[name="correct"][value="' + ci + '"]');
+        if (cb) cb.checked = true;
+      });
+    }
     document.getElementById('m-explanation').value = q.explanation || '';
   } else {
+    document.getElementById('m-type').value = 'choice';
     document.getElementById('m-question').value = '';
     document.getElementById('m-image').value = '';
     [0,1,2,3].forEach(i => document.getElementById('m-opt' + i).value = '');
@@ -2800,7 +2853,13 @@ function openModal(idx) {
     document.getElementById('m-explanation').value = '';
   }
   mUpdateImagePreview();
+  mUpdateTypeUI();
   document.getElementById('q-modal').classList.add('active');
+}
+
+function mUpdateTypeUI() {
+  const isEssay = document.getElementById('m-type').value === 'essay';
+  document.getElementById('m-choices-wrap').style.display = isEssay ? 'none' : 'block';
 }
 
 function mUpdateImagePreview() {
@@ -2814,24 +2873,37 @@ function closeModal() { document.getElementById('q-modal').classList.remove('act
 function saveQuestion() {
   const question = document.getElementById('m-question').value.trim();
   if (!question) { alert('질문을 입력해주세요.'); return; }
-  const allOptions = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim());
-  const filteredOptions = allOptions.filter(o => o);
-  if (filteredOptions.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
-  const checkedBoxes = Array.from(document.querySelectorAll('input[name="correct"]:checked'));
-  if (checkedBoxes.length === 0) { alert('정답을 1개 이상 선택해주세요.'); return; }
-  const correctVals = checkedBoxes.map(cb => parseInt(cb.value));
-  for (const cv of correctVals) {
-    if (!allOptions[cv]) { alert('정답으로 선택한 선택지가 비어있습니다.'); return; }
+  const isEssay = document.getElementById('m-type').value === 'essay';
+  let newQ;
+  if (isEssay) {
+    newQ = {
+      id: Date.now(),
+      question,
+      type: 'essay',
+      image: document.getElementById('m-image').value.trim(),
+      explanation: document.getElementById('m-explanation').value.trim()
+    };
+  } else {
+    const allOptions = [0,1,2,3].map(i => document.getElementById('m-opt' + i).value.trim());
+    const filteredOptions = allOptions.filter(o => o);
+    if (filteredOptions.length < 2) { alert('선택지를 2개 이상 입력해주세요.'); return; }
+    const checkedBoxes = Array.from(document.querySelectorAll('input[name="correct"]:checked'));
+    if (checkedBoxes.length === 0) { alert('정답을 1개 이상 선택해주세요.'); return; }
+    const correctVals = checkedBoxes.map(cb => parseInt(cb.value));
+    for (const cv of correctVals) {
+      if (!allOptions[cv]) { alert('정답으로 선택한 선택지가 비어있습니다.'); return; }
+    }
+    const correctIndices = correctVals.map(cv => filteredOptions.indexOf(allOptions[cv]));
+    newQ = {
+      id: Date.now(),
+      question,
+      type: 'choice',
+      image: document.getElementById('m-image').value.trim(),
+      options: filteredOptions,
+      correct: correctIndices.length === 1 ? correctIndices[0] : correctIndices,
+      explanation: document.getElementById('m-explanation').value.trim()
+    };
   }
-  const correctIndices = correctVals.map(cv => filteredOptions.indexOf(allOptions[cv]));
-  const newQ = {
-    id: Date.now(),
-    question,
-    image: document.getElementById('m-image').value.trim(),
-    options: filteredOptions,
-    correct: correctIndices.length === 1 ? correctIndices[0] : correctIndices,
-    explanation: document.getElementById('m-explanation').value.trim()
-  };
   const sets = loadSets();
   const setIdx = sets.findIndex(s => s.id === _qViewSetId);
   if (setIdx < 0) return;
@@ -3297,6 +3369,9 @@ function renderLec() {
   if (lecMode === 'flashcard') {
     document.getElementById('lec-label').textContent = (q.category || 'FLASHCARD');
     document.getElementById('lec-options').innerHTML = '';
+  } else if (q.type === 'essay') {
+    document.getElementById('lec-label').textContent = 'QUESTION ' + (lecIdx+1) + ' · 서술형';
+    document.getElementById('lec-options').innerHTML = '<div class="lecture-opt" style="opacity:0.7;">(서술형 문항 — 정답 없음)</div>';
   } else {
     document.getElementById('lec-label').textContent = 'QUESTION ' + (lecIdx+1);
     document.getElementById('lec-options').innerHTML = q.options.map(function(opt, i) {
@@ -3316,6 +3391,11 @@ function lecReveal() {
     if (q.tip) html += '<div class="lec-tip-box">✅ ' + escHtml(q.tip) + '</div>';
     expl.innerHTML = html;
     expl.style.display = 'block';
+  } else if (q.type === 'essay') {
+    if (q.explanation) {
+      expl.innerHTML = '<div class="lecture-explanation"><strong>해설</strong><br>' + q.explanation + '</div>';
+      expl.style.display = 'block';
+    }
   } else {
     const ca = Array.isArray(q.correct) ? q.correct : [q.correct];
     ca.forEach(function(i) {
