@@ -1779,10 +1779,11 @@ function renderEmpTypeColumn(type, el) {
     })(cohortItems);
   }
 
-  // 최다 오답 TOP 5
+  // 최다 오답 TOP 5 (서술형은 정답/오답 개념이 없으므로 제외)
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
+      if (a.type === 'essay') return;
       if (!qMap[a.id]) qMap[a.id] = { id:a.id, q:a.q||('Q'+a.id), total:0, wrong:0, choices:{}, correct:a.correct };
       qMap[a.id].total++;
       if (!a.ok) qMap[a.id].wrong++;
@@ -1844,7 +1845,7 @@ function showRankModal(grade, empType) {
     document.getElementById('rank-modal-list').innerHTML = ranked.map((s, i) => {
       const scoreText = (s.pct||0) + '점';
       const scoreColor = grade === 'excellent' ? '#22c55e' : grade === 'basic' ? '#0E94CD' : '#ef4444';
-      const hasWrong = (s.wrongQuestions||[]).length > 0 || (s.answers||[]).some(a => !a.ok);
+      const hasWrong = (s.wrongQuestions||[]).length > 0 || (s.answers||[]).some(a => a.type !== 'essay' && !a.ok);
       return '<div class="rank-item" style="cursor:pointer;" onclick="showEmployeeWrongQ(' + i + ')">' +
         '<div class="rank-num">' + (i+1) + '</div>' +
         '<div style="flex:1;min-width:0;">' +
@@ -2007,10 +2008,11 @@ function renderDashboard() {
     return s;
   })(cohortItems) : emptyBar();
 
-  // ── 2. 최다 오답 질문 & 전체 질문별 오답률/정답률 ──
+  // ── 2. 최다 오답 질문 & 전체 질문별 오답률/정답률 (서술형은 정답/오답 개념이 없으므로 제외) ──
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
+      if (a.type === 'essay') return;
       if (!qMap[a.id]) qMap[a.id] = { id: a.id, q: a.q || ('Q' + a.id), total:0, wrong:0, correct: a.correct, choices:{} };
       qMap[a.id].total++;
       if (!a.ok) qMap[a.id].wrong++;
@@ -2053,6 +2055,7 @@ function showErrorRateModal() {
   const qMap = {};
   scores.forEach(s => {
     (s.answers || []).forEach(a => {
+      if (a.type === 'essay') return;
       if (!qMap[a.id]) qMap[a.id] = { q: a.q, total: 0, wrong: 0 };
       qMap[a.id].total++;
       if (!a.ok) qMap[a.id].wrong++;
@@ -2711,6 +2714,7 @@ async function loadQSetScores(setId) {
   setScores.forEach(s => {
     (s.answers || []).forEach(a => {
       if (a.id === undefined || a.id === null) return;
+      if (a.type === 'essay') return;
       if (!map[a.id]) map[a.id] = { total: 0, correct: 0 };
       map[a.id].total++;
       if (a.ok) map[a.id].correct++;
