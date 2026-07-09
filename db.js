@@ -203,6 +203,7 @@ function renderTop5() {
   const qMap = {};
   filteredScores.forEach(s => {
     (s.answers||[]).forEach(a => {
+      if (a.type === 'essay') return; // 서술형은 채점 대상이 아니므로 오답 집계에서 제외
       const key = a.question || a.q || '';
       if (!key) return;
       if (!a.ok) {
@@ -211,6 +212,7 @@ function renderTop5() {
       }
     });
     (s.answers||[]).forEach(a => {
+      if (a.type === 'essay') return;
       const key = a.question || a.q || '';
       if (!key) return;
       if (!qMap[key]) qMap[key] = {wrong:0, chosen:{}, total:0};
@@ -348,7 +350,7 @@ function renderTierTable() {
     body.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;">해당 데이터가 없습니다.</td></tr>`;
     return;
   }
-  const errs = s => (s.wrongQuestions||[]).length || (s.answers||[]).filter(a=>!a.ok).length;
+  const errs = s => (s.wrongQuestions||[]).length || (s.answers||[]).filter(a=>a.type!=='essay' && !a.ok).length;
   body.innerHTML = rows.map(r => `
     <tr onclick="openWrongQ(${JSON.stringify(r.id).replace(/"/g,"'")})">
       <td style="font-weight:600;">${r.name||'-'}</td>
@@ -364,7 +366,7 @@ function renderTierTable() {
 function openWrongQ(id) {
   const s = allScores.find(x => x.id===id);
   if (!s) return;
-  const wrong = (s.answers||[]).filter(a=>!a.ok);
+  const wrong = (s.answers||[]).filter(a=>a.type!=='essay' && !a.ok);
   if (!wrong.length) { alert(s.name+'님은 모두 정답입니다!'); return; }
   document.getElementById('ans-title').textContent = s.name + '님 오답 목록';
   document.getElementById('ans-meta').textContent = s.quizName + ' · ' + (s.pct||0) + '점';

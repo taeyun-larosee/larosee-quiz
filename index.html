@@ -1045,31 +1045,6 @@ async function fsClaimFirstSubmit(quizId, cohort) {
     });
   } catch(e) { console.warn('fsClaimFirstSubmit error:', e); return false; }
 }
-// (퀴즈+기수+이름) 조합별 진행 상태 저장 — 재접속 시 이어풀기 잠금용
-function progressDocId(quizId, cohort, name) {
-  return String(quizId) + '__' + String(cohort).replace(/[\/]/g, '_') + '__' + String(name).replace(/[\/]/g, '_');
-}
-async function fsGetProgress(quizId, cohort, name) {
-  if (!db) return null;
-  try {
-    const doc = await db.collection('progress').doc(progressDocId(quizId, cohort, name)).get();
-    return doc.exists ? doc.data() : null;
-  } catch(e) { console.warn('fsGetProgress error:', e); return null; }
-}
-async function fsSaveProgress(quizId, cohort, name, data) {
-  if (!db) return;
-  try {
-    // Firestore는 undefined 필드를 거부함 (서술형 문제는 correct 필드가 없어서 undefined가 될 수 있음) → JSON 왕복으로 제거
-    const safe = JSON.parse(JSON.stringify(data));
-    await db.collection('progress').doc(progressDocId(quizId, cohort, name)).set(safe);
-  }
-  catch(e) { console.warn('fsSaveProgress error:', e); }
-}
-async function fsClearProgress(quizId, cohort, name) {
-  if (!db) return;
-  try { await db.collection('progress').doc(progressDocId(quizId, cohort, name)).delete(); }
-  catch(e) { console.warn('fsClearProgress error:', e); }
-}
 async function waitForDb(timeout = 5000) {
   if (db) return true;
   const start = Date.now();
@@ -1319,7 +1294,7 @@ function startTimer(timerMin, expireMode) {
 function stopTimer() { clearInterval(timerInterval); timerInterval = null; }
 
 /* ─── Quiz Flow ──────────────────────────────────────────────── */
-async function startQuiz() {
+function startQuiz() {
   const name = document.getElementById('name-input').value.trim();
   const cohort = document.getElementById('cohort-input').value.trim();
   if (!name) { alert('이름을 입력해주세요.'); return; }
@@ -1328,22 +1303,6 @@ async function startQuiz() {
   if (!set) { alert('퀴즈를 찾을 수 없습니다.'); return; }
   student = name;
   studentCohort = cohort;
-  const quizId = currentQuizSetId || 'set_default';
-
-  // 동일 (퀴즈+기수+이름) 조합의 미완료 진행 상태가 있으면 그대로 이어서 진행 (이미 확정한 문제는 재풀이 불가)
-  const saved = await fsGetProgress(quizId, cohort, name);
-  if (saved && Array.isArray(saved.qs) && saved.qs.length > 0) {
-    qs = saved.qs;
-    answers = Array.isArray(saved.answers) ? saved.answers : [];
-    qi = answers.length;
-    startTime = Date.now();
-    if (qi >= qs.length) { await finishQuiz(); return; }
-    showScreen('s-quiz');
-    startTimer(set.timerMin || 0, set.timerExpireMode || 'force');
-    renderQuestion();
-    alert('이전에 풀던 퀴즈를 이어서 진행합니다. (이미 답한 문제는 다시 풀 수 없습니다)');
-    return;
-  }
 
   let pool = set.questions.map(q => ({
     ...q,
@@ -1359,7 +1318,6 @@ async function startQuiz() {
   showScreen('s-quiz');
   startTimer(set.timerMin || 0, set.timerExpireMode || 'force');
   renderQuestion();
-  fsSaveProgress(quizId, cohort, name, { qs, answers, updatedAt: Date.now() });
 }
 
 function renderQuestion() {
@@ -1445,7 +1403,6 @@ function confirmAnswer() {
     fb.className = 'q-feedback correct';
     fb.style.opacity = '';
     answers.push({ q, ok: null, chosen: text, correct: null, type: 'essay' });
-    fsSaveProgress(currentQuizSetId || 'set_default', studentCohort, student, { qs, answers, updatedAt: Date.now() });
     document.getElementById('q-confirm-wrap').style.display = 'none';
     document.getElementById('q-next-wrap').style.display = 'block';
     return;
@@ -1472,7 +1429,6 @@ function confirmAnswer() {
   fb.style.opacity = '';
 
   answers.push({ q, ok, chosen: isMulti ? selected : selected[0], correct: q.correct });
-  fsSaveProgress(currentQuizSetId || 'set_default', studentCohort, student, { qs, answers, updatedAt: Date.now() });
   document.getElementById('q-confirm-wrap').style.display = 'none';
   document.getElementById('q-next-wrap').style.display = 'block';
 }
@@ -1486,6 +1442,14 @@ function nextQuestion() {
 async function finishQuiz() {
   stopTimer();
   const duration = Math.floor((Date.now() - startTime) / 1000);
+
+  // 시간 초과 등으로 못 푼 문제가 남아있으면 무응답(오답) 처리 — 정답률 분모에서 조용히 빠지지 않게
+  for (let i = answers.length; i < qs.length; i++) {
+    const q = qs[i];
+    if (q.type === 'essay') continue; // 서술형은 채점 대상이 아니므로 무응답이면 그냥 건너뜀
+    answers.push({ q, ok: false, chosen: null, correct: q.correct, unanswered: true });
+  }
+
   // 서술형 문항은 채점 대상이 아니므로 정답률 분모(total)와 정답 수(correctCount) 계산에서 제외
   const gradedAnswers = answers.filter(a => a.type !== 'essay');
   const correctCount = gradedAnswers.filter(a => a.ok).length;
@@ -1496,9 +1460,9 @@ async function finishQuiz() {
 
   const wrongQuestions = wrongAnswers.map(a => {
     const ca = Array.isArray(a.correct) ? a.correct : [a.correct];
-    return { q: a.q.question, correct: ca.map(i => a.q.options[i]).join(', '), chosen: a.q.options[a.chosen] };
+    return { q: a.q.question, correct: ca.map(i => a.q.options[i]).join(', '), chosen: a.unanswered ? '(응답 안 함)' : a.q.options[a.chosen] };
   });
-  const answersData = answers.map(a => ({ id: a.q.id, q: a.q.question, type: a.type || 'choice', ok: a.ok, chosen: a.chosen, correct: a.correct }));
+  const answersData = answers.map(a => ({ id: a.q.id, q: a.q.question, type: a.type || 'choice', ok: a.ok, chosen: a.chosen, correct: a.correct, unanswered: a.unanswered || false }));
 
   const set = getSetById(currentQuizSetId);
   let isFirstSubmit = false;
@@ -1507,8 +1471,6 @@ async function finishQuiz() {
     isFirstSubmit = await fsClaimFirstSubmit(currentQuizSetId || 'set_default', studentCohort);
     if (isFirstSubmit) bonusPoints = set.firstBonusPoints || 0;
   }
-  // 점수 저장 성공 시에만 진행상태(progress)를 지움 — 저장이 실패했는데 진행상태까지 지워버리면
-  // 응시 기록이 통째로 사라지고 이어풀기 복구 수단도 함께 사라져서 완전히 유실됨
   fsPost('scores', {
     quizId: currentQuizSetId || 'set_default',
     quizName: set ? set.name : '',
@@ -1524,8 +1486,6 @@ async function finishQuiz() {
     answers: answersData,
     isFirstSubmit,
     bonusPoints
-  }).then(ok => {
-    if (ok) fsClearProgress(currentQuizSetId || 'set_default', studentCohort, student);
   });
 
   window._reviewWrongAnswers = wrongAnswers;
@@ -2267,7 +2227,7 @@ function buildAnswerSheetHtml(s) {
         '<div style="font-size:13px;color:var(--text);white-space:pre-wrap;background:#f9fafb;padding:10px 12px;border-radius:8px;">' + escHtml(a.chosen || '') + '</div>' +
       '</div>';
     }
-    const chosen = a.chosen !== undefined && a.chosen !== null ? '선택: 선지 ' + (Number(a.chosen)+1) : '';
+    const chosen = a.unanswered ? '무응답' : (a.chosen !== undefined && a.chosen !== null ? '선택: 선지 ' + (Number(a.chosen)+1) : '');
     const correct = a.correct !== undefined && a.correct !== null
       ? (Array.isArray(a.correct) ? a.correct : [a.correct]).map(c => '선지 '+(Number(c)+1)).join(', ')
       : '';
@@ -2785,14 +2745,6 @@ function renderQList() {
     '<input type="number" id="set-first-bonus-points" min="0" max="100" value="' + (set.firstBonusPoints||0) + '" style="margin-top:4px;"></div>' +
     '</div>' +
     '<button class="btn btn-sm btn-primary" style="margin-top:12px;" onclick="saveSetSettings(\'' + set.id + '\')">저장</button></div>' +
-    '<div class="card" style="margin-bottom:16px;">' +
-    '<div style="font-size:13px;font-weight:800;margin-bottom:10px;">응시 진행상태 초기화</div>' +
-    '<div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">기기 문제 등으로 이어풀기가 꼬였을 때, 이름+기수를 입력하면 저장된 진행 상태를 지웁니다 (다음 응시 시 처음부터 새로 시작).</div>' +
-    '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">' +
-    '<div style="flex:1;min-width:120px;"><label>이름</label><input type="text" id="reset-progress-name" style="margin-top:4px;"></div>' +
-    '<div style="flex:1;min-width:120px;"><label>기수</label><input type="text" id="reset-progress-cohort" style="margin-top:4px;"></div>' +
-    '<button class="btn btn-sm btn-outline" onclick="resetStudentProgress(\'' + set.id + '\')">초기화</button>' +
-    '</div></div>' +
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
     '<span id="q-count-lbl" style="font-size:14px;font-weight:700;color:var(--text-muted);">문제 ' + set.questions.length + '개</span>' +
     '<div style="display:flex;gap:8px;">' +
@@ -2898,16 +2850,6 @@ function saveSetSettings(setId) {
   saveSets(sets);
   fsSyncSet(sets[idx]);
   alert('저장되었습니다.');
-}
-
-async function resetStudentProgress(setId) {
-  const name = document.getElementById('reset-progress-name').value.trim();
-  const cohort = document.getElementById('reset-progress-cohort').value.trim();
-  if (!name || !cohort) { alert('이름과 기수를 모두 입력해주세요.'); return; }
-  await fsClearProgress(setId, cohort, name);
-  alert('초기화되었습니다. (' + name + ' / ' + cohort + '기)');
-  document.getElementById('reset-progress-name').value = '';
-  document.getElementById('reset-progress-cohort').value = '';
 }
 
 /* ─── Quiz Set CRUD ──────────────────────────────────────────── */
