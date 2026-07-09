@@ -2514,6 +2514,7 @@ function renderDetailLevel() {
   const pct = s.pct !== undefined ? s.pct + '%' : '-';
   const bc = s.pct >= 80 ? 'badge-green' : s.pct >= 60 ? 'badge-blue' : 'badge-red';
   const wq = s.wrongQuestions || [];
+  const essayAnswers = (s.answers || []).filter(a => a.type === 'essay');
   document.getElementById('s-count-lbl').textContent = (s.name||'-') + ' 응시 상세';
   let html = '<div style="margin-bottom:14px;"><button class="btn btn-sm btn-outline" onclick="backToEmployees()">← ' + label + ' 목록</button></div>' +
     '<div class="card" style="margin-bottom:16px;">' +
@@ -2522,9 +2523,35 @@ function renderDetailLevel() {
     '<div style="font-size:13px;color:var(--text-muted);margin-top:2px;">' + label + ' · ' + (s.date||'') + '</div></div>' +
     '<span class="badge ' + bc + '" style="font-size:15px;padding:6px 14px;">' + pct + '</span></div>' +
     '<div style="display:flex;gap:16px;font-size:13px;color:var(--text-muted);">' +
-    '<span>소요시간 ' + formatDur(s.duration) + '</span><span>틀린 문제 ' + wq.length + '개</span></div></div>' +
-    '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;">전체 답안 (객관식 + 서술형)</div>' +
-    buildAnswerSheetHtml(s);
+    '<span>소요시간 ' + formatDur(s.duration) + '</span><span>틀린 문제 ' + wq.length + '개</span></div></div>';
+
+  if (wq.length === 0 && essayAnswers.length === 0) {
+    html += '<div class="card" style="text-align:center;padding:24px;color:var(--success-text);font-weight:700;font-size:15px;">모든 문제 정답!</div>';
+  } else {
+    if (wq.length > 0) {
+      html += '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin-bottom:10px;">틀린 문제 ' + wq.length + '개</div><div style="display:flex;flex-direction:column;gap:10px;">';
+      wq.forEach(w => {
+        html += '<div class="card" style="padding:16px 18px;">' +
+          '<div style="font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5;">Q. ' + w.q + '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:6px;">' +
+          '<div style="font-size:13px;padding:8px 12px;background:var(--success-bg);border-radius:8px;color:var(--success-text);">✓ 정답: ' + w.correct + '</div>' +
+          (w.chosen ? '<div style="font-size:13px;padding:8px 12px;background:var(--error-bg);border-radius:8px;color:var(--error-text);">✗ 선택: ' + w.chosen + '</div>' : '') +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+    if (essayAnswers.length > 0) {
+      html += '<div style="font-size:13px;font-weight:700;color:var(--text-muted);margin:' + (wq.length > 0 ? '16px' : '0') + ' 0 10px;">서술형 답변 ' + essayAnswers.length + '개</div><div style="display:flex;flex-direction:column;gap:10px;">';
+      essayAnswers.forEach(a => {
+        html += '<div class="card" style="padding:16px 18px;">' +
+          '<div style="font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5;">Q. ' + escHtml(a.q||'') + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--success-text);background:var(--success-bg);display:inline-block;padding:2px 9px;border-radius:99px;margin-bottom:8px;">제출되었습니다!</div>' +
+          '<div style="font-size:13px;color:var(--text);white-space:pre-wrap;background:#f9fafb;padding:10px 12px;border-radius:8px;">' + escHtml(a.chosen || '') + '</div>' +
+          '</div>';
+      });
+      html += '</div>';
+    }
+  }
   document.getElementById('score-table-wrap').innerHTML = html;
 }
 function backToEmployees() { _scoreViewLevel = 'employees'; _selectedScoreId = null; _selectedDeleteKeys = new Set(); renderScoreView(); }
