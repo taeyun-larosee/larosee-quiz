@@ -1021,8 +1021,15 @@ const firebaseConfig = {
 
 async function fsPost(col, data) {
   if (!db) return false;
-  try { await db.collection(col).add(data); return true; }
-  catch(e) { console.warn('fsPost error:', e); return false; }
+  // 네트워크 일시 장애 대비 최대 3회 재시도 (특히 scores는 응시 기록 자체라 유실되면 복구 불가)
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try { await db.collection(col).add(data); return true; }
+    catch(e) {
+      console.warn('fsPost error (attempt ' + (attempt+1) + '):', e);
+      if (attempt < 2) await new Promise(r => setTimeout(r, 1000 * (attempt+1)));
+    }
+  }
+  return false;
 }
 // (퀴즈+기수) 조합당 최초 1건만 true를 반환 (Firestore 트랜잭션으로 동시 제출 경쟁 방지)
 async function fsClaimFirstSubmit(quizId, cohort) {
@@ -1500,6 +1507,8 @@ async function finishQuiz() {
     isFirstSubmit = await fsClaimFirstSubmit(currentQuizSetId || 'set_default', studentCohort);
     if (isFirstSubmit) bonusPoints = set.firstBonusPoints || 0;
   }
+  // 점수 저장 성공 시에만 진행상태(progress)를 지움 — 저장이 실패했는데 진행상태까지 지워버리면
+  // 응시 기록이 통째로 사라지고 이어풀기 복구 수단도 함께 사라져서 완전히 유실됨
   fsPost('scores', {
     quizId: currentQuizSetId || 'set_default',
     quizName: set ? set.name : '',
@@ -1515,8 +1524,9 @@ async function finishQuiz() {
     answers: answersData,
     isFirstSubmit,
     bonusPoints
+  }).then(ok => {
+    if (ok) fsClearProgress(currentQuizSetId || 'set_default', studentCohort, student);
   });
-  fsClearProgress(currentQuizSetId || 'set_default', studentCohort, student);
 
   window._reviewWrongAnswers = wrongAnswers;
   const reviewBtn = document.getElementById('btn-review');
