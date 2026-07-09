@@ -303,6 +303,8 @@ git push origin main
 
 ### 파일 구조
 
+> 📁 **세션 13 — 폴더 정리함.** 실제 배포에 쓰이는 코드 파일들은 전부 루트에 그대로 두고, 그 외 교육자료/발표자료/이미지/백업/보류 파일들만 하위 폴더로 이동 (삭제한 건 없음). 아래가 정리 후 최신 구조.
+
 ```
 C:\Users\김태윤\Claude\Projects\라로제\
 ├── admin.html        ← 관리자 메인 (HTML + 인라인 CSS + 유틸 JS)  ✅ 세션 8에서 전면 재작성
@@ -314,10 +316,15 @@ C:\Users\김태윤\Claude\Projects\라로제\
 ├── flashcard.js      ← 플래시카드 세트 CRUD
 ├── sessions.js       ← 세션/DAY/항목 CRUD, 롤플레이 에디터
 ├── present.js        ← 교육 진행 화면 로직 (프레젠테이션 뷰)
+├── present.html       ← (present.js와 별개로 git에 트래킹된 파일, 용도는 present.js 참고)
 ├── logo.png          ← 라로제 로고
+├── quiz_brand.jpg    ← index.html 배경 이미지 (git 트래킹됨, 옮기면 안 됨)
 ├── temp_repo\        ← git push용 클론 (수정 금지, 복사만)
-├── efa5e8c_admin.html   ← 한글 원본 참조용 (건드리지 말 것)
-└── efa5e8c_present.html ← 한글 원본 참조용 (건드리지 말 것)
+├── 자료_교육\         ← 브랜드/제품/판매/이의제기 교육자료 (pptx/pdf/docx)
+├── 자료_발표\         ← 이 앱 자체를 소개하는 사내 발표자료
+├── 자료_이미지\       ← UI 시안 스크린샷, 후보 이미지, 로고 사본 등 (배포 코드에서 안 씀)
+├── 백업_참고코드\     ← 옛 버전/참조용 HTML·JS (efa5e8c_admin.html 등, 한글 깨짐 복구용 원본 포함)
+└── 보류_supabase마이그레이션\ ← 세션 9에서 준비만 하고 중단된 Firebase→Supabase 이전 작업 (.env 포함)
 ```
 
 ### 데이터 저장
@@ -576,8 +583,8 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 | 파일 | 상태 | 마지막 수정 |
 |---|---|---|
 | `admin.html` | ✅ 전면 재작성 완료, 한글 정상 | 세션 8 (커밋 9a1216b) |
-| `supabase.js` | ✅ 생성 완료 (클라이언트 초기화만, 아직 연결 안 됨) | 세션 9 |
-| `.env` | ✅ 생성 완료 (SERVICE_ROLE_KEY 직접 입력 필요, 커밋 금지) | 세션 9 |
+| `보류_supabase마이그레이션\supabase.js` | ✅ 생성 완료 (클라이언트 초기화만, 아직 연결 안 됨) — 세션 13에서 하위 폴더로 이동 | 세션 9 |
+| `보류_supabase마이그레이션\.env` | ✅ 생성 완료 (SERVICE_ROLE_KEY 직접 입력 필요, 커밋 금지) — 세션 13에서 하위 폴더로 이동 | 세션 9 |
 | `config.js` | ✅ 정상, 수정 없음 | 세션 1 |
 | `auth.js` | ✅ 정상 + localStorage 방어 | 세션 6 |
 | `db.js` | ✅ 한글 전수 복원 완료 | 세션 5 |
@@ -631,7 +638,7 @@ SharePoint URL들이 여기에 있음 (sessions.js의 DEFAULT_SESSIONS에는 URL
 
 **Firebase → Supabase 마이그레이션 (세션 9에서 준비 완료, 본작업 미완):**
 
-세션 9에서 완료한 것:
+세션 9에서 완료한 것 (세션 13에서 `보류_supabase마이그레이션\` 폴더로 이동함):
 - `supabase.js` 생성 — URL + anon key로 클라이언트 초기화 (HTML에서 script로 불러오면 됨)
 - `.env` 생성 — `SUPABASE_SERVICE_ROLE_KEY=` 뒤에 직접 붙여넣기 필요, **절대 커밋 금지**
 
@@ -681,9 +688,10 @@ location.reload();
 
 ### 참조 파일
 ```
-C:\Users\김태윤\Claude\Projects\라로제\efa5e8c_admin.html   ← admin.html 원본 한글 참조
-C:\Users\김태윤\Claude\Projects\라로제\efa5e8c_present.html ← present-view 원본 한글 참조
+C:\Users\김태윤\Claude\Projects\라로제\백업_참고코드\efa5e8c_admin.html   ← admin.html 원본 한글 참조
+C:\Users\김태윤\Claude\Projects\라로제\백업_참고코드\efa5e8c_present.html ← present-view 원본 한글 참조
 ```
+> (세션 13에서 루트 → `백업_참고코드\` 폴더로 이동함)
 
 ### 수리 절차 (파일이 또 깨지면)
 1. 위 참조 파일을 Read하여 올바른 한글 확인
